@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polylingo</title>
+</head>
+<body>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        fetch (`http://localhost:3000/auth/login?code=${code}`).then((resp) => resp.json().then((data => {
+            localStorage.setItem("polylingo_jwt", data.jwt);
+            window.location.href = "http://localhost:3000/index.html";
+        })));
+    </script>
+</body>
+</html>

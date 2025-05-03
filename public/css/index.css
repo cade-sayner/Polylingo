@@ -1,0 +1,72 @@
+html, body{
+    height: 100vh;
+}
+
+.mascot-image{
+    width: 20rem;
+    height:20rem;
+}
+
+
+.call-sans{
+    font-family: "Cal Sans", sans-serif;
+    font-weight: 400;
+    font-style: light;
+    font-size: large;
+    color: darkslategrey;
+}
+
+.google-icon{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.page-container{
+    height:100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container{
+    display: flex;
+    height:50vh;
+    width:80vw;
+    background-color: #FAF9F6;
+    flex-direction: row;
+    align-items: center;
+    gap:3rem;
+    padding:2rem;
+    border-radius: 3rem;
+    justify-content: space-between;
+}
+
+.mascot-section{
+    flex:1;
+    height:100%;
+}
+
+.login-section{
+    height:80%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-button{
+    display: flex;
+    height:3rem;
+    width: 50%;
+    min-width: 14rem;
+    font-size: large;
+    max-width: 20rem;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 2rem;
+    gap: 1rem;
+}
