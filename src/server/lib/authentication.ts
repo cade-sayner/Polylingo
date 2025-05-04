@@ -4,7 +4,7 @@ import { OAuth2Client } from 'google-auth-library';
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const authenticate = async (req: Request) => {
-    const token = req.headers["bearer"] as string;
+    const token = req.headers["authorization"]?.split(" ")[1] as string;
     if (!token) {
         return false;
     }
@@ -26,7 +26,6 @@ export const authenticate = async (req: Request) => {
         name: payload.name,
         picture: payload.picture,
       };
-      console.log(req.user);
       return true;
 
     } catch (err : any) {

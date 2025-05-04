@@ -13,7 +13,6 @@ export class BaseRepository<T extends Object>{
     // creates an entry of type T in the db, assuming the first column of the model is the primary key
     async create(model : T){
         // remove all keys whose corresponding values are null, as these should be excluded from the insertion
-
         const filteredModel = Object.fromEntries(
             Object.entries(model).filter(([key, value]) => value !== null)
         );
@@ -25,16 +24,14 @@ export class BaseRepository<T extends Object>{
         VALUES 
         (${Array.from({ length: keys.length}, (_, i) => `$${i + 1}`).join(",")})
         RETURNING *`
-
         let rows = (await connectAndQuery(queryString, values)).rows.map((row =>camelcaseKeys(row)))
-
         // add validation to ensure this assertion is always viable?
         return rows as T[];
     }
 
     // assumes integer ids only
     async getByID(id : number) {
-        let queryString = `SELECT * FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1 RETURNING *`
+        let queryString = `SELECT * FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1`
         return this.queryReturnOne(queryString, [id])
     }
 
@@ -54,8 +51,6 @@ export class BaseRepository<T extends Object>{
 
     getByColumnName(columnName : keyof T, value : string | number){
         let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`
-        console.log(queryString)
-        console.log(value)
         return this.queryReturnOne(queryString, [value]);
     }
 
