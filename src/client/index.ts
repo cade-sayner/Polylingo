@@ -3,7 +3,7 @@
 type Page = "Login Page" | "Translation Page" | "Fill Blank Page" | "Landing Page" | "Admin Page"
 
 
-// move this to dotenv
+// move this to a constants module
 const googleAuthURI = "https://accounts.google.com/o/oauth2/auth?client_id=988182050054-vlcub1cr22892gc1e4uesj5d6sa3ji1v.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login.html&response_type=code&scope=openid%20phone%20email%20profile";
 
 function main(){

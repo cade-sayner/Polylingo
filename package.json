@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn src/server/app.ts",
+    "dev": "npm run build && npm run start",
     "start": "node dist/app.js",
     "build:frontend": "tsc -p tsconfig.frontend.json",
     "build:backend": "tsc -p tsconfig.backend.json",
