@@ -11,7 +11,7 @@ export function registerUserRoutes(app: Express) {
 
 async function getUser(req:Request, res:any) {
     if(!(await authenticate(req))){
-        return res.status(401).json({message:"Invalid jwt"});
+        return res.status(401).json({message:"User not logged in"});
     }
 
     let googleId  = req.query.googleId as string | undefined;
