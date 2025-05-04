@@ -1,5 +1,6 @@
 import { Express} from 'express';
 import { UserRepository } from '../repositories/user-repository';
+import jwt from 'jsonwebtoken';
 
 const userRepo = new UserRepository("users", "user_id")
 
@@ -37,17 +38,30 @@ async function login(req:any, res:any) {
 
     // TODO: make a type for the google response and assert the type it here
     const data = await response.json();
+
+    // create a user here if one does not yet exist
+    const claims = jwt.decode(data.id_token) as {sub ?: string, email ?: string, name ?: string};
+
+    if(claims?.sub && claims?.name && claims?.email){
+        const exists = await userRepo.Exists(claims.sub as string);
+        if(!exists){
+            // create a new user
+            userRepo.create({
+                userId: null,
+                email: claims.email,
+                name: claims.name,
+                googleId: claims.sub
+            })
+            // TODO: Assign a default role to the user as well
+        }
+        
+    }else{
+        return res.status(500).json({
+            message: "The jwt returned from google was malformed"
+        })
+    }
+
     return res.status(200).json({
         jwt: data.id_token
     })
-
-    // create a user here if one does not yet exist
-
-    // const exists = await userRepo.Exists(googleId);
-    // if (!exists) {
-    //     return res.status(404).json({
-    //         message: 'User does not exist'
-    //     });
-    // }
-    //return res.status(200).json(await userRepo.getByColumnName("googleId", String(googleId)));
 }
