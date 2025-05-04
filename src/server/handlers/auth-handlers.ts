@@ -1,11 +1,13 @@
 import { Express } from 'express';
 import { UserRepository } from '../repositories/user-repository';
+import { RoleRepository } from '../repositories/role-repository';
 import jwt from 'jsonwebtoken';
 
-const userRepo = new UserRepository("users", "user_id")
+const userRepo = new UserRepository("users", "user_id");
+const roleRepo = new RoleRepository("roles", "id");
 
 export function registerAuthRoutes(app: Express) {
-    app.get("/auth/login", login);
+    app.get("/api/auth/login", login);
 }
 
 async function login(req: any, res: any) {
@@ -47,18 +49,22 @@ async function login(req: any, res: any) {
         if (!exists) {
             // create a new user
             try {
+                let role = await roleRepo.getByColumnName("role", "USER");
+                if(role == null){
+                    throw new Error();
+                }
                 userRepo.create({
                     userId: null,
                     email: claims.email,
                     name: claims.name,
-                    googleId: claims.sub
+                    googleId: claims.sub,
+                    roleId: role.id as number // this is enforced by the database so okay?
                 })
             } catch {
                 return res.status(500).json({
                     message: "Error creating user when logging in for the first time"
                 })
             }
-            // TODO: Assign a default role to the user as well
         }
 
     } else {

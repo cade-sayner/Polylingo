@@ -32,6 +32,8 @@ function main(){
   const jwt = localStorage.getItem("polylingo_jwt");
   // TODO: actually validate the jwt, check the expiry etc. Just checking for existence for now
   if(jwt !== null){
+    // check the roles that the person has
+    // if they have an admin role they should be taken to the admin landing page
     navigateTo("landing");
     return;
   }

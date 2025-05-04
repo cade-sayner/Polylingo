@@ -18,21 +18,66 @@
 
 
 <template class="login-screen-template">
+    <nav class="login-header">
+        <h1 class="logo-text">
+            PolyLingo
+        </h1>
+    </nav>
+    
     <article class="login-container">
         <section class="mascot-section">
             <img src="img/mascot.png" alt="" class="mascot-image">
         </section>
         <section class="login-section">
-            <header class="login-header call-sans">
+            <header class="login-title call-sans">
                 <h1>Keep your streak alive! Log in now and learn something new.</h1>
             </header>
             
             <button class="login-button call-sans" type="submit">
-                <img src="img/google_icon.png" alt="" class="google-icon">
+                <img src="img/google_icon.png" alt="" class="icon">
                 <section>
                     Login with Google
                 </section>
             </button>
+        </section>
+    </article>
+
+    <footer class="login-footer">
+        <section class="language-bar">
+            <!-- Should maybe look into making these figures a common component which gets populated by /languages -->
+            <figure class="language-figure">
+                <img src="img/south-africa.png" alt="" class="icon">
+                <p class="caption">
+                    Afrikaans
+                </p>
+            </figure>
+            <figure class="language-figure">
+                <img src="img/german-flag.png" alt="" class="icon">
+                <p class="caption">
+                    German
+                </p>
+            </figure>
+            <figure class="language-figure">
+                <img src="img/france.png" alt="" class="icon">
+                <p class="caption">
+                    French
+                </p>
+            </figure>
+            <figure class="language-figure">
+                <img src="img/italy.png" alt="" class="icon">
+                <p class="caption">
+                    Italian
+                </p>
+            </figure>
+        </section>
+    </footer>
+</template>
+
+
+<template class="landing-page-template">
+    <article class="login-container">
+        <section>
+            This is the admin landing page
         </section>
     </article>
 </template>

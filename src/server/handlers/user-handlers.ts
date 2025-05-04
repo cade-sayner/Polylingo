@@ -6,7 +6,7 @@ const userRepo = new UserRepository("users", "user_id")
 
 
 export function registerUserRoutes(app: Express) {
-    app.get("/users", getUser);
+    app.get("/api/users", getUser);
 }
 
 async function getUser(req:Request, res:any) {
