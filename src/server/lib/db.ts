@@ -1,5 +1,7 @@
 import { Pool } from "pg";
 
+
+// obviously this is to be read from env
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
