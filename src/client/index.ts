@@ -2,7 +2,6 @@ const routes: Record<string, RouteDefinition> = {
   'login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
   'landing/user': { content: () => document.querySelector(".landing-page-template")?.innerHTML, loadCallback: loadLandingPage },
   'landing/instructor': { content: () => document.querySelector(".instructor-landing-page-template")?.innerHTML, loadCallback: loadInstructorLandingPage }
-
 }
 
 // move these to a constants module at some point?
