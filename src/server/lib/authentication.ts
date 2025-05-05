@@ -3,10 +3,10 @@ import { OAuth2Client } from 'google-auth-library';
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-export const authenticate = async (req: Request) => {
+export const authenticate = async (req: Request, res:any, next:any) => {
     const token = req.headers["authorization"]?.split(" ")[1] as string;
     if (!token) {
-        return false;
+        return res.status(401).json({message : "No token provided"});
     }
     try {
       const ticket = await client.verifyIdToken({
@@ -17,7 +17,7 @@ export const authenticate = async (req: Request) => {
       const payload = ticket.getPayload();
   
       if (!payload) {
-        return false;
+        return res.status(401).json({message : "Unable to obtain ticket payload "});
       }
   
       req.user = {
@@ -26,7 +26,8 @@ export const authenticate = async (req: Request) => {
         name: payload.name,
         picture: payload.picture,
       };
-      return true;
+      // at this point carry on to the next middleware function
+      next();
 
     } catch (err : any) {
         return false;

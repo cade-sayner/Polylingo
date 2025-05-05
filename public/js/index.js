@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const routes = {
-    'login': { content: () => { var _a; return (_a = document.querySelector(".login-screen-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadLoginPage },
-    'landing/user': { content: () => { var _a; return (_a = document.querySelector(".landing-page-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadLandingPage },
-    'landing/instructor': { content: () => { var _a; return (_a = document.querySelector(".instructor-landing-page-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadInstructorLandingPage }
+    '/login': { content: () => { var _a; return (_a = document.querySelector(".login-screen-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadLoginPage },
+    '/landing/user': { content: () => { var _a; return (_a = document.querySelector(".landing-page-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadUserLandingPage },
+    '/landing/instructor': { content: () => { var _a; return (_a = document.querySelector(".instructor-landing-page-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadInstructorLandingPage },
+    '/': { content: () => { var _a; return (_a = document.querySelector(".loadingLandingPageTemplate")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadLandingPage }
 };
 // move these to a constants module at some point?
 const googleAuthURI = "https://accounts.google.com/o/oauth2/auth?client_id=988182050054-vlcub1cr22892gc1e4uesj5d6sa3ji1v.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login.html&response_type=code&scope=openid%20phone%20email%20profile";
@@ -27,7 +28,7 @@ function render(path) {
     routes[path].loadCallback();
 }
 function navigateTo(path) {
-    history.pushState({}, '', `${applicationUri}/${path}`);
+    history.pushState({}, '', `${applicationUri}${path}`);
     render(path);
 }
 function main() {
@@ -37,18 +38,12 @@ function main() {
         // TODO: actually validate the jwt, check the expiry etc. Just checking for existence for now
         if (jwt !== null) {
             setToken(jwt);
-            // TODO: Move common types into a shared library
-            let role = yield apiFetch("/api/users/role");
-            if (role.role == "USER") {
-                navigateTo("landing/user");
-                return;
-            }
-            if (role.role == "INSTRUCTOR") {
-                navigateTo("landing/instructor");
-            }
+            // someone is logged in
+            // take them where they want to go
+            navigateTo(window.location.pathname);
             return;
         }
-        navigateTo("login");
+        navigateTo("/login");
     });
 }
 function loadLoginPage() {
@@ -58,6 +53,18 @@ function loadLoginPage() {
     });
 }
 function loadLandingPage() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let role = yield apiFetch("/api/users/role");
+        if (role.role == "USER") {
+            navigateTo("/landing/user");
+            return;
+        }
+        if (role.role == "INSTRUCTOR") {
+            navigateTo("/landing/instructor");
+        }
+    });
+}
+function loadUserLandingPage() {
     // subscribe all event listeners for the landing page
 }
 function loadInstructorLandingPage() {
@@ -84,4 +91,6 @@ function apiFetch(path_1) {
         return response.json();
     });
 }
-main();
+document.addEventListener("DOMContentLoaded", () => {
+    main();
+});

@@ -13,12 +13,13 @@ registerAuthRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
 
-// this needs to eventually just return index.html for any known route on the client side
-app.get(clientRoutes, (_req, res) => {
+app.use(express.static('public'));
+// Anything else must just return index.html
+app.use(/(.*)/, (_req, res) => {
   res.sendFile('index.html', { root: publicDir });
 });
 
-app.use(express.static('public'));
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

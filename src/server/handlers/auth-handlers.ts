@@ -35,7 +35,8 @@ async function login(req: any, res: any) {
     });
 
     if (!response.ok) {
-        return res.status(500).json({ message: "Something went wrong trying to log you in" });
+        // just return whatever google told us was wrong
+        return res.status(response.status).json(await response.json());
     }
 
     // TODO: make a type for the google response and assert the type it here

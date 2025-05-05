@@ -1,7 +1,8 @@
 const routes: Record<string, RouteDefinition> = {
-  'login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
-  'landing/user': { content: () => document.querySelector(".landing-page-template")?.innerHTML, loadCallback: loadLandingPage },
-  'landing/instructor': { content: () => document.querySelector(".instructor-landing-page-template")?.innerHTML, loadCallback: loadInstructorLandingPage }
+  '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
+  '/landing/user': { content: () => document.querySelector(".landing-page-template")?.innerHTML, loadCallback: loadUserLandingPage },
+  '/landing/instructor': { content: () => document.querySelector(".instructor-landing-page-template")?.innerHTML, loadCallback: loadInstructorLandingPage },
+  '/' : {content: () => document.querySelector(".loadingLandingPageTemplate")?.innerHTML, loadCallback: loadLandingPage }
 }
 
 // move these to a constants module at some point?
@@ -10,6 +11,7 @@ const API_BASE_URL = "http://localhost:3000";
 const applicationUri = "http://localhost:3000";
 
 function render(path: string) {
+  
   const pageContent = routes[path]?.content() ?? "<section> 404 not found </section>";
   let pageContainer = document.querySelector(".page-container");
   if (pageContainer) {
@@ -19,7 +21,7 @@ function render(path: string) {
 }
 
 function navigateTo(path: string) {
-  history.pushState({}, '', `${applicationUri}/${path}`);
+  history.pushState({}, '', `${applicationUri}${path}`);
   render(path);
 }
 
@@ -29,20 +31,12 @@ async function main() {
   // TODO: actually validate the jwt, check the expiry etc. Just checking for existence for now
   if (jwt !== null) {
     setToken(jwt);
-    // TODO: Move common types into a shared library
-    let role = await apiFetch("/api/users/role") as Role;
-    if (role.role == "USER") {
-      navigateTo("landing/user");
-      return
-    }
-    if (role.role == "INSTRUCTOR") {
-      navigateTo("landing/instructor")
-    }
-
+    // someone is logged in
+    // take them where they want to go
+    navigateTo(window.location.pathname);
     return;
   }
-
-  navigateTo("login");
+  navigateTo("/login");
 }
 
 function loadLoginPage() {
@@ -52,7 +46,18 @@ function loadLoginPage() {
   })
 }
 
-function loadLandingPage() {
+async function loadLandingPage(){
+  let role = await apiFetch("/api/users/role") as Role;
+  if (role.role == "USER") {
+    navigateTo("/landing/user");
+    return
+  }
+  if (role.role == "INSTRUCTOR") {
+    navigateTo("/landing/instructor")
+  }
+}
+
+function loadUserLandingPage() {
   // subscribe all event listeners for the landing page
 }
 
@@ -98,7 +103,10 @@ async function apiFetch(path: string, options: RequestInit = {}) {
   return response.json();
 }
 
-main();
+document.addEventListener("DOMContentLoaded", () => {
+  main();
+});
+
 
 // Types
 //--------------------------------------------------------------------------------------------------------------------------------
