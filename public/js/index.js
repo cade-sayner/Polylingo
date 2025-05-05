@@ -12,9 +12,9 @@ const routes = {
     '/login': { content: () => { var _a; return (_a = document.querySelector(".login-screen-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadLoginPage },
     '/landing/user': { content: () => { var _a; return (_a = document.querySelector(".landing-page-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadUserLandingPage },
     '/landing/instructor': { content: () => { var _a; return (_a = document.querySelector(".instructor-landing-page-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadInstructorLandingPage },
-    '/': { content: () => { var _a; return (_a = document.querySelector(".loadingLandingPageTemplate")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadLandingPage }
+    '/': { content: () => { var _a; return (_a = document.querySelector(".loadingLandingPageTemplate")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadLandingPage },
+    '/exercise/fill-blank': { content: () => { var _a; return (_a = document.querySelector(".fill-blank-template")) === null || _a === void 0 ? void 0 : _a.innerHTML; }, loadCallback: loadFillBlankExercise }
 };
-// move these to a constants module at some point?
 const googleAuthURI = "https://accounts.google.com/o/oauth2/auth?client_id=988182050054-vlcub1cr22892gc1e4uesj5d6sa3ji1v.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login.html&response_type=code&scope=openid%20phone%20email%20profile";
 const API_BASE_URL = "http://localhost:3000";
 const applicationUri = "http://localhost:3000";
@@ -62,6 +62,60 @@ function loadLandingPage() {
         if (role.role == "INSTRUCTOR") {
             navigateTo("/landing/instructor");
         }
+    });
+}
+// Fill in the blank exercise 
+//-------------------------------------------------------------------------------------------------------------------
+class fillBlankExerciseState {
+    constructor() {
+        this.selectedLanguage = "Afrikaans";
+        this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence");
+        this.optionsSectionElement = document.querySelector(".fill-blank-options");
+    }
+    getQuestion() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.currentQuestion = yield getFillBlankQuestion(this.selectedLanguage);
+            this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence, this.currentQuestion.missingWord);
+            this.optionsSectionElement.innerHTML = generateOptions([...this.currentQuestion.distractors, this.currentQuestion.missingWord]);
+        });
+    }
+}
+function generateOptions(options) {
+    let s = options.map((word) => `<button class="fill-blank-option-word"> ${word} </button>`).join("");
+    return s;
+}
+function generateInlineSentence(sentence, missingWord) {
+    return sentence.split(" ").map((word) => `<span class=${word === "___" ? "placeholder-word" : "sentence-word"}> ${word === "___" ? `<p id="missing-word-placeholder" class="missing-word">A Word</p>` : word} </span>`).join("");
+}
+function loadFillBlankExercise() {
+    return __awaiter(this, void 0, void 0, function* () {
+        // check that you have the user role?
+        // add event listeners
+        let state = new fillBlankExerciseState();
+        yield state.getQuestion();
+        let languageSelect = document.querySelector("#language-select");
+        if (languageSelect) {
+            languageSelect.addEventListener("change", () => {
+                const selectedLanguage = languageSelect.value;
+                state.selectedLanguage = selectedLanguage;
+            });
+        }
+        let options = document.querySelectorAll(".fill-blank-option-word");
+        options.forEach(option => {
+            option.addEventListener(() => );
+        });
+    });
+}
+function getFillBlankQuestion(language) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // get the fill in the blank question for the current language
+        return {
+            fillBlankQuestionId: 1,
+            difficultyScore: 10,
+            distractors: ["vertragte", "lelike", "poeste"],
+            missingWord: "kak",
+            placeholderSentence: "Rudolph is 'n ___ man.",
+        };
     });
 }
 function loadUserLandingPage() {

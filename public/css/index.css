@@ -44,7 +44,34 @@ html, body{
     position:fixed;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     top: 0;
+}
+
+.language-select {
+    width: 8rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+.language-select:focus {
+    border-color: #0077ff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
+}
+
+.exercise-title{
+
+}
+
+.language-select-section{
+    margin-right : 2rem;
+    display: flex;
+    gap:1rem;
+    align-items: center;
 }
 
 .logo-text{
@@ -108,4 +135,74 @@ html, body{
     align-items: center;
     border-radius: 2rem;
     gap: 1rem;
+}
+
+.placeholder-sentence{
+    display: flex;
+    font-size: larger;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.sentence-word{
+    display: flex;
+    align-items: center;
+    height:2rem;
+}
+
+.placeholder-word{
+    display: flex;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    align-items: center;
+    height:2rem; 
+    border-bottom: 0.25rem solid black;
+}
+
+
+.fill-blank-options{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    padding: 1rem;
+    margin-top: 10%;
+    padding:2rem;
+    flex-wrap: wrap;
+
+}
+
+.missing-word{
+    border-radius: 1rem;
+    background-color: lightblue;
+    padding-left : 0.5rem;
+    padding-right : 0.5rem;
+    min-height: 2rem;
+    align-items: center;
+    visibility: hidden;
+}
+
+.fill-blank-option-word{
+    border-radius: 1rem;
+    background-color: lightblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left : 0.5rem;
+    padding-right : 0.5rem;
+    min-height: 2rem;
+}
+
+.exercise-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+    margin-top: 4rem;
+    flex : 1;
+}
+
+.fill-blank-exercise-footer{
+    display: flex;
+    height : 20%;
+    width: 100%;
 }
