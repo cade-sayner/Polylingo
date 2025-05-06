@@ -159,6 +159,10 @@ html, body{
     border-bottom: 0.25rem solid black;
 }
 
+.flip-animate{
+    transition: all ease-in-out;
+    transition-duration: 0s;
+}
 
 .fill-blank-options{
     display: flex;

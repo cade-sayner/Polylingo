@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import { Express, Request } from 'express';
 import { UserRepository } from '../repositories/user-repository';
 import { RoleRepository } from '../repositories/role-repository';
 import jwt from 'jsonwebtoken';
@@ -10,14 +10,18 @@ export function registerAuthRoutes(app: Express) {
     app.get("/api/auth/login", login);
 }
 
-async function login(req: any, res: any) {
-    let code = req.query.code as string | undefined;
+async function login(req: Request, res: any) {
+    if (!req.query?.code) {
+        return res.status(400).json({ message: "Missing required parameter code" });
+    } else if (typeof req.query.code != "string") {
+        return res.status(400).json({ message: "Parameter code not of the expected type 'string'" });
+    }
+    let code = req.query.code as string;
     if (!code) {
         return res.status(400).json({
             message: 'Missing required query parameter: code'
         });
     }
-
     const body = new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
@@ -38,10 +42,8 @@ async function login(req: any, res: any) {
         // just return whatever google told us was wrong
         return res.status(response.status).json(await response.json());
     }
-
     // TODO: make a type for the google response and assert the type it here
     const data = await response.json();
-
     // create a user here if one does not yet exist
     const claims = jwt.decode(data.id_token) as { sub?: string, email?: string, name?: string };
 
@@ -51,7 +53,7 @@ async function login(req: any, res: any) {
             // create a new user
             try {
                 let role = await roleRepo.getByColumnName("role", "USER");
-                if(role == null){
+                if (role == null) {
                     throw new Error();
                 }
                 userRepo.create({
