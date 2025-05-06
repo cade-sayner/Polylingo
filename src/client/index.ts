@@ -6,7 +6,7 @@ const routes: Record<string, RouteDefinition> = {
 }
 
 // move these to a constants module at some point?
-const googleAuthURI = "https://accounts.google.com/o/oauth2/auth?client_id=988182050054-vlcub1cr22892gc1e4uesj5d6sa3ji1v.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login.html&response_type=code&scope=openid%20phone%20email%20profile";
+const googleAuthURI = "https://accounts.google.com/o/oauth2/auth?client_id=1090642996208-ohdh4ge7agbi5egf22j3qapf2q3ko16a.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login.html&response_type=code&scope=openid%20phone%20email%20profile";
 const API_BASE_URL = "http://localhost:3000";
 const applicationUri = "http://localhost:3000";
 

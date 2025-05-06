@@ -15,7 +15,7 @@ async function getUserRole(req: Request, res: any) {
     try {
         let user = await userRepo.getByColumnName("googleId", getGoogleId(req));
         if (user == null) {
-            return res.status(500).json({ message: "Logged in user could not be found" });
+            return res.status(404).json({ message: "Logged in user could not be found" });
         }
         let roleId = user.roleId as number;
         let role = await roleRepo.getByID(roleId);
@@ -24,7 +24,7 @@ async function getUserRole(req: Request, res: any) {
         }
         return res.status(200).json(role);
     } catch (e) {
-        return res.status(500).json({ message: "An error occured while trying to fetch roles."});
+        return res.status(500).json({ message: "An error occurred while trying to fetch roles."});
         // TODO: Log the exception here
     }
 }
@@ -45,7 +45,7 @@ async function getUser(req: Request, res: any) {
     }
     return res.status(200).json(await userRepo.getByColumnName("googleId", String(googleId)));
     }catch(e){
-        return res.status(500).json({message: "An error occured while trying to fetch user."});
+        return res.status(500).json({message: "An error occurred while trying to fetch user."});
         // TODO : log the error here
     }
 }

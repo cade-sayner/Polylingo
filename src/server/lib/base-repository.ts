@@ -23,34 +23,39 @@ export class BaseRepository<T extends Object>{
             .join(",")}) 
         VALUES 
         (${Array.from({ length: keys.length}, (_, i) => `$${i + 1}`).join(",")})
-        RETURNING *`
-        let rows = (await connectAndQuery(queryString, values)).rows.map((row =>camelcaseKeys(row)))
+        RETURNING *`;
+        let rows = (await connectAndQuery(queryString, values)).rows.map((row =>camelcaseKeys(row)));
         // add validation to ensure this assertion is always viable?
         return rows as T[];
     }
 
     // assumes integer ids only
     async getByID(id : number) {
-        let queryString = `SELECT * FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1`
-        return this.queryReturnOne(queryString, [id])
+        let queryString = `SELECT * FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1`;
+        return this.queryReturnOne(queryString, [id]);
     }
 
     async deleteByID(id: number){
-        let queryString = `DELETE FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1 RETURNING *`
+        let queryString = `DELETE FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1 RETURNING *`;
         return this.queryReturnOne(queryString, [id])
     }
 
+    async getAll(){
+        let queryString = `SELECT * FROM ${this.tableName}`
+        let rows = (await connectAndQuery(queryString, [])).rows.map((row => camelcaseKeys(row)));
+        return rows;
+    }
 
     async queryReturnOne(queryString:string, values:any[]){
-        let rows = (await connectAndQuery(queryString, values)).rows.map((row => camelcaseKeys(row)))
+        let rows = (await connectAndQuery(queryString, values)).rows.map((row => camelcaseKeys(row)));
         if(rows.length > 0){
-            return rows[0] as T
+            return rows[0] as T;
         }
         return null;
     }
 
-    getByColumnName(columnName : keyof T, value : string | number){
-        let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`
+    async getByColumnName(columnName : keyof T, value : string | number){
+        let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`;
         return this.queryReturnOne(queryString, [value]);
     }
 

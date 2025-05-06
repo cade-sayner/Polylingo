@@ -1,6 +1,7 @@
 import express from 'express';
 import { registerUserRoutes } from './handlers/user-handlers';
 import { registerAuthRoutes } from './handlers/auth-handlers';
+import { registerTranslationQuestionsRoutes } from './handlers/translation-questions-handlers';
 import { clientRoutes } from "./lib/constants";
 import 'dotenv/config'
 import path from 'path';
@@ -10,6 +11,7 @@ const port = 3000;
 
 registerUserRoutes(app);
 registerAuthRoutes(app);
+registerTranslationQuestionsRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
 

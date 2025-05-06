@@ -11,3 +11,10 @@ export type Role = {
     role : string;
 }
   
+export type TranslationQuestion = {
+    translationQuestionId : number | null;
+    promptWord : number;
+    answerWord : number;
+    distractors : string[];
+    difficultyScore : number;
+}
