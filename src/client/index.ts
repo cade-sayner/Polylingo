@@ -6,7 +6,7 @@ const routes: Record<string, RouteDefinition> = {
   '/exercise/fill-blank': { content: () => document.querySelector(".fill-blank-template")?.innerHTML, loadCallback: loadFillBlankExercise }
 }
 
-const googleAuthURI = "https://accounts.google.com/o/oauth2/auth?client_id=988182050054-vlcub1cr22892gc1e4uesj5d6sa3ji1v.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login.html&response_type=code&scope=openid%20phone%20email%20profile";
+const googleAuthURI = "https://accounts.google.com/o/oauth2/auth?client_id=1090642996208-ohdh4ge7agbi5egf22j3qapf2q3ko16a.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login.html&response_type=code&scope=openid%20phone%20email%20profile";
 const API_BASE_URL = "http://localhost:3000";
 const applicationUri = "http://localhost:3000";
 
@@ -66,6 +66,7 @@ class fillBlankExerciseState {
   currentQuestion : FillBlankQuestion | undefined;
   placeholderSentenceSectionElement : HTMLSelectElement;
   optionsSectionElement : HTMLSelectElement;
+  selectedOption : string | undefined;
 
   constructor() {
     this.selectedLanguage = "Afrikaans";
@@ -81,7 +82,7 @@ class fillBlankExerciseState {
 }
 
 function generateOptions(options: string[]){
-  let s = options.map((word) => `<button class="fill-blank-option-word"> ${word} </button>`).join("");
+  let s = options.map((word) => `<button class="call-sans fill-blank-option-word"> ${word} </button>`).join("");
   return s;
 }
 
@@ -90,8 +91,6 @@ function generateInlineSentence(sentence : string, missingWord : string){
 }
 
 async function loadFillBlankExercise() {
-  // check that you have the user role?
-  // add event listeners
   let state = new fillBlankExerciseState();
   await state.getQuestion();
   
@@ -110,6 +109,7 @@ async function loadFillBlankExercise() {
       // animate between the start and end positions
       // get the text of the clicked on element and replace the placeholder word with that text.
       // Then pass the placeholder element and this element to the FLIP animation function
+      state.selectedOption = (e.target as HTMLElement).innerText
       if(e.target){
         flipAnimation(e.target as HTMLElement, document.querySelector("#missing-word-placeholder") as HTMLElement)
       }

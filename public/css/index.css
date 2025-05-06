@@ -1,10 +1,23 @@
-html, body{
-    height: 100vh;
+html{
+    height :100%;
+}
+
+body{
+    height : 100%;
+    padding : 0;
+    margin: 0;
 }
 
 .mascot-image{
     width: 20rem;
     height:20rem;
+}
+
+.roboto-light {
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: light;
+    font-style: normal;
 }
 
 .call-sans{
@@ -64,7 +77,8 @@ html, body{
 }
 
 .exercise-title{
-
+    font-family: "Feather Bold";
+    font-weight : bold;
 }
 
 .language-select-section{
@@ -98,8 +112,8 @@ html, body{
 
 .login-container{
     display: flex;
-    height:50vh;
-    width:80vw;
+    height:50%;
+    width:80%;
     background-color: #FAF9F6;
     flex-direction: row;
     align-items: center;
@@ -156,7 +170,7 @@ html, body{
     padding-right: 0.5rem;
     align-items: center;
     height:2rem; 
-    border-bottom: 0.25rem solid black;
+    border-bottom: 0.15rem solid black;
 }
 
 .flip-animate{
@@ -169,31 +183,60 @@ html, body{
     flex-direction: row;
     gap: 2rem;
     padding: 1rem;
+    justify-content: space-evenly;
     margin-top: 10%;
     padding:2rem;
+    font-size: larger;
     flex-wrap: wrap;
-
 }
 
 .missing-word{
     border-radius: 1rem;
-    background-color: lightblue;
     padding-left : 0.5rem;
     padding-right : 0.5rem;
     min-height: 2rem;
+    min-width: 5rem;
+    display: flex;
+    justify-content: center;
     align-items: center;
     visibility: hidden;
 }
 
 .fill-blank-option-word{
-    border-radius: 1rem;
-    background-color: lightblue;
+    border-radius: 0.5rem;
+    border: solid 1px lightgray;
+    background-color: white;
+    box-shadow: 0px 2px 2px rgba(44, 44, 44, 0.2); /* x, y, blur, color */
     display: flex;
     justify-content: center;
     align-items: center;
     padding-left : 0.5rem;
     padding-right : 0.5rem;
     min-height: 2rem;
+    font: larger;
+}
+
+.fill-blank-button{
+    border-radius: 0.5rem;
+    box-shadow: 0px 2px 2px rgba(44, 44, 44, 0.2); /* x, y, blur, color */
+    border: solid 1px lightgray;
+    background-color: #FAF9F6;
+    height:3rem;
+    width: 6rem;
+    font-size: larger;
+}
+
+
+
+.fill-blank-footer{
+    height: 10rem;
+    width: 100vw;
+    position : fixed;
+    border-top : 2px solid darkgray;
+    bottom: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .exercise-container{
@@ -201,6 +244,7 @@ html, body{
     flex-direction: column;
     align-items: center;
     width: 70%;
+    justify-content: center;
     margin-top: 4rem;
     flex : 1;
 }
