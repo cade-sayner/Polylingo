@@ -10,4 +10,7 @@ export type Role = {
     id : number | null;
     role : string;
 }
+
+export type PrimitiveTypes = "string" | "number" | "boolean" | "symbol" | "undefined" | "bigint" | "object" | "function";
+
   

@@ -1,12 +1,21 @@
 import express from 'express';
 import { registerUserRoutes } from './handlers/user-handlers';
 import { registerAuthRoutes } from './handlers/auth-handlers';
-import { clientRoutes } from "./lib/constants";
+import { hasKeys } from './lib/type-helpers';
 import 'dotenv/config'
 import path from 'path';
 
 const app = express();
 const port = 3000;
+
+
+if(!hasKeys(process.env, [
+  {name: "GOOGLE_CLIENT_ID", type:"string" },
+  {name: "GOOGLE_CLIENT_SECRET", type:"string"}, 
+  {name: "REDIRECT_URI", type:"string" }
+]))
+throw new Error("Environment variables have not been set correctly");
+
 
 registerUserRoutes(app);
 registerAuthRoutes(app);
