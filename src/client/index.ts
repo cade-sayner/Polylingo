@@ -1,30 +1,9 @@
-const routes: Record<string, RouteDefinition> = {
-  '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
-  '/landing/user': { content: () => document.querySelector(".landing-page-template")?.innerHTML, loadCallback: loadUserLandingPage },
-  '/landing/instructor': { content: () => document.querySelector(".instructor-landing-page-template")?.innerHTML, loadCallback: loadInstructorLandingPage },
-  '/': { content: () => document.querySelector(".loadingLandingPageTemplate")?.innerHTML, loadCallback: loadLandingPage },
-  '/exercise/fill-blank': { content: () => document.querySelector(".fill-blank-template")?.innerHTML, loadCallback: loadFillBlankExercise }
-}
 
-const googleAuthURI = "https://accounts.google.com/o/oauth2/auth?client_id=1090642996208-ohdh4ge7agbi5egf22j3qapf2q3ko16a.apps.googleusercontent.com&redirect_uri=http://localhost:3000/login.html&response_type=code&scope=openid%20phone%20email%20profile";
-const API_BASE_URL = "http://localhost:3000";
-const applicationUri = "http://localhost:3000";
+import {googleAuthURI, API_BASE_URL, applicationUri} from "./constants";
 
+import { navigateTo } from "./navigation";
+import { setToken, apiFetch } from "./api-client";
 
-function render(path: string) {
-
-  const pageContent = routes[path]?.content() ?? "<section> 404 not found </section>";
-  let pageContainer = document.querySelector(".page-container");
-  if (pageContainer) {
-    pageContainer.innerHTML = pageContent;
-  }
-  routes[path].loadCallback();
-}
-
-function navigateTo(path: string) {
-  history.pushState({}, '', `${applicationUri}${path}`);
-  render(path);
-}
 
 async function main() {
   // check if the user is currently logged in, if they are not then navigate to the login screen
@@ -40,121 +19,11 @@ async function main() {
   navigateTo("/login");
 }
 
-function loadLoginPage() {
-  const loginButton = document.querySelector(".login-button");
-  loginButton?.addEventListener('click', () => {
-    window.location.href = googleAuthURI;
-  })
-}
 
-async function loadLandingPage() {
-  let role = await apiFetch("/api/users/role") as Role;
-  if (role.role == "USER") {
-    navigateTo("/landing/user");
-    return
-  }
-  if (role.role == "INSTRUCTOR") {
-    navigateTo("/landing/instructor")
-  }
-}
 
-// Fill in the blank exercise 
-//-------------------------------------------------------------------------------------------------------------------
 
-class fillBlankExerciseState {
-  selectedLanguage: Language;
-  currentQuestion : FillBlankQuestion | undefined;
-  placeholderSentenceSectionElement : HTMLSelectElement;
-  optionsSectionElement : HTMLSelectElement;
-  selectedOption : string | undefined;
 
-  constructor() {
-    this.selectedLanguage = "Afrikaans";
-    this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence") as HTMLSelectElement;
-    this.optionsSectionElement = document.querySelector(".fill-blank-options") as HTMLSelectElement;
-  }
 
-  async getQuestion() {
-    this.currentQuestion = await getFillBlankQuestion(this.selectedLanguage);
-    this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence, this.currentQuestion.missingWord);
-    this.optionsSectionElement.innerHTML = generateOptions([...this.currentQuestion.distractors, this.currentQuestion.missingWord]);
-  }
-}
-
-function generateOptions(options: string[]){
-  let s = options.map((word) => `<button class="call-sans fill-blank-option-word"> ${word} </button>`).join("");
-  return s;
-}
-
-function generateInlineSentence(sentence : string, missingWord : string){
-  return sentence.split(" ").map((word) => `<span class=${word === "___" ? "placeholder-word" : "sentence-word"}> ${word === "___" ? `<p id="missing-word-placeholder" class="missing-word flip-animate">A Word</p>` : word} </span>`).join("");
-}
-
-async function loadFillBlankExercise() {
-  let state = new fillBlankExerciseState();
-  await state.getQuestion();
-  
-  let languageSelect = document.querySelector("#language-select") as HTMLSelectElement;
-  if (languageSelect) {
-    languageSelect.addEventListener("change", () => {
-      const selectedLanguage = languageSelect.value;
-      state.selectedLanguage = selectedLanguage as Language;
-    });
-  }
-
-  let options = document.querySelectorAll(".fill-blank-option-word");
-  options.forEach(option => {
-    option.addEventListener('click', (e)=>{
-      // when an option is selected maybe add it to the state object
-      // animate between the start and end positions
-      // get the text of the clicked on element and replace the placeholder word with that text.
-      // Then pass the placeholder element and this element to the FLIP animation function
-      state.selectedOption = (e.target as HTMLElement).innerText
-      if(e.target){
-        flipAnimation(e.target as HTMLElement, document.querySelector("#missing-word-placeholder") as HTMLElement)
-      }
-    }) 
-  });
-}
-
-function flipAnimation(start : HTMLElement, end : HTMLElement){
-  // set the transform of end element to be that of the start element
-  end.innerHTML = start.innerHTML;
-  const {left : endCoordX, top: endCoordY} = end.getBoundingClientRect();
-  const {left : startCoordX, top: startCoordY} = start.getBoundingClientRect();
-  const deltaX = startCoordX - endCoordX;
-  const deltaY = startCoordY - endCoordY;  
-  end.style.transform = `translate(${deltaX}px,${deltaY}px)`;
-  end.style.visibility = "visible"
-  setTimeout(()=>{
-    end.style.transitionDuration = "0.3s";
-    console.log("Doing the back up pass");
-    end.style.transform = `translate(0px, 0px)`;
-  }, 100);
-  setTimeout(()=>{
-    end.style.transitionDuration = "0s";
-  }, 400);
-  // then set the transform back to 0 after 100 ms
-}
-
-async function getFillBlankQuestion(language : Language) : Promise<FillBlankQuestion>{
-  // get the fill in the blank question for the current language
-  return {
-    fillBlankQuestionId : 1,
-    difficultyScore : 10,
-    distractors: ["vertragte", "lelike", "poeste"],
-    missingWord: "kak",
-    placeholderSentence : "Rudolph is 'n ___ man.",
-  }
-}
-
-function loadUserLandingPage() {
-  // subscribe all event listeners for the landing page
-}
-
-function loadInstructorLandingPage() {
-
-}
 
 function loadAdminPage() {
 
@@ -168,64 +37,11 @@ function loadFillBlankPage() {
 
 }
 
-// API client
-//--------------------------------------------------------------------------------------------------------------------------
-let token: string | null = null;
-
-function setToken(newToken: string) {
-  token = newToken;
-}
-
-async function apiFetch(path: string, options: RequestInit = {}) {
-  const headers: HeadersInit = {
-    ...(options.headers || {}),
-    Authorization: token ? `Bearer ${token}` : "",
-    "Content-Type": "application/json",
-  };
-
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error ${response.status}, Message: ${(await response.json() as { message: string }).message}`);
-  }
-  return response.json();
-}
 
 document.addEventListener("DOMContentLoaded", () => {
   main();
 });
 
 
-// Types
-//--------------------------------------------------------------------------------------------------------------------------------
-type User = {
-  userId: number | null;
-  googleId: string;
-  email: string;
-  name: string;
-  roleId: number;
-};
 
-type Role = {
-  id: number | null;
-  role: "USER" | "INSTRUCTOR";
-}
-
-type Language = "Afrikaans" | "Spanish" | "Italian" | "German" | "French"
-
-type FillBlankQuestion = {
-  fillBlankQuestionId : number;
-  placeholderSentence : string;
-  missingWord : string;
-  distractors : string[];
-  difficultyScore : number;
-}
-
-interface RouteDefinition {
-  content: () => string | undefined;
-  loadCallback: () => void;
-}
 

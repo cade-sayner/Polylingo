@@ -13,7 +13,7 @@ registerAuthRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
 
-app.use(express.static('public'));
+app.use(express.static('public', {extensions : ["js"]}));
 // Anything else must just return index.html
 app.use(/(.*)/, (_req, res) => {
   res.sendFile('index.html', { root: publicDir });
