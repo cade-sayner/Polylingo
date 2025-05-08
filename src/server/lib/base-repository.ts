@@ -54,9 +54,19 @@ export class BaseRepository<T extends Object>{
         return null;
     }
 
+    async queryReturnAll(queryString:string, values:any[]){
+        let rows = (await connectAndQuery(queryString, values)).rows.map((row => camelcaseKeys(row)));
+        return rows;
+    }
+
+    async getAllByColumnName(columnName : keyof T, value : string | number){
+        let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`
+        return await this.queryReturnAll(queryString, []);
+    }
+
     async getByColumnName(columnName : keyof T, value : string | number){
-        let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`;
-        return this.queryReturnOne(queryString, [value]);
+        let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`
+        return await this.queryReturnOne(queryString, [value]);
     }
 
     static camelToSnakeCase(camelString : string){
