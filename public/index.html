@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     <link href="https://db.onlinewebfonts.com/c/14936bb7a4b6575fd2eee80a3ab52cc2?family=Feather+Bold" rel="stylesheet">
 </head>
 
@@ -27,6 +28,7 @@
 
 <template class="login-screen-template">
     <nav class="login-header">
+        <img src="/img/mascot.png" alt="" class="mascot-image-icon">
         <h3 class="logo-text">
             PolyLingo
         </h3>
@@ -83,13 +85,22 @@
 
 <template class="fill-blank-template">
     <nav class="login-header">
-        <h3 class="logo-text">
-            PolyLingo
-        </h3>
+        <section class="logo-section">
+            <h3 class="logo-text">
+            <span class="poly">
+                <span style="color: rgb(225, 193, 103);">P</span>
+                <span style="color: rgb(225, 193, 103);">O</span>
+                <span style="color: rgb(225, 193, 103);">L</span>
+                <span style="color: rgb(225, 193, 103);">Y</span>
+              </span>lingo
+            </h3>
+        </section>
         <section class="language-select-section">
             <label for="language-select">Language:</label>
             <select id="language-select" class="language-select call-sans">
-                <option value="Afrikaans">Afrikaans</option>
+                <option value="Afrikaans">
+                    Afrikaans
+                </option>
                 <option value="German">German</option>
                 <option value="Italian">Italian</option>
                 <option value="Spanish">Spanish</option>
@@ -102,18 +113,19 @@
         <header class="exercise-title">
             <h1> Fill in the blank </h1>
         </header>
-
-        <section class="placeholder-sentence"> </section>
+        <section class="placeholder-sentence-container">
+            <figure>
+                <img src="/img/springbok-speaker.png" class="speaker-image">
+            </figure>
+            <section class="placeholder-sentence speech-bubble"> </section>
+        </section>
         <section class="fill-blank-options"> </section>
-        <footer class="fill-blank-footer"> 
-            <button class="fill-blank-button call-sans"> Skip </button>
-            <button class="fill-blank-button call-sans"> Check </button>
-        </footer>
     </article>
-
-    <footer class="fill-blank-exercise-footer">
-
+    <footer class="fill-blank-footer">
+        <button id="fill-blank-skip" class="fill-blank-button call-sans"> Skip </button>
+        <button id="fill-blank-check" class="fill-blank-button call-sans"> Check </button>
     </footer>
+
 </template>
 
 

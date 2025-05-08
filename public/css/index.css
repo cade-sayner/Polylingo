@@ -8,6 +8,16 @@ body{
     margin: 0;
 }
 
+.logo-section{
+    display: flex;
+    align-items: center;
+}
+
+.mascot-image-icon{
+    width: 2rem;
+    height: 2rem;
+}
+
 .mascot-image{
     width: 20rem;
     height:20rem;
@@ -76,9 +86,33 @@ body{
     box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
 }
 
+.speech-bubble {
+    background: #fff;
+    position: relative;
+    border-radius: 2em;
+    padding: 1em 1.5em;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    max-width: 300px;
+}
+.speech-bubble:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-right-color: #dce8e9;
+	border-left: 0;
+	border-bottom: 0;
+	margin-top: -10px;
+	margin-left: -20px;
+}
+
 .exercise-title{
     font-family: "Feather Bold";
     font-weight : bold;
+    margin-bottom:2rem;
 }
 
 .language-select-section{
@@ -89,7 +123,8 @@ body{
 }
 
 .logo-text{
-    margin: 2rem;
+    font-family: 'Feather Bold';
+    margin-left: 0.5rem;
 }
 
 .google-icon{
@@ -153,8 +188,11 @@ body{
 
 .placeholder-sentence{
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     font-size: larger;
     flex-direction: row;
+    height: 50%;
     gap: 0.5rem;
 }
 
@@ -184,7 +222,6 @@ body{
     gap: 2rem;
     padding: 1rem;
     justify-content: space-evenly;
-    margin-top: 10%;
     padding:2rem;
     font-size: larger;
     flex-wrap: wrap;
@@ -231,22 +268,28 @@ body{
 .fill-blank-footer{
     height: 10rem;
     width: 100vw;
-    position : fixed;
     border-top : 2px solid darkgray;
-    bottom: 0;
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
+.speaker-image{
+    height: 10rem;
+    width: 10rem;
+}
+
+.placeholder-sentence-container{
+    display: flex;
+}
+
 .exercise-container{
     display: flex;
+    flex:1;
     flex-direction: column;
     align-items: center;
-    width: 70%;
     justify-content: center;
     margin-top: 4rem;
-    flex : 1;
 }
 
 .fill-blank-exercise-footer{

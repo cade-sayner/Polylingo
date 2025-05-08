@@ -10,4 +10,29 @@ export type Role = {
     id : number | null;
     role : string;
 }
+
+export type Language = "Afrikaans" | "Spanish" | "Italian" | "French" | "German";
+
+export type LanguageModel = {
+    languageId : number;
+    languageName : Language
+}
+
+export type FillBlankQuestion = {
+    fillBlankQuestionId : number | null;
+    placeholderSentence : string;
+    missingWordId : number;
+    distractors : string[];
+    difficultyScore : number;
+}
+
+export type FillBlankQuestionResponse = {
+    fillBlankQuestionId : number;
+    placeholderSentence : string;
+    word : string;
+    distractors : string[];
+    difficultyScore : number;
+}
+
+export type PrimitiveTypes = "string" | "number" | "boolean" | "symbol" | "undefined" | "bigint" | "object" | "function";
   

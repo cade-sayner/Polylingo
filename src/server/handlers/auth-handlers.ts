@@ -1,6 +1,8 @@
 import { Express, Request } from 'express';
 import { UserRepository } from '../repositories/user-repository';
 import { RoleRepository } from '../repositories/role-repository';
+import { hasKeys } from '../lib/type-helpers';
+
 import jwt from 'jsonwebtoken';
 
 const userRepo = new UserRepository("users", "user_id");
@@ -22,6 +24,7 @@ async function login(req: Request, res: any) {
             message: 'Missing required query parameter: code'
         });
     }
+
     const body = new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
@@ -42,8 +45,10 @@ async function login(req: Request, res: any) {
         // just return whatever google told us was wrong
         return res.status(response.status).json(await response.json());
     }
-    // TODO: make a type for the google response and assert the type it here
+    // TODO: Use hasKeys to check that this matches the expected type from google
     const data = await response.json();
+    if(!hasKeys(data, [{name:"id_token", type:"string"}])) throw new Error("Google's response did not inlcude a required property");
+
     // create a user here if one does not yet exist
     const claims = jwt.decode(data.id_token) as { sub?: string, email?: string, name?: string };
 
@@ -63,13 +68,13 @@ async function login(req: Request, res: any) {
                     googleId: claims.sub,
                     roleId: role.id as number // this is enforced by the database so okay?
                 })
-            } catch {
+            }catch(e) {
+                console.error((e as Error).message)
                 return res.status(500).json({
                     message: "Error creating user when logging in for the first time"
                 })
             }
         }
-
     } else {
         return res.status(500).json({
             message: "The jwt returned from google was malformed"
