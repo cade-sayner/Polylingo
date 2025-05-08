@@ -66,4 +66,11 @@ export class BaseRepository<T extends Object>{
     static camelToSnakeCase(camelString : string){
         return camelString.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
     }
+
+    
+    async getAll() {
+        const rows = (await connectAndQuery(`SELECT * FROM ${this.tableName}`, [])).rows;
+        return rows.map(row => camelcaseKeys(row)) as T[];
+    }
+
 }
