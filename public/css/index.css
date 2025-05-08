@@ -73,6 +73,7 @@ body{
 
 .language-select {
     width: 8rem;
+    font-family: unset;
     padding: 0.5rem;
     font-size: 1rem;
     border-radius: 5px;
@@ -94,6 +95,28 @@ body{
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     max-width: 300px;
 }
+
+.result-image{
+    width: 5rem;
+    height: 5rem;
+}
+
+.streak-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flame-image{
+    width: 2rem;
+    height :2rem;
+}
+
+.fill-blank-skip{
+    display: flex;
+    align-items: center;
+}
+
 .speech-bubble:after {
 	content: '';
 	position: absolute;
@@ -156,6 +179,13 @@ body{
     padding:2rem;
     border-radius: 3rem;
     justify-content: space-between;
+}
+
+.streak-select-container{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: center;
 }
 
 .mascot-section{
