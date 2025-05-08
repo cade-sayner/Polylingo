@@ -36,6 +36,20 @@ export type FillBlankQuestionResponse = {
 
 export type PrimitiveTypes = "string" | "number" | "boolean" | "symbol" | "undefined" | "bigint" | "object" | "function";
 
+export type FillBlankQuestionsAudit = {
+    fillBlankQuestionsAuditId: number;
+    userId: number;
+    fillBlankQuestionId: number;
+    timeAttempted: string;
+    answerCorrect: boolean;
+};
+
+export type Word = {
+    wordId: number;
+    word: string;
+    languageId: number;
+};
+
 export type FillBlankQuestionsAuditResponse = {
     fillBlankQuestionsAuditId: number;
     userId: number;
