@@ -9,6 +9,7 @@ import path from 'path';
 import { registerFillBlankRoutes } from './handlers/fill-blank-handlers';
 const app = express();
 app.use(express.json());
+app.use(express.json());
 const port = 3000;
 
 
