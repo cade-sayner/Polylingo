@@ -1,6 +1,7 @@
 import express from 'express';
 import { registerUserRoutes } from './handlers/user-handlers';
 import { registerAuthRoutes } from './handlers/auth-handlers';
+import { registerWordRoutes } from './handlers/word-handlers';
 import { hasKeys } from './lib/type-helpers';
 import 'dotenv/config'
 import path from 'path';
@@ -21,6 +22,7 @@ throw new Error("Environment variables have not been set correctly");
 registerUserRoutes(app);
 registerAuthRoutes(app);
 registerFillBlankRoutes(app);
+registerWordRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
 
