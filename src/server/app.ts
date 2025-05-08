@@ -1,12 +1,14 @@
 import express from 'express';
 import { registerUserRoutes } from './handlers/user-handlers';
 import { registerAuthRoutes } from './handlers/auth-handlers';
+import { registerTranslationAuditRoutes } from './handlers/translations-audit-handlers';
+import { registerFillBlankAuditRoutes } from './handlers/fill-blank-audit-handlers';
 import { hasKeys } from './lib/type-helpers';
 import 'dotenv/config'
 import path from 'path';
 import { registerFillBlankRoutes } from './handlers/fill-blank-handlers';
-
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 
@@ -20,6 +22,8 @@ throw new Error("Environment variables have not been set correctly");
 
 registerUserRoutes(app);
 registerAuthRoutes(app);
+registerTranslationAuditRoutes(app);
+registerFillBlankAuditRoutes(app)
 registerFillBlankRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
