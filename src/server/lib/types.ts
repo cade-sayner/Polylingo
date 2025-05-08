@@ -35,4 +35,18 @@ export type FillBlankQuestionResponse = {
 }
 
 export type PrimitiveTypes = "string" | "number" | "boolean" | "symbol" | "undefined" | "bigint" | "object" | "function";
+
+export type FillBlankQuestionsAuditResponse = {
+    fillBlankQuestionsAuditId: number;
+    userId: number;
+    fillBlankQuestionId: number;
+    timeAttempted: string;
+    answerCorrect: boolean;
+};
+
+export type WordResponse = {
+    wordId: number;
+    word: string;
+    languageId: number;
+};
   
