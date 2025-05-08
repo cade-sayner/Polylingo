@@ -13,12 +13,6 @@ async function main() {
     }
     navigateTo("/login");
 }
-function loadAdminPage() {
-}
-function loadTranslationPage() {
-}
-function loadFillBlankPage() {
-}
 document.addEventListener("DOMContentLoaded", () => {
     main();
 });

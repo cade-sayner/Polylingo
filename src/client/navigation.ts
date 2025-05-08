@@ -4,6 +4,7 @@ import { loadLandingPage } from "./pages/landing";
 import { loadUserLandingPage } from "./pages/user-landing";
 import { loadInstructorLandingPage } from "./pages/instructor-landing";
 import { loadFillBlankExercise } from "./pages/fill-blank";
+import { RouteDefinition } from "./types";
 
 const routes: Record<string, RouteDefinition> = {
     '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },

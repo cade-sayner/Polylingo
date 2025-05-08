@@ -1,8 +1,6 @@
 
-import {googleAuthURI, API_BASE_URL, applicationUri} from "./constants";
-
 import { navigateTo } from "./navigation";
-import { setToken, apiFetch } from "./api-client";
+import { setToken } from "./api-client";
 
 
 async function main() {
@@ -18,25 +16,6 @@ async function main() {
   }
   navigateTo("/login");
 }
-
-
-
-
-
-
-
-function loadAdminPage() {
-
-}
-
-function loadTranslationPage() {
-
-}
-
-function loadFillBlankPage() {
-
-}
-
 
 document.addEventListener("DOMContentLoaded", () => {
   main();

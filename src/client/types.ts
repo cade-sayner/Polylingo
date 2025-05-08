@@ -1,6 +1,6 @@
 // Types
 //--------------------------------------------------------------------------------------------------------------------------------
-type User = {
+export type User = {
     userId: number | null;
     googleId: string;
     email: string;
@@ -8,22 +8,23 @@ type User = {
     roleId: number;
   };
   
-  type Role = {
+export type Role = {
     id: number | null;
     role: "USER" | "INSTRUCTOR";
   }
   
-  type Language = "Afrikaans" | "Spanish" | "Italian" | "German" | "French"
+export type Language = "Afrikaans" | "Spanish" | "Italian" | "German" | "French"
   
-  type FillBlankQuestion = {
+export type FillBlankQuestion = {
     fillBlankQuestionId : number;
     placeholderSentence : string;
-    missingWord : string;
+    word : string;
     distractors : string[];
     difficultyScore : number;
-  }
+    completed : boolean;
+}
   
-  interface RouteDefinition {
+export interface RouteDefinition {
     content: () => string | undefined;
     loadCallback: () => void;
-  }
+}
