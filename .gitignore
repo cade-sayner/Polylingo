@@ -1,4 +1,23 @@
 .env
 node_modules
 dist
- 
+
+# Terraform files
+.terraform
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+.terraformrc
+terraform.rc
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+**/.terraform/*
+**/.DS_Store
+.envrc
+*tfplan*
