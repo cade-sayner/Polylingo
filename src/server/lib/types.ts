@@ -18,3 +18,9 @@ export type TranslationQuestion = {
     distractors : string[];
     difficultyScore : number;
 }
+
+export type Word = {
+    wordId : number | null;
+    word : string;
+    languagId : number;
+}
