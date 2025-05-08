@@ -15,7 +15,7 @@ async function getUserRole(req: Request, res: any) {
     try {
         let user = await userRepo.getByColumnName("googleId", getGoogleId(req));
         if (user == null) {
-            return res.status(500).json({ message: "Logged in user could not be found" });
+            return res.status(404).json({ message: "Logged in user could not be found" });
         }
         let roleId = user.roleId as number;
         let role = await roleRepo.getByID(roleId);

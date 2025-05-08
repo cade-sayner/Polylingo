@@ -23,27 +23,33 @@ export class BaseRepository<T extends Object>{
             .join(",")}) 
         VALUES 
         (${Array.from({ length: keys.length}, (_, i) => `$${i + 1}`).join(",")})
-        RETURNING *`
-        let rows = (await connectAndQuery(queryString, values)).rows.map((row =>camelcaseKeys(row)))
+        RETURNING *`;
+        let rows = (await connectAndQuery(queryString, values)).rows.map((row =>camelcaseKeys(row)));
         // add validation to ensure this assertion is always viable?
         return rows as T[];
     }
 
     // assumes integer ids only
     async getByID(id : number) {
-        let queryString = `SELECT * FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1`
-        return this.queryReturnOne(queryString, [id])
+        let queryString = `SELECT * FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1`;
+        return this.queryReturnOne(queryString, [id]);
     }
 
     async deleteByID(id: number){
-        let queryString = `DELETE FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1 RETURNING *`
+        let queryString = `DELETE FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1 RETURNING *`;
         return this.queryReturnOne(queryString, [id])
+    }
+
+    async getAll(){
+        let queryString = `SELECT * FROM ${this.tableName}`
+        let rows = (await connectAndQuery(queryString, [])).rows.map((row => camelcaseKeys(row)));
+        return rows;
     }
 
     async queryReturnOne(queryString:string, values:any[]){
         let rows = (await connectAndQuery(queryString, values)).rows.map((row => camelcaseKeys(row)));
         if(rows.length > 0){
-            return rows[0];
+            return rows[0] as T;
         }
         return null;
     }
@@ -65,5 +71,45 @@ export class BaseRepository<T extends Object>{
 
     static camelToSnakeCase(camelString : string){
         return camelString.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+    }
+
+    async update(id: number, model: Partial<T>): Promise<T | null> {
+        const entries = Object.entries(model as object).filter(([key, value]) => 
+            value !== null && 
+            BaseRepository.camelToSnakeCase(key) !== this.primaryKeyColumnName
+        );
+        
+        console.log(entries);
+
+        if (entries.length === 0) {
+            return null;
+        }
+        
+        const updateFields: string[] = [];
+        const values: any[] = [];
+        
+        entries.forEach(([key, value]) => {
+            const placeholder = `$${values.length + 1}`;
+            updateFields.push(`${BaseRepository.camelToSnakeCase(key)} = ${placeholder}`);
+        
+            values.push(value);
+        });
+        
+        values.push(id);
+        
+        const queryString = `
+            UPDATE ${this.tableName}
+            SET ${updateFields.join(', ')}
+            WHERE ${this.primaryKeyColumnName} = $${values.length}
+            RETURNING *
+        `;
+
+        const rows = (await connectAndQuery(queryString, values)).rows.map(row => camelcaseKeys(row));
+
+        if (rows.length > 0) {
+            return rows[0] as T;
+        }
+        
+        return null;
     }
 }

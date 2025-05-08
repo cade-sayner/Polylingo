@@ -11,6 +11,15 @@ export type Role = {
     role : string;
 }
 
+export type TranslationQuestion = {
+    translationQuestionId : number | null;
+    promptWord : number;
+    answerWord : number;
+    distractors : string[];
+    difficultyScore : number;
+}
+
+
 export type Language = "Afrikaans" | "Spanish" | "Italian" | "French" | "German";
 
 export type LanguageModel = {
@@ -26,6 +35,12 @@ export type FillBlankQuestion = {
     difficultyScore : number;
 }
 
+export type Word = {
+    wordId : number | null;
+    word : string;
+    languagId : number;
+}
+
 export type FillBlankQuestionResponse = {
     fillBlankQuestionId : number;
     placeholderSentence : string;
@@ -35,4 +50,3 @@ export type FillBlankQuestionResponse = {
 }
 
 export type PrimitiveTypes = "string" | "number" | "boolean" | "symbol" | "undefined" | "bigint" | "object" | "function";
-  
