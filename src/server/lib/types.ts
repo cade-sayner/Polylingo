@@ -37,17 +37,11 @@ export type FillBlankQuestionResponse = {
 export type PrimitiveTypes = "string" | "number" | "boolean" | "symbol" | "undefined" | "bigint" | "object" | "function";
 
 export type FillBlankQuestionsAudit = {
-    fillBlankQuestionsAuditId: number;
+    fillBlankQuestionsAuditId: number | null;
     userId: number;
     fillBlankQuestionId: number;
     timeAttempted: string;
     answerCorrect: boolean;
-};
-
-export type Word = {
-    wordId: number;
-    word: string;
-    languageId: number;
 };
 
 export type FillBlankQuestionsAuditResponse = {
@@ -56,11 +50,22 @@ export type FillBlankQuestionsAuditResponse = {
     fillBlankQuestionId: number;
     timeAttempted: string;
     answerCorrect: boolean;
+    userName?: string;
+    placeholderSentence?: string;
+};
+
+export type Word = {
+    wordId: number | null;
+    word: string;
+    languageId: number;
 };
 
 export type WordResponse = {
     wordId: number;
     word: string;
     languageId: number;
+    languageName?: string;
 };
+
+
   
