@@ -1,10 +1,10 @@
 name: Database Migrations with Flyway
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'src/migrations/**'
+  # push:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'src/migrations/**'
   workflow_dispatch:
 
 jobs:
