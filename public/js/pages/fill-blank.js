@@ -1,14 +1,17 @@
 import { navigateTo } from "../navigation";
 const seaSponge = "rgb(215, 255, 184)";
 const colorCrab = "rgb(255, 120, 120)";
+let currentStreak = 0;
+let currentLanguageSelection = "Afrikaans";
+const languageOptions = ["Afrikaans", "German", "Italian", "Spanish", "French"];
 class fillBlankExerciseState {
     constructor() {
-        this.selectedLanguage = "Afrikaans";
         this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence");
         this.optionsSectionElement = document.querySelector(".fill-blank-options");
+        this.checkButton = document.querySelector("#fill-blank-check");
     }
     async getQuestion() {
-        this.currentQuestion = await getFillBlankQuestion(this.selectedLanguage);
+        this.currentQuestion = await getFillBlankQuestion(currentLanguageSelection);
         this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence, this.currentQuestion.word);
         this.optionsSectionElement.innerHTML = generateOptions([...this.currentQuestion.distractors, this.currentQuestion.word]);
     }
@@ -24,34 +27,42 @@ export async function loadFillBlankExercise() {
     let state = new fillBlankExerciseState();
     await state.getQuestion();
     let languageSelect = document.querySelector("#language-select");
+    languageSelect.selectedIndex = languageOptions.indexOf(currentLanguageSelection);
     if (languageSelect) {
         languageSelect.addEventListener("change", () => {
-            const selectedLanguage = languageSelect.value;
-            state.selectedLanguage = selectedLanguage;
+            currentLanguageSelection = languageSelect.value;
         });
     }
     registerOptions(state);
-    let checkButton = document.querySelector("#fill-blank-check");
-    let skipButton = document.querySelector("#fill-blank-skip");
-    let fillBlankFooter = document.querySelector(".fill-blank-footer");
+    const checkButton = document.querySelector("#fill-blank-check");
+    const skipButton = document.querySelector("#fill-blank-skip");
+    const fillBlankFooter = document.querySelector(".fill-blank-footer");
+    const resultImage = document.querySelector("#fill-blank-result-figure");
+    const streakElement = document.querySelector(".streak");
+    streakElement.innerText = currentStreak.toString();
+    checkButton.disabled = true;
     checkButton === null || checkButton === void 0 ? void 0 : checkButton.addEventListener('click', (e) => {
         var _a, _b, _c;
         if ((_a = state.currentQuestion) === null || _a === void 0 ? void 0 : _a.completed) {
             // TODO make audit request
             navigateTo("/exercise/fill-blank");
+            return;
         }
-        skipButton.style.visibility = "hidden";
-        checkButton.innerText = "Next";
-        if (state.currentQuestion) {
+        if (state.currentQuestion && !((_b = state.currentQuestion) === null || _b === void 0 ? void 0 : _b.completed)) {
             state.currentQuestion.completed = true;
-        }
-        console.log(state.selectedOption);
-        console.log((_b = state.currentQuestion) === null || _b === void 0 ? void 0 : _b.word);
-        if (state.selectedOption === ((_c = state.currentQuestion) === null || _c === void 0 ? void 0 : _c.word)) {
-            fillBlankFooter.style.backgroundColor = seaSponge;
-        }
-        else {
-            fillBlankFooter.style.backgroundColor = colorCrab;
+            checkButton.innerText = "Next";
+            skipButton.style.visibility = "hidden";
+            if (state.selectedOption === ((_c = state.currentQuestion) === null || _c === void 0 ? void 0 : _c.word)) {
+                fillBlankFooter.style.backgroundColor = seaSponge;
+                resultImage.innerHTML = "<img class=\"result-image\" src=\"/img/correct.png\"> <div> Well done! </div>";
+                currentStreak += 1;
+            }
+            else {
+                fillBlankFooter.style.backgroundColor = colorCrab;
+                resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div> The correct answer was ${state.currentQuestion.word} </div>`;
+                currentStreak = 0;
+            }
+            return;
         }
     });
     skipButton === null || skipButton === void 0 ? void 0 : skipButton.addEventListener('click', (e) => {
@@ -69,6 +80,7 @@ function registerOptions(state) {
             // Then pass the placeholder element and this element to the FLIP animation function
             if (!((_a = state.currentQuestion) === null || _a === void 0 ? void 0 : _a.completed)) {
                 state.selectedOption = e.target.innerText;
+                state.checkButton.disabled = false;
                 if (e.target) {
                     flipAnimation(e.target, document.querySelector("#missing-word-placeholder"));
                 }
