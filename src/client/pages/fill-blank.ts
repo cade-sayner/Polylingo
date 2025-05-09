@@ -7,9 +7,10 @@ import { navigateTo } from "../navigation";
 const seaSponge: string = "rgb(215, 255, 184)";
 const colorCrab: string = "rgb(255, 120, 120)";
 
-let currentStreak : number = 0;
-let currentLanguageSelection : Language = "Afrikaans";
+let currentStreak: number = 0;
+let currentLanguageSelection: Language = "Afrikaans";
 const languageOptions = ["Afrikaans", "German", "Italian", "Spanish", "French"];
+const imageSrcs = ["springbok-speaker.png", "lion-character.png"];
 
 class fillBlankExerciseState {
     currentQuestion: FillBlankQuestion | undefined;
@@ -26,7 +27,7 @@ class fillBlankExerciseState {
 
     async getQuestion() {
         this.currentQuestion = await getFillBlankQuestion(currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence, this.currentQuestion.word);
+        this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence);
         this.optionsSectionElement.innerHTML = generateOptions([...this.currentQuestion.distractors, this.currentQuestion.word]);
     }
 }
@@ -36,7 +37,7 @@ function generateOptions(options: string[]) {
     return s;
 }
 
-function generateInlineSentence(sentence: string, missingWord: string) {
+function generateInlineSentence(sentence: string) {
     return sentence.split(" ").map((word) => `<span class=${word === "____" ? "placeholder-word" : "sentence-word"}> ${word === "____" ? `<p id="missing-word-placeholder" class="missing-word flip-animate">A Word</p>` : word} </span>`).join("");
 }
 
@@ -52,6 +53,12 @@ export async function loadFillBlankExercise() {
             currentLanguageSelection = languageSelect.value as Language;
         });
     }
+    
+    //choose a character to display
+    const character = imageSrcs[Math.floor(Math.random()*imageSrcs.length)];
+    console.log(character)
+    const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
+    characterImage.src = `/img/${character}`;
 
     registerOptions(state);
 
