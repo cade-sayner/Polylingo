@@ -3,6 +3,7 @@ import { UserRepository } from '../repositories/user-repository';
 import { RoleRepository } from '../repositories/role-repository';
 import { hasKeys } from '../lib/type-helpers';
 
+
 import jwt from 'jsonwebtoken';
 
 const userRepo = new UserRepository("users", "user_id");
@@ -24,6 +25,8 @@ async function login(req: Request, res: any) {
             message: 'Missing required query parameter: code'
         });
     }
+
+    process.env.REDIRECT_URI = "http://ec2-13-244-112-99.af-south-1.compute.amazonaws.com/login.html";
 
     const body = new URLSearchParams({
         grant_type: 'authorization_code',

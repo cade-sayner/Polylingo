@@ -1,14 +1,5 @@
 import { Pool } from "pg";
 
-// obviously this is to be read from env
-// const pool = new Pool({
-//   user: 'postgres',
-//   host: 'localhost',
-//   database: 'postgres',
-//   password: 'kakkakkak',
-//   port: 5432,
-// });
-
 const pool = new Pool({
   user: process.env.DB_USER || "postgres",
   host: process.env.DB_HOST || "localhost",
