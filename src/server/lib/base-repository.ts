@@ -49,7 +49,7 @@ export class BaseRepository<T extends Object>{
     async queryReturnOne(queryString:string, values:any[]){
         let rows = (await connectAndQuery(queryString, values)).rows.map((row => camelcaseKeys(row)));
         if(rows.length > 0){
-            return rows[0] as T;
+            return rows[0];
         }
         return null;
     }

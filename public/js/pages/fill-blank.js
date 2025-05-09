@@ -59,7 +59,7 @@ export async function loadFillBlankExercise() {
             }
             else {
                 fillBlankFooter.style.backgroundColor = colorCrab;
-                resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div> The correct answer was ${state.currentQuestion.word} </div>`;
+                resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div> The correct answer was '${state.currentQuestion.word}' </div>`;
                 currentStreak = 0;
             }
             return;
