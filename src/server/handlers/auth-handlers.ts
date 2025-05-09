@@ -33,6 +33,8 @@ async function login(req: Request, res: any) {
         client_secret: process.env.GOOGLE_CLIENT_SECRET as string,
     });
 
+    console.log(body);
+
     const response = await fetch("https://oauth2.googleapis.com/token", {
         method: 'POST',
         headers: {
