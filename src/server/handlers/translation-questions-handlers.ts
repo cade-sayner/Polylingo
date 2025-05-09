@@ -1,6 +1,5 @@
-   import express, { Express, Request } from 'express';
+import express, { Express, Request } from 'express';
 import { UserRepository } from '../repositories/user-repository';
-import { RoleRepository } from '../repositories/role-repository';
 import { TranslationQuestionRepository} from '../repositories/translation-questions-repository';
 import { WordRepository} from '../repositories/word-repository';
 import { authenticate } from '../lib/authentication';

@@ -18,7 +18,6 @@ if(!hasKeys(process.env, [
 ]))
 throw new Error("Environment variables have not been set correctly");
 
-
 registerUserRoutes(app);
 registerAuthRoutes(app);
 registerTranslationQuestionsRoutes(app);
@@ -31,8 +30,6 @@ app.use(express.static('public', {extensions : ["js"]}));
 app.use(/(.*)/, (_req, res) => {
   res.sendFile('index.html', { root: publicDir });
 });
-
-
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

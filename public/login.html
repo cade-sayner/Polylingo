@@ -9,9 +9,9 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         const code = params.get("code");
-        fetch (`http://localhost:3000/api/auth/login?code=${code}`).then((resp) => resp.json().then((data => {
+        fetch (`http://ec2-13-244-112-99.af-south-1.compute.amazonaws.com/api/auth/login?code=${code}`).then((resp) => resp.json().then((data => {
             localStorage.setItem("polylingo_jwt", data.jwt);
-            window.location.href = "http://localhost:3000/";
+            window.location.href = "ec2-13-244-112-99.af-south-1.compute.amazonaws.com";
         })));
     </script>
 </body>
