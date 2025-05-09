@@ -1,7 +1,5 @@
 
 import { Express, Request } from 'express';
-import { UserRepository } from '../repositories/user-repository';
-import { RoleRepository } from '../repositories/role-repository'
 import { authenticate } from '../lib/authentication';
 import { FillBlankRepository } from '../repositories/fill-blank-repository';
 import { Language } from '../lib/types';
@@ -10,7 +8,7 @@ const fillBlankRepo = new FillBlankRepository("fill_blank_questions", "fill_blan
 let languages = ["German", "Afrikaans", "Spanish", "Italian", "French"]
 
 export function registerFillBlankRoutes(app: Express) {
-    app.get("/api/fill_blank", getFillBlank);
+    app.get("/api/fill_blank", authenticate, getFillBlank);
 }
 
 async function getFillBlank(req: Request, res: any) {
@@ -26,6 +24,10 @@ async function getFillBlank(req: Request, res: any) {
         console.error((e as Error).message);
         return res.status(500).json({ message: "An error occured while trying to fetch roles."});
     }
+}
+
+async function putFillBlank(req: Request, res:any){
+    
 }
 
 

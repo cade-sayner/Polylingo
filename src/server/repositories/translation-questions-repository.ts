@@ -1,5 +1,5 @@
 import { BaseRepository } from "../lib/base-repository";
-import { connectAndQuery } from "../lib/db";
+import { queryReturnOne } from "../lib/db";
 import { TranslationQuestion } from "../lib/types";
 
 export class TranslationQuestionRepository extends BaseRepository<TranslationQuestion> {
@@ -26,7 +26,7 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
             queryParams.push(difficulty);
         }
 
-        return await this.queryReturnOne(queryString, queryParams);
+        return await queryReturnOne(queryString, queryParams);
     }
 
 }

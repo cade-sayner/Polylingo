@@ -1,6 +1,9 @@
 import { connectAndQuery } from "./db";
 import camelcaseKeys from 'camelcase-keys';
 
+import { queryReturnAll } from "./db";
+import { queryReturnOne } from "./db";
+
 export class BaseRepository<T extends Object>{
     tableName : string;
     primaryKeyColumnName : string;
@@ -32,12 +35,12 @@ export class BaseRepository<T extends Object>{
     // assumes integer ids only
     async getByID(id : number) {
         let queryString = `SELECT * FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1`;
-        return this.queryReturnOne(queryString, [id]);
+        return queryReturnOne(queryString, [id]);
     }
 
     async deleteByID(id: number){
         let queryString = `DELETE FROM ${this.tableName} WHERE ${this.primaryKeyColumnName} = $1 RETURNING *`;
-        return this.queryReturnOne(queryString, [id])
+        return queryReturnOne(queryString, [id])
     }
 
     async getAll(){
@@ -46,27 +49,14 @@ export class BaseRepository<T extends Object>{
         return rows;
     }
 
-    async queryReturnOne(queryString:string, values:any[]){
-        let rows = (await connectAndQuery(queryString, values)).rows.map((row => camelcaseKeys(row)));
-        if(rows.length > 0){
-            return rows[0];
-        }
-        return null;
-    }
-
-    async queryReturnAll(queryString:string, values:any[]){
-        let rows = (await connectAndQuery(queryString, values)).rows.map((row => camelcaseKeys(row)));
-        return rows;
-    }
-
     async getAllByColumnName(columnName : keyof T, value : string | number){
         let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`
-        return await this.queryReturnAll(queryString, []);
+        return await queryReturnAll(queryString, []);
     }
 
     async getByColumnName(columnName : keyof T, value : string | number){
         let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`
-        return await this.queryReturnOne(queryString, [value]);
+        return await queryReturnOne(queryString, [value]);
     }
 
     static camelToSnakeCase(camelString : string){
