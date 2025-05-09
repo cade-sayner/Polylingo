@@ -11,7 +11,7 @@
         const code = params.get("code");
         fetch (`http://ec2-13-244-112-99.af-south-1.compute.amazonaws.com/api/auth/login?code=${code}`).then((resp) => resp.json().then((data => {
             localStorage.setItem("polylingo_jwt", data.jwt);
-            //window.location.href = "ec2-13-244-112-99.af-south-1.compute.amazonaws.com";
+            window.location.href = "ec2-13-244-112-99.af-south-1.compute.amazonaws.com";
         })));
     </script>
 </body>
