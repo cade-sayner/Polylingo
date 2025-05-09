@@ -21,7 +21,7 @@ jobs:
           docker run --rm \
             --volume ${GITHUB_WORKSPACE}/src/migrations:/flyway/sql:ro \
             redgate/flyway \
-            -url="jdbc:postgresql://${{ vars.DB_HOST }}:${{ vars.DB_PORT }}/${{ vars.DB_NAME }}?sslmode=require" \
+            -url="jdbc:postgresql://${{ vars.DB_HOST }}:${{ vars.DB_PORT }}/polylingo_db?sslmode=require" \
             -user="${{ vars.DB_USER }}" \
             -password="${{ secrets.DB_PASSWORD }}" \
             migrate
