@@ -25,6 +25,8 @@ async function login(req: Request, res: any) {
         });
     }
 
+    process.env.REDIRECT_URI =  "http://ec2-13-244-112-99.af-south-1.compute.amazonaws.com/login.html";
+
     const body = new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
