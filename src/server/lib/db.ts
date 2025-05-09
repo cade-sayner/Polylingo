@@ -1,5 +1,6 @@
 import { Pool } from "pg";
-
+import dotenv from "dotenv";
+dotenv.config();
 
 // obviously this is to be read from env
 const pool = new Pool({
