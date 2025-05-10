@@ -1,4 +1,5 @@
 import { navigateTo } from "../navigation";
+import { apiFetch } from "../api-client";
 const seaSponge = "rgb(215, 255, 184)";
 const colorCrab = "rgb(255, 120, 120)";
 let currentStreak = 0;
@@ -114,9 +115,6 @@ function flipAnimation(start, end) {
 }
 async function getFillBlankQuestion(language) {
     // no this needs to go through the api client
-    let response = await fetch(`/api/fill_blank/user?language=${language}`);
-    if (!response.ok) {
-        throw new Error("Fetching question failed");
-    }
-    return await response.json();
+    let response = await apiFetch(`/api/fill_blank/user?language=${language}`);
+    return await response;
 }

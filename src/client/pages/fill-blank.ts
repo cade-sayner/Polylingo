@@ -3,6 +3,7 @@
 import { Language } from "../types"
 import { FillBlankQuestion } from "../types";
 import { navigateTo } from "../navigation";
+import { apiFetch } from "../api-client";
 
 const seaSponge: string = "rgb(215, 255, 184)";
 const colorCrab: string = "rgb(255, 120, 120)";
@@ -140,9 +141,6 @@ function flipAnimation(start: HTMLElement, end: HTMLElement) {
 
 async function getFillBlankQuestion(language: Language): Promise<FillBlankQuestion> {
     // no this needs to go through the api client
-    let response = await fetch(`/api/fill_blank/user?language=${language}`);
-    if (!response.ok) {
-        throw new Error("Fetching question failed");
-    }
-    return await response.json() as FillBlankQuestion;
+    let response = await apiFetch(`/api/fill_blank/user?language=${language}`);
+    return await response as FillBlankQuestion;
 }
