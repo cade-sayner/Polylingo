@@ -8,6 +8,7 @@ import path from 'path';
 import { registerFillBlankRoutes } from './handlers/fill-blank-handlers';
 import { hasKeys } from './lib/type-helpers';
 import { registerTranslationQuestionsRoutes } from './handlers/translation-questions-handlers';
+import {registerLanguageRoutes} from "./handlers/language-handlers";
 
 const app = express();
 app.use(express.json());
@@ -28,6 +29,7 @@ registerTranslationAuditRoutes(app);
 registerFillBlankAuditRoutes(app)
 registerTranslationQuestionsRoutes(app);
 registerFillBlankRoutes(app);
+registerLanguageRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
 
