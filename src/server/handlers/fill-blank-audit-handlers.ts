@@ -44,7 +44,7 @@ async function getUserFillBlankAudits(req: Request, res: any) {
         if (user == null || user.userId == null) {
             return res.status(500).json({ message: "Logged in user could not be found" });
         }
-        const records = await fillBlankAuditRepo.getByID(user.userId);
+        const records = await fillBlankAuditRepo.getAllByColumnName("userId", user.userId);
 
         return res.status(200).json(records);
     } catch (e) {

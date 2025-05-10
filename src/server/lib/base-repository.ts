@@ -51,7 +51,7 @@ export class BaseRepository<T extends Object>{
 
     async getAllByColumnName(columnName : keyof T, value : string | number){
         let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`
-        return await queryReturnAll(queryString, []);
+        return await queryReturnAll(queryString, [value]);
     }
 
     async getByColumnName(columnName : keyof T, value : string | number){

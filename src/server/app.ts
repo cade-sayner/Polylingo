@@ -3,10 +3,11 @@ import { registerUserRoutes } from './handlers/user-handlers';
 import { registerAuthRoutes } from './handlers/auth-handlers';
 import { registerTranslationAuditRoutes } from './handlers/translations-audit-handlers';
 import { registerFillBlankAuditRoutes } from './handlers/fill-blank-audit-handlers';
-import { clientRoutes } from "./lib/constants";
 import 'dotenv/config'
 import path from 'path';
 import { registerFillBlankRoutes } from './handlers/fill-blank-handlers';
+import { hasKeys } from './lib/type-helpers';
+import { registerTranslationQuestionsRoutes } from './handlers/translation-questions-handlers';
 
 const app = express();
 app.use(express.json());
