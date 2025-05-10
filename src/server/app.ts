@@ -2,12 +2,14 @@ import express from 'express';
 import { registerUserRoutes } from './handlers/user-handlers';
 import { registerAuthRoutes } from './handlers/auth-handlers';
 import { registerWordRoutes } from './handlers/word-handlers';
+import {registerFillBlankQuestionsAuditRoutes} from './handlers/fill-blank-questions-audit-handlers';
 import { hasKeys } from './lib/type-helpers';
 import 'dotenv/config'
 import path from 'path';
 import { registerFillBlankRoutes } from './handlers/fill-blank-handlers';
 
 const app = express();
+app.use(express.json());
 const port = 3000;
 
 
@@ -23,6 +25,7 @@ registerUserRoutes(app);
 registerAuthRoutes(app);
 registerFillBlankRoutes(app);
 registerWordRoutes(app);
+registerFillBlankQuestionsAuditRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
 

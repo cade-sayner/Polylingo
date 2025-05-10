@@ -8,11 +8,13 @@ export function registerWordRoutes(app: Express) {
     app.get('/api/words/:id', getWordById);
     app.post('/api/words', createWord);
     app.delete('/api/words/:id', deleteWord);
+    app.get('/api/words/language/:id', getAllWordsByLanguage);
 }
 
 async function getAllWords(req: Request, res: Response) {
     try {
         const words = await wordRepo.getAll();
+        //TODO: change words to WordResponse type
         res.status(200).json(words);
     } catch (e) {
         res.status(500).json({ message: "Error fetching words." });
@@ -51,5 +53,17 @@ async function deleteWord(req: Request, res: Response) {
         res.status(200).json(deleted);
     } catch (e) {
         res.status(500).json({ message: "Error deleting word." });
+    }
+}
+
+async function getAllWordsByLanguage(req: Request, res: Response) {
+    try {
+        const id = Number(req.params.id);
+        const words = await wordRepo.getAllByColumnName("languageId",id);
+        //TODO: change words to WordResponse type
+        res.status(200).json(words);
+    } catch (e) {
+        console.error((e as Error).message);
+        res.status(500).json({ message: "Error fetching words." });
     }
 }
