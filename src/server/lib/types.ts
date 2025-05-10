@@ -19,6 +19,14 @@ export type TranslationQuestion = {
     difficultyScore : number;
 }
 
+export type TranslationQuestionResponse = {
+    translationQuestionId : number | null;
+    promptWord : string;
+    answerWord : string;
+    distractors : string[];
+    difficultyScore : number;
+}
+
 
 export type Language = "Afrikaans" | "Spanish" | "Italian" | "French" | "German";
 

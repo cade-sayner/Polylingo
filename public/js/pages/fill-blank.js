@@ -113,7 +113,8 @@ function flipAnimation(start, end) {
     // then set the transform back to 0 after 100 ms
 }
 async function getFillBlankQuestion(language) {
-    let response = await fetch(`/api/fill_blank?language=${language}`);
+    // no this needs to go through the api client
+    let response = await fetch(`/api/fill_blank/user?language=${language}`);
     if (!response.ok) {
         throw new Error("Fetching question failed");
     }

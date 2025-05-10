@@ -46,7 +46,7 @@ export class BaseRepository<T extends Object>{
     async getAll(){
         let queryString = `SELECT * FROM ${this.tableName}`
         let rows = (await connectAndQuery(queryString, [])).rows.map((row => camelcaseKeys(row)));
-        return rows;
+        return rows as T[];
     }
 
     async getAllByColumnName(columnName : keyof T, value : string | number){
@@ -56,7 +56,7 @@ export class BaseRepository<T extends Object>{
 
     async getByColumnName(columnName : keyof T, value : string | number){
         let queryString = `SELECT * FROM ${this.tableName} WHERE ${BaseRepository.camelToSnakeCase(String(columnName))} = $1`
-        return await queryReturnOne(queryString, [value]);
+        return await queryReturnOne(queryString, [value]) as T;
     }
 
     static camelToSnakeCase(camelString : string){

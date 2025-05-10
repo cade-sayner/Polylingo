@@ -1,32 +1,68 @@
 import { BaseRepository } from "../lib/base-repository";
 import { queryReturnOne } from "../lib/db";
-import { TranslationQuestion } from "../lib/types";
+import { TranslationQuestion, TranslationQuestionResponse } from "../lib/types";
 
 export class TranslationQuestionRepository extends BaseRepository<TranslationQuestion> {
-    async getQuestionForUser(googleId : string, language : number, difficulty : number|undefined){
 
-        const queryParams: any[] = [];
-
+    async getTranslationQuestionByLanguage(promptLanguage : string, answerLanguage : string): Promise<TranslationQuestionResponse | null> {
         let queryString = `
         SELECT * FROM translation_questions t 
-        INNER JOIN words w on t.prompt_word = w.word_id
-        INNER JOIN languages l on w.language_id = l.language_id 
-        WHERE l.language_id = $1
-        AND t.translation_question_id NOT IN (
-            SELECT translation_question_id FROM translation_questions_audit 
-            WHERE user_id = $2}
-        )`;
+        where prompt_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $1)
+        AND answer_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $2')
+      `;
+        const translationQuestions = await queryReturnOne(queryString, [promptLanguage, answerLanguage]) as TranslationQuestion[];
+        if(translationQuestions.length == 0) return null;
+        const chosenQuestion = translationQuestions[Math.floor(Math.random() * translationQuestions.length)];
+        let promptWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [chosenQuestion?.promptWord]) as string;
+        let answerWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [chosenQuestion?.answerWord]) as string;
 
-        queryParams.push(language);
-        queryParams.push(googleId);
-        
-                
-        if (difficulty !== undefined) {
-            queryString += ` AND difficulty_score = $3}`;
-            queryParams.push(difficulty);
+        return {
+            difficultyScore: chosenQuestion!.difficultyScore,
+            distractors: chosenQuestion!.distractors,
+            translationQuestionId: chosenQuestion!.translationQuestionId,
+            promptWord: promptWord,
+            answerWord: answerWord,
         }
+        
+    }
 
-        return await queryReturnOne(queryString, queryParams);
+    async Exists(question : TranslationQuestion){
+      const queryString = `
+      SELECT * 
+      FROM translation_questions 
+      WHERE prompt_word = $1
+      AND answer_word = $2
+      AND distractors = $3
+      `
+      if(await queryReturnOne(queryString, [question.promptWord, question.answerWord, question.distractors])){
+         return true;
+      }
+      return false;
+    }
+
+    async getEasiestUnanswered(promptLanguage: string, answerLanguage: string, googleId: number): Promise<TranslationQuestionResponse | null> {
+        let queryString = `
+        SELECT * FROM translation_questions t 
+        where prompt_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $1)
+        AND answer_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $2)
+		AND t.translation_question_id NOT IN (
+            SELECT translation_question_id FROM translation_questions_audit 
+            WHERE user_id = $3
+        ) 
+         ORDER BY t.difficulty_score
+         LIMIT 1
+      `;
+        const translationQuestion = await queryReturnOne(queryString, [promptLanguage, answerLanguage, googleId]) as TranslationQuestion | null;
+        let promptWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.promptWord]) as {word : string};
+        let answerWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.answerWord]) as {word : string};
+
+        return {
+            difficultyScore: translationQuestion!.difficultyScore,
+            distractors: translationQuestion!.distractors,
+            translationQuestionId: translationQuestion!.translationQuestionId,
+            promptWord: promptWord.word,
+            answerWord: answerWord.word,
+        }
     }
 
 }

@@ -1,15 +1,13 @@
-   import express, { Express, Request } from 'express';
-import { UserRepository } from '../repositories/user-repository';
-import { RoleRepository } from '../repositories/role-repository';
+import express, { Express, Request } from 'express';
 import { TranslationQuestionRepository} from '../repositories/translation-questions-repository';
 import { WordRepository} from '../repositories/word-repository';
 import { authenticate } from '../lib/authentication';
 import { TranslationQuestion } from '../lib/types';
+import { UserRepository } from '../repositories/user-repository';
 
-const userRepo = new UserRepository("users", "user_id")
 const translationQuestionsRepo = new TranslationQuestionRepository("translation_questions", "translation_question_id");
 const wordRepo = new WordRepository("words", "word_id");
-
+const userRepo = new UserRepository("users", "user_id");
 export function registerTranslationQuestionsRoutes(app: Express) {
     app.use(express.json());
     app.get("/api/translationquestions", getTranslationQuestions);
@@ -24,55 +22,44 @@ async function getTranslationQuestions(req: Request, res: any) {
         return res.status(200).json(translationQuestions);
     }
     catch(e){
+        console.error((e as Error).message);
         return res.status(500).json({message: "An error occurred while trying to fetch translation questions."});
-        // TODO : log the error here
     }
 }
 
 async function getQuestionForUser(req: Request, res: any) {
     try {
-        const userId = req.query.googleId as string;
-        const language = req.query.language as string;
-        const difficulty = req.query.difficulty as string;
+        const userId = ((req.user as {googleId:string}).googleId);
+        const promptLanguage = req.query.prompt_language as string;
+        const answerLanguage = req.query.answer_language as string;
         
         if (!userId) {
             return res.status(400).json({message: "User ID is required"});
         }
-        if (!language) {
-            return res.status(400).json({message: "Language is required"});
+        if (!promptLanguage) {
+            return res.status(400).json({message: "Prompt Language is required"});
         }
-
-        const languageNum = parseInt(language);
-        const difficultyNum = difficulty ? parseInt(difficulty) : undefined;
-        const userIdNum = parseInt(userId);
-
-        const user = await userRepo.getByID(userIdNum);
-        if (!user) {
-            return res.status(404).json({message: "User not found"});
+        if (!answerLanguage) {
+            return res.status(400).json({message: "Answer Language is required"});
         }
-
-        
-        const question = await translationQuestionsRepo.getQuestionForUser(userId, languageNum, difficultyNum);
-        
-        if (question == null) {
-            return res.status(404).json({message: "No available questions found for the given criteria"});
+        const user = await userRepo.getByColumnName("googleId", (req.user as {googleId : string}).googleId)
+        const easiestUnansweredQuestion = await translationQuestionsRepo.getEasiestUnanswered(promptLanguage, answerLanguage, user.userId as number);
+        if(easiestUnansweredQuestion){
+            return res.status(200).json(easiestUnansweredQuestion);
         }
-        
-        return res.status(200).json(question);
+        return res.status(200).json(await translationQuestionsRepo.getTranslationQuestionByLanguage(promptLanguage, answerLanguage))
     }
     catch(e) {
+        console.error((e as Error).message);
         return res.status(500).json({message: "An error occurred while retrieving a question for the user."});
-        // TODO : log the error here
     }
 }
-
 
 async function createTranslationQuestion(req: Request, res: any) {
     try {
         // Check if user is instructor
-
-        const promptWordId = req.body.promptWordId;
-        const answerWordId = req.body.answerWordId;
+        const promptWordId = req.body.promptWord;
+        const answerWordId = req.body.answerWord;
         const distractors = req.body.distractors;
         const difficultyScore = req.body.difficultyScore;
         
@@ -109,6 +96,9 @@ async function createTranslationQuestion(req: Request, res: any) {
             return res.status(400).json({message: "Difficulty score must be between 1 and 10"});
         }
         
+        if(await translationQuestionsRepo.Exists(req.body)){
+            return res.status(409).json({message : "The question already exists"});
+        }
         const newQuestion: TranslationQuestion = {
             translationQuestionId: null,
             promptWord: promptWordId,
