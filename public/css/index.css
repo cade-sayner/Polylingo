@@ -265,15 +265,18 @@ body{
 }
 
 .missing-word{
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     padding-left : 0.5rem;
     padding-right : 0.5rem;
     min-height: 2rem;
     min-width: 5rem;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; 
     visibility: hidden;
+    border: solid 1px lightgray;
+    margin-bottom:1.5rem;
+
 }
 
 .question-option-word{
@@ -334,6 +337,10 @@ body{
     align-items: center;
     justify-content: center;
 }
+.nav-icon{
+    width:2.5rem;
+    height:2.5rem;
+  }
 
 @media (max-width: 600px) {
   .speaker-figure{
@@ -370,6 +377,10 @@ body{
     gap: 1rem;
   }
 
+  .logo-text{
+    display: none;
+  }
+
   .login-section{
     width: 90%;
     text-align: center;
@@ -379,7 +390,7 @@ body{
     width: 12rem;
     height: 12rem;
   }
-  
+
   .login-footer{
     display: none;
   }
