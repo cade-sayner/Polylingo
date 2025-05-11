@@ -1,9 +1,10 @@
-import { navigateTo } from "../navigation";
 import { apiFetch } from "../api-client";
+import { getSignedInUser } from "../utils";
 const seaSponge = "rgb(215, 255, 184)";
 const colorCrab = "rgb(255, 120, 120)";
 let currentStreak = 0;
 let currentLanguageSelection = "Afrikaans";
+let currentUserId = null;
 const languageOptions = ["Afrikaans", "German", "Italian", "Spanish", "French"];
 const imageSrcs = ["springbok-speaker.png", "lion-character.png"];
 class fillBlankExerciseState {
@@ -13,9 +14,15 @@ class fillBlankExerciseState {
         this.checkButton = document.querySelector("#fill-blank-check");
     }
     async getQuestion() {
+        //choose a character to display
+        const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
+        console.log(character);
+        const characterImage = document.querySelector(".speaker-image");
+        characterImage.src = `/img/${character}`;
         this.currentQuestion = await getFillBlankQuestion(currentLanguageSelection);
         this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence);
         this.optionsSectionElement.innerHTML = generateOptions([...this.currentQuestion.distractors, this.currentQuestion.word]);
+        registerOptions(this);
     }
 }
 function generateOptions(options) {
@@ -25,9 +32,29 @@ function generateOptions(options) {
 function generateInlineSentence(sentence) {
     return sentence.split(" ").map((word) => `<span class=${word === "____" ? "placeholder-word" : "sentence-word"}> ${word === "____" ? `<p id="missing-word-placeholder" class="missing-word flip-animate">A Word</p>` : word} </span>`).join("");
 }
+function setStreak(val) {
+    currentStreak = val;
+    const streakElement = document.querySelector(".streak");
+    streakElement.innerText = currentStreak.toString();
+}
+async function audit(fillBlankId, correct) {
+    if (!currentUserId) {
+        throw new Error("Failed to audit");
+    }
+    console.log(fillBlankId);
+    await apiFetch("/api/audit/fill-blank", {
+        method: "Post",
+        body: JSON.stringify({
+            userId: currentUserId,
+            fillBlankQuestionId: fillBlankId,
+            answerCorrect: correct
+        })
+    });
+}
 export async function loadFillBlankExercise() {
     let state = new fillBlankExerciseState();
     await state.getQuestion();
+    currentUserId = (await getSignedInUser()).userId;
     let languageSelect = document.querySelector("#language-select");
     languageSelect.selectedIndex = languageOptions.indexOf(currentLanguageSelection);
     if (languageSelect) {
@@ -35,45 +62,45 @@ export async function loadFillBlankExercise() {
             currentLanguageSelection = languageSelect.value;
         });
     }
-    //choose a character to display
-    const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
-    console.log(character);
-    const characterImage = document.querySelector(".speaker-image");
-    characterImage.src = `/img/${character}`;
-    registerOptions(state);
     const checkButton = document.querySelector("#fill-blank-check");
     const skipButton = document.querySelector("#fill-blank-skip");
     const fillBlankFooter = document.querySelector(".fill-blank-footer");
     const resultImage = document.querySelector("#fill-blank-result-figure");
-    const streakElement = document.querySelector(".streak");
-    streakElement.innerText = currentStreak.toString();
     checkButton.disabled = true;
-    checkButton === null || checkButton === void 0 ? void 0 : checkButton.addEventListener('click', (e) => {
+    checkButton === null || checkButton === void 0 ? void 0 : checkButton.addEventListener('click', async (e) => {
         var _a, _b, _c;
         if ((_a = state.currentQuestion) === null || _a === void 0 ? void 0 : _a.completed) {
             // TODO make audit request
-            navigateTo("/exercise/fill-blank");
+            state.getQuestion();
+            resultImage.innerHTML = "";
+            checkButton.innerText = "Check";
+            skipButton.style.visibility = "visible";
+            fillBlankFooter.style.backgroundColor = "white";
             return;
         }
         if (state.currentQuestion && !((_b = state.currentQuestion) === null || _b === void 0 ? void 0 : _b.completed)) {
+            // they have clicked check answer
             state.currentQuestion.completed = true;
             checkButton.innerText = "Next";
             skipButton.style.visibility = "hidden";
             if (state.selectedOption === ((_c = state.currentQuestion) === null || _c === void 0 ? void 0 : _c.word)) {
                 fillBlankFooter.style.backgroundColor = seaSponge;
                 resultImage.innerHTML = "<img class=\"result-image\" src=\"/img/correct.png\"> <div> Well done! </div>";
-                currentStreak += 1;
+                setStreak(currentStreak + 1);
+                console.log(state.currentQuestion);
+                await audit(state.currentQuestion.fillBlankQuestionsId, true);
             }
             else {
                 fillBlankFooter.style.backgroundColor = colorCrab;
                 resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div> The correct answer was '${state.currentQuestion.word}' </div>`;
-                currentStreak = 0;
+                setStreak(0);
+                await audit(state.currentQuestion.fillBlankQuestionsId, true);
             }
             return;
         }
     });
-    skipButton === null || skipButton === void 0 ? void 0 : skipButton.addEventListener('click', (e) => {
-        navigateTo("/exercise/fill-blank");
+    skipButton === null || skipButton === void 0 ? void 0 : skipButton.addEventListener('click', async (e) => {
+        await state.getQuestion();
     });
 }
 function registerOptions(state) {
@@ -81,10 +108,6 @@ function registerOptions(state) {
     options.forEach(option => {
         option.addEventListener('click', (e) => {
             var _a;
-            // when an option is selected maybe add it to the state object
-            // animate between the start and end positions
-            // get the text of the clicked on element and replace the placeholder word with that text.
-            // Then pass the placeholder element and this element to the FLIP animation function
             if (!((_a = state.currentQuestion) === null || _a === void 0 ? void 0 : _a.completed)) {
                 state.selectedOption = e.target.innerText;
                 state.checkButton.disabled = false;
@@ -111,10 +134,9 @@ function flipAnimation(start, end) {
     setTimeout(() => {
         end.style.transitionDuration = "0s";
     }, 400);
-    // then set the transform back to 0 after 100 ms
 }
 async function getFillBlankQuestion(language) {
     // no this needs to go through the api client
     let response = await apiFetch(`/api/fill_blank/user?language=${language}`);
-    return await response;
+    return response;
 }
