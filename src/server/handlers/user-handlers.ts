@@ -31,12 +31,7 @@ async function getUserRole(req: Request, res: any) {
 
 async function getUser(req: Request, res: any) {
     try{
-    let googleId = req.query.googleId as string | undefined;
-    if (!googleId) {
-        return res.status(400).json({
-            message: 'Missing required query parameter: googleId'
-        });
-    }
+    let googleId = getGoogleId(req);
     const exists = await userRepo.Exists(googleId);
     if (!exists) {
         return res.status(404).json({

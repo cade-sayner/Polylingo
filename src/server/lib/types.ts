@@ -50,7 +50,7 @@ export type Word = {
 }
 
 export type FillBlankQuestionResponse = {
-    fillBlankQuestionId : number;
+    fillBlankQuestionsId : number;
     placeholderSentence : string;
     word : string;
     distractors : string[];

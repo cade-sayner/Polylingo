@@ -19,7 +19,6 @@ async function createFillBlankAudit(req: Request, res: any) {
         }
         let userId = user.userId;
         const { fillBlankQuestionId, answerCorrect } = req.body;
-
         if (!fillBlankQuestionId || answerCorrect === undefined) {
             return res.status(400).json({ message: 'Missing required fields: fillBlankQuestionId or answerCorrect' });
         }
