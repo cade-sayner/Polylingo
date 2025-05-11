@@ -74,6 +74,9 @@ async function audit(fillBlankId: number, correct: boolean) {
 export async function loadFillBlankExercise() {
     let state = new fillBlankExerciseState();
     await state.getQuestion();
+
+    setStreak(0);
+
     currentUserId = (await getSignedInUser()).userId;
     let languageSelect = document.querySelector("#language-select") as HTMLSelectElement;
     languageSelect.selectedIndex = languageOptions.indexOf(currentLanguageSelection);
@@ -83,6 +86,7 @@ export async function loadFillBlankExercise() {
             currentLanguageSelection = languageSelect.value as Language;
         });
     }
+
     const skipButton = document.querySelector("#question-skip") as HTMLButtonElement;
     const fillBlankFooter = document.querySelector(".question-footer") as HTMLElement;
     const resultImage = document.querySelector("#question-result-figure") as HTMLElement;
@@ -140,7 +144,6 @@ function registerOptions(state: fillBlankExerciseState) {
         })
     })
 }
-
 
 function flipAnimation(start: HTMLElement, end: HTMLElement) {
     // set the transform of end element to be that of the start element

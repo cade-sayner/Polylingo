@@ -55,6 +55,7 @@ export async function loadFillBlankExercise() {
     var _a;
     let state = new fillBlankExerciseState();
     await state.getQuestion();
+    setStreak(0);
     currentUserId = (await getSignedInUser()).userId;
     let languageSelect = document.querySelector("#language-select");
     languageSelect.selectedIndex = languageOptions.indexOf(currentLanguageSelection);
