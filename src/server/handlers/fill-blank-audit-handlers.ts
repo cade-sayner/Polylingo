@@ -1,6 +1,6 @@
 import { Express, Request } from 'express';
 import { FillBlankQuestionAuditRepository } from '../repositories/fill-blank-audit-repository';
-import { authenticate } from '../lib/authentication';
+import { authenticate, getGoogleId } from '../lib/authentication';
 import { UserRepository } from '../repositories/user-repository';
 
 const fillBlankAuditRepo = new FillBlankQuestionAuditRepository("fill_blank_questions_audit", "fill_blank_questions_audit_id");
@@ -50,8 +50,4 @@ async function getUserFillBlankAudits(req: Request, res: any) {
         console.error("Error fetching fill-blank audits:", e);
         return res.status(500).json({ message: 'An error occurred while fetching audit records.' });
     }
-}
-
-function getGoogleId(req: Request) {
-    return (req?.user as { googleId: string })?.googleId;
 }
