@@ -10,8 +10,8 @@ const imageSrcs = ["springbok-speaker.png", "lion-character.png"];
 class fillBlankExerciseState {
     constructor() {
         this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence");
-        this.optionsSectionElement = document.querySelector(".fill-blank-options");
-        this.checkButton = document.querySelector("#fill-blank-check");
+        this.optionsSectionElement = document.querySelector(".question-options");
+        this.checkButton = document.querySelector("#question-check");
     }
     async getQuestion() {
         //choose a character to display
@@ -26,7 +26,7 @@ class fillBlankExerciseState {
     }
 }
 function generateOptions(options) {
-    let s = options.map((word) => `<button class="call-sans fill-blank-option-word"> ${word} </button>`).join("");
+    let s = options.map((word) => `<button class="call-sans question-option-word"> ${word} </button>`).join("");
     return s;
 }
 function generateInlineSentence(sentence) {
@@ -63,9 +63,9 @@ export async function loadFillBlankExercise() {
             currentLanguageSelection = languageSelect.value;
         });
     }
-    const skipButton = document.querySelector("#fill-blank-skip");
-    const fillBlankFooter = document.querySelector(".fill-blank-footer");
-    const resultImage = document.querySelector("#fill-blank-result-figure");
+    const skipButton = document.querySelector("#question-skip");
+    const fillBlankFooter = document.querySelector(".question-footer");
+    const resultImage = document.querySelector("#question-result-figure");
     state.checkButton.disabled = true;
     (_a = state.checkButton) === null || _a === void 0 ? void 0 : _a.addEventListener('click', async (e) => {
         var _a, _b, _c;
@@ -93,7 +93,7 @@ export async function loadFillBlankExercise() {
             }
             else {
                 fillBlankFooter.style.backgroundColor = colorCrab;
-                resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div> The correct answer was '${state.currentQuestion.word}' </div>`;
+                resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div class="answer-text"> The correct answer was '${state.currentQuestion.word}' </div>`;
                 resultImage.style.display = "block";
                 setStreak(0);
                 await audit(state.currentQuestion.fillBlankQuestionsId, true);
@@ -106,7 +106,7 @@ export async function loadFillBlankExercise() {
     });
 }
 function registerOptions(state) {
-    let options = document.querySelectorAll(".fill-blank-option-word");
+    let options = document.querySelectorAll(".question-option-word");
     options.forEach(option => {
         option.addEventListener('click', (e) => {
             var _a;

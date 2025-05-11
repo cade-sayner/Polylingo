@@ -26,8 +26,8 @@ class fillBlankExerciseState {
 
     constructor() {
         this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence") as HTMLSelectElement;
-        this.optionsSectionElement = document.querySelector(".fill-blank-options") as HTMLSelectElement;
-        this.checkButton = document.querySelector("#fill-blank-check") as HTMLButtonElement;
+        this.optionsSectionElement = document.querySelector(".question-options") as HTMLSelectElement;
+        this.checkButton = document.querySelector("#question-check") as HTMLButtonElement;
     }
 
     async getQuestion() {
@@ -44,7 +44,7 @@ class fillBlankExerciseState {
 }
 
 function generateOptions(options: string[]) {
-    let s = options.map((word) => `<button class="call-sans fill-blank-option-word"> ${word} </button>`).join("");
+    let s = options.map((word) => `<button class="call-sans question-option-word"> ${word} </button>`).join("");
     return s;
 }
 
@@ -83,9 +83,10 @@ export async function loadFillBlankExercise() {
             currentLanguageSelection = languageSelect.value as Language;
         });
     }
-    const skipButton = document.querySelector("#fill-blank-skip") as HTMLButtonElement;
-    const fillBlankFooter = document.querySelector(".fill-blank-footer") as HTMLElement;
-    const resultImage = document.querySelector("#fill-blank-result-figure") as HTMLElement;
+    const skipButton = document.querySelector("#question-skip") as HTMLButtonElement;
+    const fillBlankFooter = document.querySelector(".question-footer") as HTMLElement;
+    const resultImage = document.querySelector("#question-result-figure") as HTMLElement;
+
     state.checkButton.disabled = true;
     state.checkButton?.addEventListener('click', async (e) => {
         if (state.currentQuestion?.completed) {
@@ -111,7 +112,7 @@ export async function loadFillBlankExercise() {
                 await audit(state.currentQuestion.fillBlankQuestionsId, true);
             } else {
                 fillBlankFooter.style.backgroundColor = colorCrab;
-                resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div> The correct answer was '${state.currentQuestion.word}' </div>`
+                resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div class="answer-text"> The correct answer was '${state.currentQuestion.word}' </div>`
                 resultImage.style.display = "block";
                 setStreak(0);
                 await audit(state.currentQuestion.fillBlankQuestionsId, true);
@@ -126,7 +127,7 @@ export async function loadFillBlankExercise() {
 }
 
 function registerOptions(state: fillBlankExerciseState) {
-    let options = document.querySelectorAll(".fill-blank-option-word");
+    let options = document.querySelectorAll(".question-option-word");
     options.forEach(option => {
         option.addEventListener('click', (e) => {
             if (!state.currentQuestion?.completed) {

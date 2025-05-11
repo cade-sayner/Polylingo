@@ -69,8 +69,6 @@ export class BaseRepository<T extends Object>{
             BaseRepository.camelToSnakeCase(key) !== this.primaryKeyColumnName
         );
         
-        console.log(entries);
-
         if (entries.length === 0) {
             return null;
         }

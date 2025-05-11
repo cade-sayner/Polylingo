@@ -47,7 +47,6 @@ export class FillBlankRepository extends BaseRepository<FillBlankQuestion> {
          LIMIT 1
       `;
       const chosenQuestion = await queryReturnOne(queryString, [languageObject.languageId, googleId]) as FillBlankQuestionResponse | null
-      console.log(chosenQuestion);
       return (chosenQuestion == null) ? null
        :  {
             placeholderSentence: chosenQuestion.placeholderSentence,
