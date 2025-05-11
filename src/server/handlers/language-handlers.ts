@@ -13,6 +13,7 @@ export function registerLanguageRoutes(app: Express) {
     app.put("/api/language/:id", updateLanguageById);
 }
 
+//TODO: Add auth to endpoints
 async function getLanguages(req: Request, res: any) {
     try {
         return res.status(200).json(await languageRepo.getAll());
