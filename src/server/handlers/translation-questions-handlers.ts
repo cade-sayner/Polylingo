@@ -1,7 +1,7 @@
 import express, { Express, Request } from 'express';
 import { TranslationQuestionRepository} from '../repositories/translation-questions-repository';
 import { WordRepository} from '../repositories/word-repository';
-import { authenticate } from '../lib/authentication';
+import { authenticate, authorize } from '../lib/authentication';
 import { TranslationQuestion } from '../lib/types';
 import { UserRepository } from '../repositories/user-repository';
 
@@ -10,10 +10,11 @@ const wordRepo = new WordRepository("words", "word_id");
 const userRepo = new UserRepository("users", "user_id");
 export function registerTranslationQuestionsRoutes(app: Express) {
     app.use(express.json());
-    app.get("/api/translationquestions", getTranslationQuestions);
+    app.get("/api/translationquestions", authenticate, getTranslationQuestions);
     app.get("/api/translationquestions/user", authenticate, getQuestionForUser);
-    app.post("/api/translationquestions", authenticate, createTranslationQuestion);
-    app.put("/api/translationquestions/:id", authenticate, updateTranslationQuestion);
+
+    app.post("/api/translationquestions", authenticate, authorize(['INSTRUCTOR']), createTranslationQuestion);
+    app.put("/api/translationquestions/:id", authenticate, authorize(['INSTRUCTOR']), updateTranslationQuestion);
 }
 
 async function getTranslationQuestions(req: Request, res: any) {
@@ -68,7 +69,6 @@ async function getQuestionForUser(req: Request, res: any) {
 
 async function createTranslationQuestion(req: Request, res: any) {
     try {
-        // Check if user is instructor
         const promptWordId = req.body.promptWord;
         const answerWordId = req.body.answerWord;
         const distractors = req.body.distractors;
@@ -131,8 +131,6 @@ async function createTranslationQuestion(req: Request, res: any) {
 
 async function updateTranslationQuestion(req: Request, res: any) {
     try {
-        // Check if user is instructor
-        
         const questionId = parseInt(req.params.id);
         const promptWordId = req.body.promptWordId;
         const answerWordId = req.body.answerWordId;
