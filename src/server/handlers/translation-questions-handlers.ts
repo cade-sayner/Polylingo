@@ -1,7 +1,7 @@
 import express, { Express, Request } from 'express';
 import { TranslationQuestionRepository} from '../repositories/translation-questions-repository';
 import { WordRepository} from '../repositories/word-repository';
-import { authenticate, authorize } from '../lib/authentication';
+import { authenticate, authorize, getGoogleId } from '../lib/authentication';
 import { TranslationQuestion } from '../lib/types';
 import { UserRepository } from '../repositories/user-repository';
 
@@ -11,7 +11,7 @@ const userRepo = new UserRepository("users", "user_id");
 export function registerTranslationQuestionsRoutes(app: Express) {
     app.use(express.json());
     app.get("/api/translationquestions", authenticate, getTranslationQuestions);
-    app.get("/api/translationquestions/user", authenticate, getQuestionForUser);
+    app.get("/api/translationquestions/user", authenticate, authorize(['USER']), getQuestionForUser);
 
     app.post("/api/translationquestions", authenticate, authorize(['INSTRUCTOR']), createTranslationQuestion);
     app.put("/api/translationquestions/:id", authenticate, authorize(['INSTRUCTOR']), updateTranslationQuestion);
@@ -30,14 +30,11 @@ async function getTranslationQuestions(req: Request, res: any) {
 
 async function getQuestionForUser(req: Request, res: any) {
     try {
-        const userId = ((req.user as {googleId:string}).googleId);
+        const userGoogleId = getGoogleId(req);
         const promptLanguage = req.query.prompt_language as string;
         const answerLanguage = req.query.answer_language as string;
         const difficulty = req.query.difficulty as string | undefined;
-        
-        if (!userId) {
-            return res.status(400).json({message: "User ID is required"});
-        }
+
         if (!promptLanguage) {
             return res.status(400).json({message: "Prompt Language is required"});
         }
@@ -45,21 +42,24 @@ async function getQuestionForUser(req: Request, res: any) {
             return res.status(400).json({message: "Answer Language is required"});
         }
 
-        const user = await userRepo.getByColumnName("googleId", (req.user as {googleId : string}).googleId)
         if(difficulty !== undefined){
             if((Number.isNaN(parseInt(difficulty)) || parseInt(difficulty) > 10 || parseInt(difficulty) < 1)){
                 return res.status(400).json({message : "Difficulty provided was not a number between 1 and 10"});
             }
-            const question = await translationQuestionsRepo.getByLanguageAndDifficulty(promptLanguage, answerLanguage, user.userId as number, parseInt(difficulty))
-            if(!question) return res.status(404).json("No question matching the given criteria was found");
+            const question = await translationQuestionsRepo.getByLanguageAndDifficulty(promptLanguage, answerLanguage, userGoogleId, parseInt(difficulty))
+            if(!question) 
+                return res.status(404).json("No question matching the given criteria was found");
+            
             return res.status(200).json(question);
         }
-
-        const easiestUnansweredQuestion = await translationQuestionsRepo.getEasiestUnanswered(promptLanguage, answerLanguage, user.userId as number);
-        if(easiestUnansweredQuestion){
+        else
+        {
+            const easiestUnansweredQuestion = await translationQuestionsRepo.getEasiestUnanswered(promptLanguage, answerLanguage, userGoogleId);
+            if(!easiestUnansweredQuestion)
+                return res.status(404).json("No question matching the given criteria was found");
+                
             return res.status(200).json(easiestUnansweredQuestion);
         }
-        return res.status(200).json(await translationQuestionsRepo.getTranslationQuestionByLanguage(promptLanguage, answerLanguage))
     }
     catch(e) {
         console.error((e as Error).message);
