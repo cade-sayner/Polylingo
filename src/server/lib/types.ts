@@ -75,3 +75,9 @@ export type FillBlankQuestionsAudit = {
     timeAttempted: Date;
     answerCorrect: boolean;
 };
+
+export type Languages = {
+    language_id : number;
+    language_name : string;
+}
+
