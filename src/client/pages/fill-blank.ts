@@ -91,6 +91,7 @@ export async function loadFillBlankExercise() {
         if (state.currentQuestion?.completed) {
             state.getQuestion();
             resultImage.innerHTML = "";
+            resultImage.style.display = "none";
             state.checkButton.innerText = "Check";
             state.checkButton.disabled = true;
             skipButton.style.visibility = "visible";
@@ -105,11 +106,13 @@ export async function loadFillBlankExercise() {
             if (state.selectedOption === state.currentQuestion?.word) {
                 fillBlankFooter.style.backgroundColor = seaSponge;
                 resultImage.innerHTML = "<img class=\"result-image\" src=\"/img/correct.png\"> <div> Well done! </div>";
+                resultImage.style.display = "block";
                 setStreak(currentStreak + 1);
                 await audit(state.currentQuestion.fillBlankQuestionsId, true);
             } else {
                 fillBlankFooter.style.backgroundColor = colorCrab;
                 resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div> The correct answer was '${state.currentQuestion.word}' </div>`
+                resultImage.style.display = "block";
                 setStreak(0);
                 await audit(state.currentQuestion.fillBlankQuestionsId, true);
             }
