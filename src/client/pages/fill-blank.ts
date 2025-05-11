@@ -83,19 +83,16 @@ export async function loadFillBlankExercise() {
             currentLanguageSelection = languageSelect.value as Language;
         });
     }
-
-    const checkButton = document.querySelector("#fill-blank-check") as HTMLButtonElement;
     const skipButton = document.querySelector("#fill-blank-skip") as HTMLButtonElement;
     const fillBlankFooter = document.querySelector(".fill-blank-footer") as HTMLElement;
     const resultImage = document.querySelector("#fill-blank-result-figure") as HTMLElement;
-
-    checkButton.disabled = true;
-    checkButton?.addEventListener('click', async (e) => {
+    state.checkButton.disabled = true;
+    state.checkButton?.addEventListener('click', async (e) => {
         if (state.currentQuestion?.completed) {
-            // TODO make audit request
             state.getQuestion();
             resultImage.innerHTML = "";
-            checkButton.innerText = "Check";
+            state.checkButton.innerText = "Check";
+            state.checkButton.disabled = true;
             skipButton.style.visibility = "visible";
             fillBlankFooter.style.backgroundColor = "white";
             return;
@@ -103,13 +100,12 @@ export async function loadFillBlankExercise() {
         if (state.currentQuestion && !state.currentQuestion?.completed) {
             // they have clicked check answer
             state.currentQuestion.completed = true;
-            checkButton.innerText = "Next"
+            state.checkButton.innerText = "Next"
             skipButton.style.visibility = "hidden";
             if (state.selectedOption === state.currentQuestion?.word) {
                 fillBlankFooter.style.backgroundColor = seaSponge;
                 resultImage.innerHTML = "<img class=\"result-image\" src=\"/img/correct.png\"> <div> Well done! </div>";
                 setStreak(currentStreak + 1);
-                console.log(state.currentQuestion)
                 await audit(state.currentQuestion.fillBlankQuestionsId, true);
             } else {
                 fillBlankFooter.style.backgroundColor = colorCrab;

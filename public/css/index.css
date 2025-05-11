@@ -289,10 +289,19 @@ body{
     border: solid 1px lightgray;
     background-color: #FAF9F6;
     height:3rem;
+    transition: all ease-in-out;;
     width: 6rem;
     font-size: larger;
 }
 
+.fill-blank-button:hover{
+    border: solid 1px rgb(163, 162, 166);
+    background-color: #ede8f1;
+}
+
+.fill-blank-button:disabled{
+   background-color: #d4d4d4; 
+}
 
 
 .fill-blank-footer{
@@ -311,6 +320,7 @@ body{
 
 .placeholder-sentence-container{
     display: flex;
+    
 }
 
 .exercise-container{
@@ -320,6 +330,7 @@ body{
     align-items: center;
     justify-content: center;
     margin-top: 4rem;
+    transition: width 0.3s ease;
 }
 
 .fill-blank-exercise-footer{

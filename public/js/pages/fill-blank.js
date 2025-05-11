@@ -52,6 +52,7 @@ async function audit(fillBlankId, correct) {
     });
 }
 export async function loadFillBlankExercise() {
+    var _a;
     let state = new fillBlankExerciseState();
     await state.getQuestion();
     currentUserId = (await getSignedInUser()).userId;
@@ -62,18 +63,17 @@ export async function loadFillBlankExercise() {
             currentLanguageSelection = languageSelect.value;
         });
     }
-    const checkButton = document.querySelector("#fill-blank-check");
     const skipButton = document.querySelector("#fill-blank-skip");
     const fillBlankFooter = document.querySelector(".fill-blank-footer");
     const resultImage = document.querySelector("#fill-blank-result-figure");
-    checkButton.disabled = true;
-    checkButton === null || checkButton === void 0 ? void 0 : checkButton.addEventListener('click', async (e) => {
+    state.checkButton.disabled = true;
+    (_a = state.checkButton) === null || _a === void 0 ? void 0 : _a.addEventListener('click', async (e) => {
         var _a, _b, _c;
         if ((_a = state.currentQuestion) === null || _a === void 0 ? void 0 : _a.completed) {
-            // TODO make audit request
             state.getQuestion();
             resultImage.innerHTML = "";
-            checkButton.innerText = "Check";
+            state.checkButton.innerText = "Check";
+            state.checkButton.disabled = true;
             skipButton.style.visibility = "visible";
             fillBlankFooter.style.backgroundColor = "white";
             return;
@@ -81,13 +81,12 @@ export async function loadFillBlankExercise() {
         if (state.currentQuestion && !((_b = state.currentQuestion) === null || _b === void 0 ? void 0 : _b.completed)) {
             // they have clicked check answer
             state.currentQuestion.completed = true;
-            checkButton.innerText = "Next";
+            state.checkButton.innerText = "Next";
             skipButton.style.visibility = "hidden";
             if (state.selectedOption === ((_c = state.currentQuestion) === null || _c === void 0 ? void 0 : _c.word)) {
                 fillBlankFooter.style.backgroundColor = seaSponge;
                 resultImage.innerHTML = "<img class=\"result-image\" src=\"/img/correct.png\"> <div> Well done! </div>";
                 setStreak(currentStreak + 1);
-                console.log(state.currentQuestion);
                 await audit(state.currentQuestion.fillBlankQuestionsId, true);
             }
             else {

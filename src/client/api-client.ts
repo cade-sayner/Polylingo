@@ -2,8 +2,9 @@
 //--------------------------------------------------------------------------------------------------------------------------
 let token: string | null = null;
 import { API_BASE_URL } from "./constants";
+import { navigateTo } from "./navigation";
 
-export function setToken(newToken: string) {
+export function setToken(newToken: string|null) {
   token = newToken;
 }
 
@@ -20,6 +21,11 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   });
 
   if (!response.ok) {
+    if(response.status === 401){
+      localStorage.removeItem("polylingo_jwt")
+      setToken(null);
+      navigateTo("/login");
+    }
     throw new Error(`HTTP error ${response.status}, Message: ${(await response.json() as { message: string }).message}`);
   }
   return response.json();

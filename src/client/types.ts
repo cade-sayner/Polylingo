@@ -23,6 +23,11 @@ export type FillBlankQuestion = {
     difficultyScore : number;
     completed : boolean;
 }
+
+export interface JwtPayload {
+  exp?: number;
+  [key: string]: any;
+}
   
 export interface RouteDefinition {
     content: () => string | undefined;
