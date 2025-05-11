@@ -30,6 +30,6 @@ export const authenticate = async (req: Request, res:any, next:any) => {
       next();
 
     } catch (err : any) {
-        return false;
+        res.status(401).json({message:"Unable to verify jwt"});
     }
 };

@@ -40,7 +40,7 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
       return false;
     }
 
-    async getEasiestUnanswered(promptLanguage: string, answerLanguage: string, googleId: number): Promise<TranslationQuestionResponse | null> {
+    async getEasiestUnanswered(promptLanguage: string, answerLanguage: string, userId: number): Promise<TranslationQuestionResponse | null> {
         let queryString = `
         SELECT * FROM translation_questions t 
         where prompt_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $1)
@@ -52,10 +52,10 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
          ORDER BY t.difficulty_score
          LIMIT 1
       `;
-        const translationQuestion = await queryReturnOne(queryString, [promptLanguage, answerLanguage, googleId]) as TranslationQuestion | null;
+        const translationQuestion = await queryReturnOne(queryString, [promptLanguage, answerLanguage, userId]) as TranslationQuestion | null;
         let promptWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.promptWord]) as {word : string};
         let answerWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.answerWord]) as {word : string};
-
+        if(!translationQuestion) return null;
         return {
             difficultyScore: translationQuestion!.difficultyScore,
             distractors: translationQuestion!.distractors,
@@ -63,6 +63,33 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
             promptWord: promptWord.word,
             answerWord: answerWord.word,
         }
+    }
+
+    async getByLanguageAndDifficulty(promptLanguage: string, answerLanguage : string, userId:number, difficultyScore : number){
+       let queryString = `
+        SELECT * FROM translation_questions t 
+        where prompt_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $1)
+        AND answer_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $2)
+		AND t.translation_question_id NOT IN (
+            SELECT translation_question_id FROM translation_questions_audit 
+            WHERE user_id = $3
+        ) 
+         AND t.difficulty_score = $4
+         LIMIT 1
+      `;
+        const translationQuestion = await queryReturnOne(queryString, [promptLanguage, answerLanguage, userId, difficultyScore]) as TranslationQuestion | null;
+        let promptWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.promptWord]) as {word : string};
+        let answerWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.answerWord]) as {word : string};
+
+        if(!translationQuestion) return null 
+
+        return {
+            difficultyScore: translationQuestion!.difficultyScore,
+            distractors: translationQuestion!.distractors,
+            translationQuestionId: translationQuestion!.translationQuestionId,
+            promptWord: promptWord.word,
+            answerWord: answerWord.word,
+        } 
     }
 
 }
