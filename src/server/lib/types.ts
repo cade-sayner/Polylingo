@@ -45,8 +45,7 @@ export type FillBlankQuestionsAudit = {
 };
 
 export type FillBlankQuestionsAuditResponse = {
-    fillBlankQuestionsAuditId: number;
-    userId: number;
+    fillBlankQuestionsAuditId: number | null;
     fillBlankQuestionId: number;
     timeAttempted: string;
     answerCorrect: boolean;
@@ -63,9 +62,10 @@ export type Word = {
 export type WordResponse = {
     wordId: number;
     word: string;
-    languageId: number;
     languageName?: string;
 };
 
-
-  
+export type Languages = {
+    language_id : number;
+    language_name : string;
+}
