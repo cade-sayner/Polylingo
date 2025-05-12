@@ -23,9 +23,13 @@ throw new Error("Environment variables have not been set correctly");
 
 registerUserRoutes(app);
 registerAuthRoutes(app);
+registerTranslationAuditRoutes(app);
+registerFillBlankAuditRoutes(app)
+registerTranslationQuestionsRoutes(app);
 registerFillBlankRoutes(app);
 registerWordRoutes(app);
 registerFillBlankQuestionsAuditRoutes(app);
+registerLanguageRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
 

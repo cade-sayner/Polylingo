@@ -1,7 +1,5 @@
-
 import { navigateTo } from "./navigation";
 import { setToken } from "./api-client";
-
 
 async function main() {
   // check if the user is currently logged in, if they are not then navigate to the login screen

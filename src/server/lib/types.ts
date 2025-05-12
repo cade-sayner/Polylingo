@@ -11,6 +11,23 @@ export type Role = {
     role : string;
 }
 
+export type TranslationQuestion = {
+    translationQuestionId : number | null;
+    promptWord : number;
+    answerWord : number;
+    distractors : string[];
+    difficultyScore : number;
+}
+
+export type TranslationQuestionResponse = {
+    translationQuestionId : number | null;
+    promptWord : string;
+    answerWord : string;
+    distractors : string[];
+    difficultyScore : number;
+}
+
+
 export type Language = "Afrikaans" | "Spanish" | "Italian" | "French" | "German";
 
 export type LanguageModel = {
@@ -26,8 +43,14 @@ export type FillBlankQuestion = {
     difficultyScore : number;
 }
 
+export type Word = {
+    wordId : number | null;
+    word : string;
+    languagId : number;
+}
+
 export type FillBlankQuestionResponse = {
-    fillBlankQuestionId : number;
+    fillBlankQuestionsId : number;
     placeholderSentence : string;
     word : string;
     distractors : string[];
@@ -35,6 +58,20 @@ export type FillBlankQuestionResponse = {
 }
 
 export type PrimitiveTypes = "string" | "number" | "boolean" | "symbol" | "undefined" | "bigint" | "object" | "function";
+
+
+export type TranslationQuestionsAudit = {
+    translationQuestionsAuditId?: number;
+    userId: number;
+    translationQuestionId: number;
+    timeAttempted: Date;
+    answerCorrect: boolean;
+};
+
+export type Languages = {
+    language_id : number;
+    language_name : string;
+}
 
 export type FillBlankQuestionsAudit = {
     fillBlankQuestionsAuditId: number | null;
@@ -53,11 +90,6 @@ export type FillBlankQuestionsAuditResponse = {
     placeholderSentence?: string;
 };
 
-export type Word = {
-    wordId: number | null;
-    word: string;
-    languageId: number;
-};
 
 export type WordResponse = {
     wordId: number;
@@ -65,7 +97,3 @@ export type WordResponse = {
     languageName?: string;
 };
 
-export type Languages = {
-    language_id : number;
-    language_name : string;
-}

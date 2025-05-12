@@ -16,7 +16,7 @@ export type Role = {
 export type Language = "Afrikaans" | "Spanish" | "Italian" | "German" | "French"
   
 export type FillBlankQuestion = {
-    fillBlankQuestionId : number;
+    fillBlankQuestionsId : number;
     placeholderSentence : string;
     word : string;
     distractors : string[];
