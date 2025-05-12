@@ -1,5 +1,5 @@
 import { apiFetch } from "../api-client";
-import { getSignedInUser } from "../utils";
+import { getSignedInUser, shuffle } from "../utils";
 const seaSponge = "rgb(215, 255, 184)";
 const colorCrab = "rgb(255, 120, 120)";
 let currentStreak = 0;
@@ -21,7 +21,7 @@ class fillBlankExerciseState {
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getFillBlankQuestion(currentLanguageSelection);
         this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence);
-        this.optionsSectionElement.innerHTML = generateOptions([...this.currentQuestion.distractors, this.currentQuestion.word]);
+        this.optionsSectionElement.innerHTML = generateOptions(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
         registerOptions(this);
     }
 }
