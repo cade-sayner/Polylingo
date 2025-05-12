@@ -5,6 +5,8 @@ import { getSignedInUser, shuffle } from "../utils";
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
 import { Navbar } from "../components/navbar";
+import { FillBlankSentence } from "../components/fill-blank-sentence";
+import { ResultImageComponent } from "../components/result-image";
 
 export class FillBlankExercisePage implements BasePage {
     currentStreak: number = 0;
@@ -21,6 +23,8 @@ export class FillBlankExercisePage implements BasePage {
 
     options = new QuestionOptions();
     navbar = new Navbar(true);
+    fillBlankSentence = new FillBlankSentence();
+    resultImageComponent = new ResultImageComponent();
 
     load = async () => {
         this.loadDomElements();
@@ -50,7 +54,6 @@ export class FillBlankExercisePage implements BasePage {
                 return;
             }
             if (this.currentQuestion && !this.currentQuestion?.completed) {
-                // they have clicked check answer
                 await this.handleCheck();
                 return;
             }else{
@@ -78,7 +81,7 @@ export class FillBlankExercisePage implements BasePage {
         const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence);
+        this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
         this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
         this.options.registerOptions(this);
     }
@@ -105,13 +108,13 @@ export class FillBlankExercisePage implements BasePage {
         this.skipButton.style.visibility = "hidden";
         if (this.selectedOption === this.currentQuestion?.word) {
             this.fillBlankFooter.style.backgroundColor = seaSponge;
-            this.resultImage.innerHTML = "<img class=\"result-image\" src=\"/img/correct.png\"> <div> Well done </div>";
+            this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "correct.png", message: "Well done"});
             this.resultImage.style.display = "block";
             this.setStreak(this.currentStreak + 1);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId as number);
         } else {
             this.fillBlankFooter.style.backgroundColor = colorCrab;
-            this.resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div class="answer-text"> Answer: '${this.currentQuestion.word}' </div>`
+            this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "incorrect.png", message: `Answer: '${this.currentQuestion.word}'`});
             this.resultImage.style.display = "block";
             this.setStreak(0);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId as number);
@@ -132,8 +135,4 @@ export class FillBlankExercisePage implements BasePage {
         this.fillBlankFooter = document.querySelector(".question-footer") as HTMLElement;
         this.resultImage = document.querySelector("#question-result-figure") as HTMLElement;
     }
-}
-
-function generateInlineSentence(sentence: string) {
-    return sentence.split(" ").map((word) => `<span class=${word === "____" ? "placeholder-word" : "sentence-word"}> ${word === "____" ? `<p id="missing-word-placeholder" class="missing-word flip-animate">A Word</p>` : word} </span>`).join("");
 }

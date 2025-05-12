@@ -3,6 +3,8 @@ import { getSignedInUser, shuffle } from "../utils";
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
 import { Navbar } from "../components/navbar";
+import { FillBlankSentence } from "../components/fill-blank-sentence";
+import { ResultImageComponent } from "../components/result-image";
 export class FillBlankExercisePage {
     constructor() {
         this.currentStreak = 0;
@@ -10,6 +12,8 @@ export class FillBlankExercisePage {
         this.currentUserId = null;
         this.options = new QuestionOptions();
         this.navbar = new Navbar(true);
+        this.fillBlankSentence = new FillBlankSentence();
+        this.resultImageComponent = new ResultImageComponent();
         this.load = async () => {
             var _a;
             this.loadDomElements();
@@ -34,7 +38,6 @@ export class FillBlankExercisePage {
                     return;
                 }
                 if (this.currentQuestion && !((_b = this.currentQuestion) === null || _b === void 0 ? void 0 : _b.completed)) {
-                    // they have clicked check answer
                     await this.handleCheck();
                     return;
                 }
@@ -67,7 +70,7 @@ export class FillBlankExercisePage {
         const characterImage = document.querySelector(".speaker-image");
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = generateInlineSentence(this.currentQuestion.placeholderSentence);
+        this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
         this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
         this.options.registerOptions(this);
     }
@@ -93,14 +96,14 @@ export class FillBlankExercisePage {
         this.skipButton.style.visibility = "hidden";
         if (this.selectedOption === ((_a = this.currentQuestion) === null || _a === void 0 ? void 0 : _a.word)) {
             this.fillBlankFooter.style.backgroundColor = seaSponge;
-            this.resultImage.innerHTML = "<img class=\"result-image\" src=\"/img/correct.png\"> <div> Well done </div>";
+            this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "correct.png", message: "Well done" });
             this.resultImage.style.display = "block";
             this.setStreak(this.currentStreak + 1);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId);
         }
         else {
             this.fillBlankFooter.style.backgroundColor = colorCrab;
-            this.resultImage.innerHTML = `<img class="result-image" src="/img/incorrect.png"> <div class="answer-text"> Answer: '${this.currentQuestion.word}' </div>`;
+            this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "incorrect.png", message: `Answer: '${this.currentQuestion.word}'` });
             this.resultImage.style.display = "block";
             this.setStreak(0);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId);
@@ -116,7 +119,4 @@ export class FillBlankExercisePage {
         this.fillBlankFooter = document.querySelector(".question-footer");
         this.resultImage = document.querySelector("#question-result-figure");
     }
-}
-function generateInlineSentence(sentence) {
-    return sentence.split(" ").map((word) => `<span class=${word === "____" ? "placeholder-word" : "sentence-word"}> ${word === "____" ? `<p id="missing-word-placeholder" class="missing-word flip-animate">A Word</p>` : word} </span>`).join("");
 }

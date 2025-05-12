@@ -6,7 +6,7 @@ import { BasePage } from "../types";
 export class LoginPage implements BasePage{
   render(){
     return `
-    ${new Navbar(false).render()}
+    ${(new Navbar(false)).render()}
     ${document.querySelector("#login-template")?.innerHTML}
     `
   }

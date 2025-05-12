@@ -4,7 +4,7 @@ export class LoginPage {
     render() {
         var _a;
         return `
-    ${new Navbar(false).render()}
+    ${(new Navbar(false)).render()}
     ${(_a = document.querySelector("#login-template")) === null || _a === void 0 ? void 0 : _a.innerHTML}
     `;
     }
