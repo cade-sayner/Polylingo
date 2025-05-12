@@ -29,7 +29,10 @@ export interface JwtPayload {
   [key: string]: any;
 }
   
-export interface RouteDefinition {
-    content: () => string | undefined;
-    loadCallback: () => void;
+export interface BasePage extends BaseComponent{
+  load : () => void;
+}
+
+export interface BaseComponent{
+  render : (prop ?: any) => string;
 }

@@ -3,6 +3,7 @@
 let token: string | null = null;
 import { API_BASE_URL } from "./constants";
 import { navigateTo } from "./navigation";
+import { FillBlankQuestion, Language } from "./types";
 
 export function setToken(newToken: string|null) {
   token = newToken;
@@ -29,4 +30,24 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     throw new Error(`HTTP error ${response.status}, Message: ${(await response.json() as { message: string }).message}`);
   }
   return response.json();
+}
+
+export async function getFillBlankQuestion(language: Language): Promise<FillBlankQuestion>{
+        // no this needs to go through the api client
+        let response = await apiFetch(`/api/fill_blank/user?language=${language}`);
+        return response as FillBlankQuestion;
+}
+
+
+export async function auditFillBlank(fillBlankId: number, correct: boolean, currentUserId : number) {
+    if(!currentUserId){throw new Error("Failed to audit");}
+    console.log(fillBlankId);
+    await apiFetch("/api/audit/fill-blank", {
+        method:"Post",
+        body: JSON.stringify({
+            userId: currentUserId,
+            fillBlankQuestionId: fillBlankId,
+            answerCorrect: correct
+        })
+    })
 }

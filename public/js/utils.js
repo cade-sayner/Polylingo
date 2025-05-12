@@ -9,3 +9,20 @@ export function shuffle(array) {
     }
     return array;
 }
+export function flipAnimation(start, end) {
+    // set the transform of end element to be that of the start element
+    end.innerHTML = start.innerHTML;
+    const { left: endCoordX, top: endCoordY } = end.getBoundingClientRect();
+    const { left: startCoordX, top: startCoordY } = start.getBoundingClientRect();
+    const deltaX = startCoordX - endCoordX;
+    const deltaY = startCoordY - endCoordY;
+    end.style.transform = `translate(${deltaX}px,${deltaY}px)`;
+    end.style.visibility = "visible";
+    setTimeout(() => {
+        end.style.transitionDuration = "0.3s";
+        end.style.transform = `translate(0px, 0px)`;
+    }, 100);
+    setTimeout(() => {
+        end.style.transitionDuration = "0s";
+    }, 400);
+}

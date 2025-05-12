@@ -19,3 +19,22 @@ export async function apiFetch(path, options = {}) {
     }
     return response.json();
 }
+export async function getFillBlankQuestion(language) {
+    // no this needs to go through the api client
+    let response = await apiFetch(`/api/fill_blank/user?language=${language}`);
+    return response;
+}
+export async function auditFillBlank(fillBlankId, correct, currentUserId) {
+    if (!currentUserId) {
+        throw new Error("Failed to audit");
+    }
+    console.log(fillBlankId);
+    await apiFetch("/api/audit/fill-blank", {
+        method: "Post",
+        body: JSON.stringify({
+            userId: currentUserId,
+            fillBlankQuestionId: fillBlankId,
+            answerCorrect: correct
+        })
+    });
+}

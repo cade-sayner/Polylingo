@@ -24,14 +24,33 @@
     <h1> Loading ... </h1>
 </template>
 
-<template class="login-screen-template">
-    <nav class="login-header">
+<template id="navbar">
         <section class="logo-section" >
-            <img class="nav-icon" src="/img/springbok-icon.png">
-            <h3 class="logo-text">PolyLingo</h3>
+                <img class="nav-icon" src="/img/springbok-icon.png">
+                <h3 class="logo-text">PolyLingo</h3>
         </section>
-    </nav>
+</template>
 
+<template id="language-select">
+    <section class="streak-select-container">
+            <figure class="streak-container">
+                <img src="/img/campfire.png" alt="" class="flame-image">
+                <div class="streak"></div>
+            </figure>
+            <section class="language-select-section">
+                <label class="language-select-label" for="language-select">Language:</label>
+                <select id="language-select" class="language-select call-sans">
+                    <option value="Afrikaans">🇿🇦 Afrikaans</option>
+                    <option value="German">🇩🇪 German</option>
+                    <option value="Italian">🇮🇹 Italian</option>
+                    <option value="Spanish">🇪🇸 Spanish</option>
+                    <option value="French">🇫🇷 French</option>
+                </select>
+            </section>
+        </section>
+</template>
+
+<template id="login-template" class="login-screen-template">
     <main class="login-container">
     <article class="login-card">
         <section class="mascot-section">
@@ -84,31 +103,6 @@
 </template>
 
 <template class="fill-blank-template">
-    <nav class="login-header">
-        <section class="logo-section">
-            <img class="nav-icon" src="/img/springbok-icon.png">
-            <h3 class="logo-text">
-                Polylingo
-            </h3>
-        </section>
-        <section class="streak-select-container">
-            <figure class="streak-container">
-                <img src="/img/campfire.png" alt="" class="flame-image">
-                <div class="streak"></div>
-            </figure>
-            <section class="language-select-section">
-                <label class="language-select-label" for="language-select">Language:</label>
-                <select id="language-select" class="language-select call-sans">
-                    <option value="Afrikaans">🇿🇦 Afrikaans</option>
-                    <option value="German">🇩🇪 German</option>
-                    <option value="Italian">🇮🇹 Italian</option>
-                    <option value="Spanish">🇪🇸 Spanish</option>
-                    <option value="French">🇫🇷 French</option>
-                </select>
-            </section>
-        </section>
-    </nav>
-
     <article class="exercise-container">
         <header class="exercise-title">
             <h1> Fill in the blank </h1>
