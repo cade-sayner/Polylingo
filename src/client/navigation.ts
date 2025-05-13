@@ -1,11 +1,9 @@
 import { applicationUri } from "./constants";
-import { loadLandingPage } from "./pages/landing";
-import { loadUserLandingPage } from "./pages/user-landing";
-import { loadInstructorLandingPage } from "./pages/instructor-landing";
 import { FillBlankExercisePage} from "./pages/fill-blank";
 import { TranslationExercisePage } from "./pages/translation-page";
 import { BasePage } from "./types";
 import { LoginPage } from "./pages/login";
+import { UserLandingPage } from "./pages/user-landing";
 
 // const routes: Record<string, RouteDefinition> = {
 //     '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
@@ -18,7 +16,8 @@ import { LoginPage } from "./pages/login";
 const routes : Record<string, BasePage> = {
     '/exercise/fill-blank' : new FillBlankExercisePage(),
     '/login' : new LoginPage(),
-    '/exercise/translate' : new TranslationExercisePage()
+    '/exercise/translate' : new TranslationExercisePage(),
+    '/landing/user' : new UserLandingPage()
 }
 
 export function render(path: string) {
@@ -38,4 +37,6 @@ export function navigateTo(path: string) {
     history.pushState({}, '', `${applicationUri}${path}`);
     render(path);
 }
+
+(window as any).navigateTo = navigateTo;
 

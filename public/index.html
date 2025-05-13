@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Polylingo</title>
     <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/landing.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">
@@ -48,6 +49,16 @@
                 </select>
             </section>
         </section>
+</template>
+
+<template id="user-landing-template">
+    <section class="landing-container">
+        <header class="landing-title">
+            <h3> Welcome to Polylingo</h3>
+        </header>
+        TEMPLATE:CARDS 
+    </section>
+
 </template>
 
 <template id="login-template" class="login-screen-template">
@@ -99,6 +110,18 @@
             </figure>
         </section>
     </footer>
+</template>
+
+<template id="landing-card-template" class="landing-card-template">
+    <button onclick="navigateTo(REDIRECT_URI)" id="landing-card-container">
+        <section id="landing-card-text">
+            <header id="landing-card-header""> TEMPLATE:HEADER </header>
+            <aside id="landing-card-caption"> TEMPLATE:CAPTION </aside>
+        </section>
+        <figure id="landing-card-figure">
+            <img src="TEMPLATE:IMAGESRC" id="landing-card-image" >
+        </figure>
+    </button>
 </template>
 
 <template class="translation-template">

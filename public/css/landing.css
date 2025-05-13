@@ -1,0 +1,55 @@
+.landing-container{
+    flex:1;
+    display: flex;
+    width: clamp(20rem, 90%, 40rem);
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+#landing-card-container{
+    background-color:white;
+    border-radius: 2rem;
+    height: 6rem;
+    display: flex;
+    box-shadow: 0 2px 4px rgba(148, 146, 146, 0.273);
+    border: 2px solid rgb(212, 209, 215);
+    justify-content: space-between;
+}
+
+#landing-card-container:hover{
+    box-shadow: 0 2px 4px rgba(44, 43, 43, 0.273);
+}
+
+.landing-title{
+    font-size: x-large;
+    font-family: "Feather Bold";
+}
+
+#landing-card-text{
+    font-family: "Feather Bold";
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: 1rem;
+    height: 100%;
+    align-items: start;
+    justify-content: center;
+}
+
+#landing-card-header{
+    font-weight: bold;
+    font-family: "Feather Bold";
+}
+
+#landing-card-caption{
+    font-family: "roboto"
+}
+
+#landing-card-image{
+    width: 3rem;
+}
+
+.landing-card-template{
+    border-radius: 2rem;
+}

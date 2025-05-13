@@ -22,7 +22,7 @@ export class Navbar implements BaseComponent{
         </nav>
         ` :
         ` 
-        <nav class="login-header">
+        <nav class="header">
         ${this.navbar.innerHTML}
         </nav>
         `
