@@ -6,18 +6,25 @@ export class QuestionOptions implements BaseComponent {
         let s = options.map((word) => `<button class="call-sans question-option-word"> ${word} </button>`).join("");
         return s;
     }
-    registerOptions(optionState: { currentQuestion: { completed: any; } | undefined; selectedOption: string | undefined; checkButton: { disabled: boolean; } | undefined; }) {
+    registerOptions(optionState: { currentQuestion: { completed: any; } | undefined; selectedOption: string | undefined; checkButton: { disabled: boolean; } | undefined; }, animate : boolean = true) {
         let options = document.querySelectorAll(".question-option-word");
         options.forEach(option => {
             option.addEventListener('click', (e) => {
                 if (!optionState.currentQuestion?.completed) {
-                    optionState.selectedOption = (e.target as HTMLElement).innerText;
+                    const selectedOption = (e.target as HTMLElement)
+                    selectedOption.classList.add("selected-option");
+                    optionState.selectedOption = selectedOption.innerText;
                     if (optionState.checkButton) {
                         optionState.checkButton.disabled = false;
                     }
-                    if (e.target) {
+                    if (e.target && animate) {
                         flipAnimation(e.target as HTMLElement, document.querySelector("#missing-word-placeholder") as HTMLElement)
                     }
+
+                    // add the selected class here
+                    const clickedButton = e.target as HTMLElement;
+                    options.forEach(opt => opt.classList.remove("selected-option"));
+                    clickedButton.classList.add("selected-option");
                 }
             })
         })

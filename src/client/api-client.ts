@@ -3,7 +3,7 @@
 let token: string | null = null;
 import { API_BASE_URL } from "./constants";
 import { navigateTo } from "./navigation";
-import { FillBlankQuestion, Language } from "./types";
+import { FillBlankQuestion, Language, TranslationQuestion } from "./types";
 
 export function setToken(newToken: string|null) {
   token = newToken;
@@ -38,6 +38,11 @@ export async function getFillBlankQuestion(language: Language): Promise<FillBlan
         return response as FillBlankQuestion;
 }
 
+export async function getTranslationQuestion(language: Language): Promise<TranslationQuestion> {
+    let response = await apiFetch(`/api/translationquestions/user?prompt_language=${language}&answer_language=English`);
+    return await response as TranslationQuestion;
+}
+
 
 export async function auditFillBlank(fillBlankId: number, correct: boolean, currentUserId : number) {
     if(!currentUserId){throw new Error("Failed to audit");}
@@ -47,6 +52,19 @@ export async function auditFillBlank(fillBlankId: number, correct: boolean, curr
         body: JSON.stringify({
             userId: currentUserId,
             fillBlankQuestionId: fillBlankId,
+            answerCorrect: correct
+        })
+    })
+}
+
+export async function auditTranslation(translationQuestionId: number, correct: boolean, currentUserId : number) {
+    if(!currentUserId){throw new Error("Failed to audit");}
+    console.log(translationQuestionId);
+    await apiFetch("/api/audit/translation", {
+        method:"Post",
+        body: JSON.stringify({
+            userId: currentUserId,
+            translationQuestionId: translationQuestionId,
             answerCorrect: correct
         })
     })

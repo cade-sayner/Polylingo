@@ -1,5 +1,6 @@
 import { applicationUri } from "./constants";
 import { FillBlankExercisePage } from "./pages/fill-blank";
+import { TranslationExercisePage } from "./pages/translation-page";
 import { LoginPage } from "./pages/login";
 // const routes: Record<string, RouteDefinition> = {
 //     '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
@@ -10,10 +11,13 @@ import { LoginPage } from "./pages/login";
 // }
 const routes = {
     '/exercise/fill-blank': new FillBlankExercisePage(),
-    '/login': new LoginPage()
+    '/login': new LoginPage(),
+    '/exercise/translate': new TranslationExercisePage()
 };
 export function render(path) {
     var _a, _b;
+    console.log(path);
+    console.log(routes[path]);
     const pageContent = (_b = (_a = routes[path]) === null || _a === void 0 ? void 0 : _a.render()) !== null && _b !== void 0 ? _b : "<section> 404 not found </section>";
     console.log(pageContent);
     let pageContainer = document.querySelector(".page-container");

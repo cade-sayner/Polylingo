@@ -34,6 +34,8 @@ async function getQuestionForUser(req: Request, res: any) {
         const promptLanguage = req.query.prompt_language as string;
         const answerLanguage = req.query.answer_language as string;
         const difficulty = req.query.difficulty as string | undefined;
+        console.log("The difficulty is");
+        console.log(difficulty)
 
         if (!promptLanguage) {
             return res.status(400).json({message: "Prompt Language is required"});
@@ -55,10 +57,9 @@ async function getQuestionForUser(req: Request, res: any) {
         else
         {
             const easiestUnansweredQuestion = await translationQuestionsRepo.getEasiestUnanswered(promptLanguage, answerLanguage, userGoogleId);
-            if(!easiestUnansweredQuestion)
-                return res.status(404).json("No question matching the given criteria was found");
-                
-            return res.status(200).json(easiestUnansweredQuestion);
+            if(easiestUnansweredQuestion)
+                return res.status(200).json(easiestUnansweredQuestion);
+            return res.status(200).json(await translationQuestionsRepo.getTranslationQuestionByLanguage(promptLanguage, answerLanguage));
         }
     }
     catch(e) {

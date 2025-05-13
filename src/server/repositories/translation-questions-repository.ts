@@ -1,6 +1,6 @@
 import { BaseRepository } from "../lib/base-repository";
-import { queryReturnOne } from "../lib/db";
-import { TranslationQuestion, TranslationQuestionResponse } from "../lib/types";
+import { queryReturnAll, queryReturnOne } from "../lib/db";
+import { TranslationQuestion, TranslationQuestionResponse, Word } from "../lib/types";
 
 export class TranslationQuestionRepository extends BaseRepository<TranslationQuestion> {
 
@@ -8,22 +8,22 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
         let queryString = `
         SELECT * FROM translation_questions t 
         where prompt_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $1)
-        AND answer_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $2')
+        AND answer_word in (select word_id from words as w inner join languages as l on l.language_id = w.language_id where language_name = $2)
       `;
-        const translationQuestions = await queryReturnOne(queryString, [promptLanguage, answerLanguage]) as TranslationQuestion[];
+        const translationQuestions = await queryReturnAll(queryString, [promptLanguage, answerLanguage]) as TranslationQuestion[];
+        
         if(translationQuestions.length == 0) return null;
         const chosenQuestion = translationQuestions[Math.floor(Math.random() * translationQuestions.length)];
-        let promptWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [chosenQuestion?.promptWord]) as string;
-        let answerWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [chosenQuestion?.answerWord]) as string;
-
-        return {
+        let promptWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [chosenQuestion?.promptWord]) as Word;
+        let answerWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [chosenQuestion?.answerWord]) as Word;
+        let value  = {
             difficultyScore: chosenQuestion!.difficultyScore,
             distractors: chosenQuestion!.distractors,
             translationQuestionId: chosenQuestion!.translationQuestionId,
-            promptWord: promptWord,
-            answerWord: answerWord,
+            promptWord: promptWord.word,
+            answerWord: answerWord.word,
         }
-        
+        return value;
     }
 
     async Exists(question : TranslationQuestion){
@@ -53,6 +53,8 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
         ORDER BY t.difficulty_score
         LIMIT 1
         `;
+
+        console.log(userId);
         const translationQuestion = await queryReturnOne(queryString, [promptLanguage, answerLanguage, userId]) as TranslationQuestion | null;
         let promptWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.promptWord]) as {word : string};
         let answerWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.answerWord]) as {word : string};

@@ -9,6 +9,7 @@ const languageOptions = ["Afrikaans", "German", "Italian", "Spanish", "French"];
 const imageSrcs = ["springbok-speaker.png", "lion-character.png"];
 class translationExerciseState {
     constructor() {
+        this.currentLanguageSelection = "Afrikaans";
         this.promptWordElement = document.querySelector(".placeholder-sentence");
         this.optionsSectionElement = document.querySelector(".fill-blank-options");
         this.checkButton = document.querySelector("#fill-blank-check");
@@ -54,7 +55,7 @@ export async function loadTranslationExercise() {
     languageSelect.selectedIndex = languageOptions.indexOf(currentLanguageSelection);
     if (languageSelect) {
         languageSelect.addEventListener("change", () => {
-            currentLanguageSelection = languageSelect.value;
+            this.currentLanguageSelection = languageSelect.value;
         });
     }
     const checkButton = document.querySelector("#fill-blank-check");

@@ -56,8 +56,6 @@ export class FillBlankExercisePage implements BasePage {
             if (this.currentQuestion && !this.currentQuestion?.completed) {
                 await this.handleCheck();
                 return;
-            }else{
-                console.log("something is amis")
             }
         })
 
@@ -101,7 +99,7 @@ export class FillBlankExercisePage implements BasePage {
 
     async handleCheck() {
         if (!this.currentQuestion || !this.placeholderSentenceSectionElement || !this.optionsSectionElement || !this.selectedOption || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
-            throw new Error("Required elements not loaded in the component's state");
+            return;
         }
         this.currentQuestion.completed = true;
         this.checkButton.innerText = "Next"

@@ -3,6 +3,7 @@ import { loadLandingPage } from "./pages/landing";
 import { loadUserLandingPage } from "./pages/user-landing";
 import { loadInstructorLandingPage } from "./pages/instructor-landing";
 import { FillBlankExercisePage} from "./pages/fill-blank";
+import { TranslationExercisePage } from "./pages/translation-page";
 import { BasePage } from "./types";
 import { LoginPage } from "./pages/login";
 
@@ -16,10 +17,13 @@ import { LoginPage } from "./pages/login";
 
 const routes : Record<string, BasePage> = {
     '/exercise/fill-blank' : new FillBlankExercisePage(),
-    '/login' : new LoginPage()
+    '/login' : new LoginPage(),
+    '/exercise/translate' : new TranslationExercisePage()
 }
 
 export function render(path: string) {
+  console.log(path);
+  console.log(routes[path]);
     const pageContent = routes[path]?.render() ?? "<section> 404 not found </section>";
     console.log(pageContent);
     let pageContainer = document.querySelector(".page-container");

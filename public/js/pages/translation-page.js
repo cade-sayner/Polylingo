@@ -1,18 +1,16 @@
-import { auditFillBlank, getFillBlankQuestion } from "../api-client";
+import { auditTranslation, getTranslationQuestion } from "../api-client";
 import { getSignedInUser, shuffle } from "../utils";
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
 import { Navbar } from "../components/navbar";
-import { FillBlankSentence } from "../components/fill-blank-sentence";
 import { ResultImageComponent } from "../components/result-image";
-export class FillBlankExercisePage {
+export class TranslationExercisePage {
     constructor() {
         this.currentStreak = 0;
         this.currentLanguageSelection = "Afrikaans";
         this.currentUserId = null;
         this.options = new QuestionOptions();
         this.navbar = new Navbar(true);
-        this.fillBlankSentence = new FillBlankSentence();
         this.resultImageComponent = new ResultImageComponent();
         this.load = async () => {
             var _a;
@@ -50,7 +48,7 @@ export class FillBlankExercisePage {
             var _a, _b;
             return `
         ${this.navbar.render()}
-        ${(_b = (_a = document.querySelector(".fill-blank-template")) === null || _a === void 0 ? void 0 : _a.innerHTML) !== null && _b !== void 0 ? _b : ""}
+        ${(_b = (_a = document.querySelector(".translation-template")) === null || _a === void 0 ? void 0 : _a.innerHTML) !== null && _b !== void 0 ? _b : ""}
         `;
         };
         this.setStreak = (val) => {
@@ -60,19 +58,19 @@ export class FillBlankExercisePage {
         };
     }
     async getQuestion() {
-        if (!this.placeholderSentenceSectionElement || !this.optionsSectionElement) {
+        if (!this.promptWordElement || !this.optionsSectionElement) {
             throw new Error("Required elements were not loaded in the component's state");
         }
         const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
         const characterImage = document.querySelector(".speaker-image");
         characterImage.src = `/img/${character}`;
-        this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
-        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
-        this.options.registerOptions(this);
+        this.currentQuestion = await getTranslationQuestion(this.currentLanguageSelection);
+        this.promptWordElement.innerText = `${this.currentQuestion.promptWord} . . .`;
+        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord]));
+        this.options.registerOptions(this, false);
     }
     handleNext() {
-        if (!this.currentQuestion || !this.placeholderSentenceSectionElement || !this.optionsSectionElement || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
+        if (!this.currentQuestion || !this.promptWordElement || !this.optionsSectionElement || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
             throw new Error("Required elements not loaded in the component's state");
         }
         this.getQuestion();
@@ -84,30 +82,32 @@ export class FillBlankExercisePage {
         this.fillBlankFooter.style.backgroundColor = "white";
     }
     async handleCheck() {
-        var _a;
-        if (!this.currentQuestion || !this.placeholderSentenceSectionElement || !this.optionsSectionElement || !this.selectedOption || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
+        var _a, _b, _c;
+        if (!this.currentQuestion || !this.promptWordElement || !this.optionsSectionElement || !this.selectedOption || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
             return;
         }
         this.currentQuestion.completed = true;
         this.checkButton.innerText = "Next";
         this.skipButton.style.visibility = "hidden";
-        if (this.selectedOption === ((_a = this.currentQuestion) === null || _a === void 0 ? void 0 : _a.word)) {
+        if (this.selectedOption === ((_a = this.currentQuestion) === null || _a === void 0 ? void 0 : _a.answerWord)) {
             this.fillBlankFooter.style.backgroundColor = seaSponge;
             this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "correct.png", message: "Well done" });
             this.resultImage.style.display = "block";
             this.setStreak(this.currentStreak + 1);
-            await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId);
+            (_b = document.querySelector(".selected-option")) === null || _b === void 0 ? void 0 : _b.classList.add("correct-option");
+            await auditTranslation(this.currentQuestion.translationQuestionId, true, this.currentUserId);
         }
         else {
             this.fillBlankFooter.style.backgroundColor = colorCrab;
-            this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "incorrect.png", message: `Answer: '${this.currentQuestion.word}'` });
+            this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "incorrect.png", message: `Answer: '${this.currentQuestion.answerWord}'` });
             this.resultImage.style.display = "block";
             this.setStreak(0);
-            await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId);
+            (_c = document.querySelector(".selected-option")) === null || _c === void 0 ? void 0 : _c.classList.add("wrong-option");
+            await auditTranslation(this.currentQuestion.translationQuestionId, true, this.currentUserId);
         }
     }
     loadDomElements() {
-        this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence");
+        this.promptWordElement = document.querySelector(".placeholder-sentence");
         this.optionsSectionElement = document.querySelector(".question-options");
         ;
         this.checkButton = document.querySelector("#question-check");

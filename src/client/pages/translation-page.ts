@@ -1,29 +1,26 @@
-import { BasePage, Language } from "../types"
-import { FillBlankQuestion } from "../types";
-import { auditFillBlank, getFillBlankQuestion } from "../api-client";
+import { BasePage, Language, TranslationQuestion } from "../types"
+import { auditTranslation, getTranslationQuestion} from "../api-client";
 import { getSignedInUser, shuffle } from "../utils";
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
 import { Navbar } from "../components/navbar";
-import { FillBlankSentence } from "../components/fill-blank-sentence";
 import { ResultImageComponent } from "../components/result-image";
 
 export class TranslationExercisePage implements BasePage {
     currentStreak: number = 0;
     currentLanguageSelection: Language = "Afrikaans";
     currentUserId: number | null = null;
-    currentQuestion: FillBlankQuestion | undefined;
-    placeholderSentenceSectionElement: HTMLSelectElement | undefined;
+    currentQuestion: TranslationQuestion| undefined;
     optionsSectionElement: HTMLSelectElement | undefined;
     selectedOption: string | undefined;
     checkButton: HTMLButtonElement | undefined;
     skipButton: HTMLButtonElement | undefined;
+    promptWordElement : HTMLElement | undefined;
     fillBlankFooter: HTMLElement | undefined;
     resultImage: HTMLElement | undefined;
 
     options = new QuestionOptions();
     navbar = new Navbar(true);
-    fillBlankSentence = new FillBlankSentence();
     resultImageComponent = new ResultImageComponent();
 
     load = async () => {
@@ -48,7 +45,6 @@ export class TranslationExercisePage implements BasePage {
         this.checkButton.disabled = true;
 
         this.checkButton.addEventListener('click', async (e) => {
-
             if (this.currentQuestion?.completed) {
                 this.handleNext();
                 return;
@@ -56,8 +52,6 @@ export class TranslationExercisePage implements BasePage {
             if (this.currentQuestion && !this.currentQuestion?.completed) {
                 await this.handleCheck();
                 return;
-            }else{
-                console.log("something is amis")
             }
         })
 
@@ -69,25 +63,25 @@ export class TranslationExercisePage implements BasePage {
     render = () => {
         return `
         ${this.navbar.render()}
-        ${document.querySelector(".fill-blank-template")?.innerHTML ?? ""}
+        ${document.querySelector(".translation-template")?.innerHTML ?? ""}
         `
     }
 
     async getQuestion() {
-        if (!this.placeholderSentenceSectionElement || !this.optionsSectionElement) {
+        if (!this.promptWordElement || !this.optionsSectionElement) {
             throw new Error("Required elements were not loaded in the component's state");
         }
         const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
         const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
         characterImage.src = `/img/${character}`;
-        this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
-        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
-        this.options.registerOptions(this);
+        this.currentQuestion = await getTranslationQuestion (this.currentLanguageSelection);
+        this.promptWordElement.innerText = `${this.currentQuestion.promptWord} . . .`;
+        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord]));
+        this.options.registerOptions(this, false);
     }
 
     handleNext() {
-        if (!this.currentQuestion || !this.placeholderSentenceSectionElement || !this.optionsSectionElement || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
+        if (!this.currentQuestion || !this.promptWordElement || !this.optionsSectionElement || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
             throw new Error("Required elements not loaded in the component's state");
         }
         this.getQuestion();
@@ -100,24 +94,26 @@ export class TranslationExercisePage implements BasePage {
     }
 
     async handleCheck() {
-        if (!this.currentQuestion || !this.placeholderSentenceSectionElement || !this.optionsSectionElement || !this.selectedOption || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
-            throw new Error("Required elements not loaded in the component's state");
+        if (!this.currentQuestion || !this.promptWordElement || !this.optionsSectionElement || !this.selectedOption || !this.checkButton || !this.skipButton || !this.fillBlankFooter || !this.resultImage) {
+            return;
         }
         this.currentQuestion.completed = true;
         this.checkButton.innerText = "Next"
         this.skipButton.style.visibility = "hidden";
-        if (this.selectedOption === this.currentQuestion?.word) {
+        if (this.selectedOption === this.currentQuestion?.answerWord) {
             this.fillBlankFooter.style.backgroundColor = seaSponge;
             this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "correct.png", message: "Well done"});
             this.resultImage.style.display = "block";
             this.setStreak(this.currentStreak + 1);
-            await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId as number);
+            document.querySelector(".selected-option")?.classList.add("correct-option");
+            await auditTranslation(this.currentQuestion.translationQuestionId, true, this.currentUserId as number);
         } else {
             this.fillBlankFooter.style.backgroundColor = colorCrab;
-            this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "incorrect.png", message: `Answer: '${this.currentQuestion.word}'`});
+            this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "incorrect.png", message: `Answer: '${this.currentQuestion.answerWord}'`});
             this.resultImage.style.display = "block";
             this.setStreak(0);
-            await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId as number);
+            document.querySelector(".selected-option")?.classList.add("wrong-option");
+            await auditTranslation(this.currentQuestion.translationQuestionId, true, this.currentUserId as number);
         }
     }
 
@@ -128,7 +124,7 @@ export class TranslationExercisePage implements BasePage {
     }
 
     loadDomElements() {
-        this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence") as HTMLSelectElement;
+        this.promptWordElement = document.querySelector(".placeholder-sentence") as HTMLSelectElement;
         this.optionsSectionElement = document.querySelector(".question-options") as HTMLSelectElement;;
         this.checkButton = document.querySelector("#question-check") as HTMLButtonElement;;
         this.skipButton = document.querySelector("#question-skip") as HTMLButtonElement;
