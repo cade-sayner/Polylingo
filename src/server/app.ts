@@ -2,7 +2,6 @@ import express from 'express';
 import { registerUserRoutes } from './handlers/user-handlers';
 import { registerAuthRoutes } from './handlers/auth-handlers';
 import { registerWordRoutes } from './handlers/word-handlers';
-import {registerFillBlankQuestionsAuditRoutes} from './handlers/fill-blank-questions-audit-handlers';
 import { hasKeys } from './lib/type-helpers';
 import { registerTranslationAuditRoutes } from './handlers/translations-audit-handlers';
 import 'dotenv/config'
@@ -30,7 +29,6 @@ registerTranslationAuditRoutes(app);
 registerTranslationQuestionsRoutes(app);
 registerFillBlankRoutes(app);
 registerWordRoutes(app);
-registerFillBlankQuestionsAuditRoutes(app);
 registerLanguageRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');

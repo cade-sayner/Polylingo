@@ -73,25 +73,6 @@ export type Languages = {
     language_name : string;
 }
 
-export type FillBlankQuestionsAudit = {
-    fillBlankQuestionsAuditId: number | null;
-    userId: number;
-    fillBlankQuestionId: number;
-    timeAttempted: string;
-    answerCorrect: boolean;
-};
-
-export type FillBlankQuestionsAuditResponse = {
-    fillBlankQuestionsAuditId: number | null;
-    fillBlankQuestionId: number;
-    timeAttempted: string;
-    answerCorrect: boolean;
-    userName?: string;
-    placeholderSentence?: string;
-    correctWord: string;
-};
-
-
 export type WordResponse = {
     wordId: number;
     word: string;
