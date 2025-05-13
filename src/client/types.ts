@@ -24,6 +24,15 @@ export type FillBlankQuestion = {
     completed : boolean;
 }
 
+export type TranslationQuestion = {
+    translationQuestionId : number;
+    promptWord : string;
+    answerWord : string;
+    distractors : string[];
+    difficultyScore : number;
+    completed : boolean;
+}
+
 export interface JwtPayload {
   exp?: number;
   [key: string]: any;
