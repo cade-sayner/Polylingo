@@ -10,16 +10,26 @@ const wordRepo = new WordRepository("words", "word_id");
 const userRepo = new UserRepository("users", "user_id");
 export function registerTranslationQuestionsRoutes(app: Express) {
     app.use(express.json());
-    app.get("/api/translationquestions", authenticate, getTranslationQuestions);
+    app.get("/api/translationquestions", authenticate, authorize(['INSTRUCTOR']), getTranslationQuestions);
     app.get("/api/translationquestions/user", authenticate, authorize(['USER']), getQuestionForUser);
-
     app.post("/api/translationquestions", authenticate, authorize(['INSTRUCTOR']), createTranslationQuestion);
-    app.put("/api/translationquestions/:id", authenticate, authorize(['INSTRUCTOR']), updateTranslationQuestion);
 }
 
 async function getTranslationQuestions(req: Request, res: any) {
     try {
-        let translationQuestions = await translationQuestionsRepo.getAll();
+        let translationQuestions;
+        let promptWordId = req.query.promptWordId as string;
+
+        if (promptWordId) {
+            if (Number.isNaN(parseInt(promptWordId))) {
+                return res.status(401).json("Prompt word id should be a valid number.")
+            }
+            translationQuestions = await translationQuestionsRepo.getByPromptWordId(parseInt(promptWordId));
+        }
+        else {
+            translationQuestions = await translationQuestionsRepo.getAll();
+        }
+
         return res.status(200).json(translationQuestions);
     }
     catch(e){
@@ -127,70 +137,5 @@ async function createTranslationQuestion(req: Request, res: any) {
         // return res.status(500).json({message: "An error occurred while creating the translation question."});
         return res.status(500).json(e);
         // TODO : log the error here
-    }
-}
-
-async function updateTranslationQuestion(req: Request, res: any) {
-    try {
-        const questionId = parseInt(req.params.id);
-        const promptWordId = req.body.promptWordId;
-        const answerWordId = req.body.answerWordId;
-        const distractors = req.body.distractors;
-        const difficultyScore = req.body.difficultyScore;
-        
-        const existingQuestion = await translationQuestionsRepo.getByID(questionId);
-        if (!existingQuestion) {
-            return res.status(404).json({message: "Translation question not found"});
-        }
-
-        if (promptWordId !== undefined) {
-            const promptWord = await wordRepo.getByID(promptWordId);
-            if (!promptWord) {
-                return res.status(404).json({message: "Prompt word not found"});
-            }
-        }
-
-        if (answerWordId !== undefined) {
-            const answerWord = await wordRepo.getByID(answerWordId);
-            if (!answerWord) {
-                return res.status(404).json({message: "Answer word not found"});
-            }
-        }
-
-        if (distractors !== undefined) {
-            if (!Array.isArray(distractors)) {
-                return res.status(400).json({message: "Distractors must be an array"});
-            }
-        }
-        
-        if (difficultyScore !== undefined && (difficultyScore < 1 || difficultyScore > 10)) {
-            return res.status(400).json({message: "Difficulty score must be between 1 and 10"});
-        }
-
-        const updatedQuestion: TranslationQuestion = {
-            ...existingQuestion,
-            promptWord: promptWordId !== undefined ? promptWordId : existingQuestion.promptWord,
-            answerWord: answerWordId !== undefined ? answerWordId : existingQuestion.answerWord,
-            distractors: distractors !== undefined ? distractors : existingQuestion.distractors,
-            difficultyScore: difficultyScore !== undefined ? difficultyScore : existingQuestion.difficultyScore
-        };
-
-        if (updatedQuestion.promptWord === updatedQuestion.answerWord) {
-            return res.status(400).json({message: "Prompt word and answer word must be different"});
-        }
-        
-        const answerWord = await wordRepo.getByID(updatedQuestion.answerWord);
-        const answerWordText = answerWord?.word || '';
-        if (updatedQuestion.distractors.includes(answerWordText)) {
-            return res.status(400).json({message: "Distractors should not include the answer word"});
-        }
-
-        const result = await translationQuestionsRepo.update(questionId, updatedQuestion);
-
-        return res.status(200).json(result);
-    }
-    catch(e) {
-        console.error((e as Error).message)
-        return res.status(500).json(e);
     }
 }

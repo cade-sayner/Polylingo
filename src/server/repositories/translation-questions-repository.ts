@@ -96,4 +96,14 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
         } 
     }
 
+    async getByPromptWordId(promptWordId: number){
+        let queryString = `
+        SELECT * FROM translation_questions
+        WHERE prompt_word = $1
+        `;
+
+        const translationQuestions = await queryReturnAll(queryString, [promptWordId]) as unknown as TranslationQuestion | null; 
+
+        return translationQuestions;
+    }
 }

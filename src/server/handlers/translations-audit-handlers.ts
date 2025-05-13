@@ -1,14 +1,28 @@
 import { Express, Request } from 'express';
 import { TranslationQuestionsAuditRepository } from '../repositories/translations-audit-repository';
-import { authenticate, getGoogleId } from '../lib/authentication';
+import { authenticate, authorize, getGoogleId } from '../lib/authentication';
 import { UserRepository } from '../repositories/user-repository';
 
 const translationAuditRepo = new TranslationQuestionsAuditRepository("translation_questions_audit", "translation_questions_audit_id");
 const userRepo = new UserRepository("users", "user_id")
 
 export function registerTranslationAuditRoutes(app: Express) {
-    app.post('/api/audit/translation', authenticate, createTranslationAudit);
-    app.get('/api/audit/translation', authenticate, getUserTranslationAudits);
+    app.get('/api/audit/translation', authenticate, authorize(['USER']), getUserTranslationAudits);
+    app.post('/api/audit/translation', authenticate, authorize(['USER']), createTranslationAudit);
+}
+
+async function getUserTranslationAudits(req: Request, res: any) {
+    try {
+        let user = await userRepo.getByColumnName("googleId", getGoogleId(req));
+        if (user == null || user.userId == null) {
+            return res.status(500).json({ message: "Logged in user could not be found" });
+        }
+        const records = await translationAuditRepo.getAllByColumnName("userId", user.userId);
+        return res.status(200).json(records);
+    } catch (e) {
+        console.error("Error fetching translation audits:", e);
+        return res.status(500).json({ message: 'An error occurred while fetching audit records.' });
+    }
 }
 
 async function createTranslationAudit(req: Request, res: any) {
@@ -35,19 +49,5 @@ async function createTranslationAudit(req: Request, res: any) {
     } catch (e) {
         console.error("Error creating translation audit:", e);
         return res.status(500).json({ message: 'An error occurred while trying to create the audit record.' });
-    }
-}
-
-async function getUserTranslationAudits(req: Request, res: any) {
-    try {
-        let user = await userRepo.getByColumnName("googleId", getGoogleId(req));
-        if (user == null || user.userId == null) {
-            return res.status(500).json({ message: "Logged in user could not be found" });
-        }
-        const records = await translationAuditRepo.getAllByColumnName("userId", user.userId);
-        return res.status(200).json(records);
-    } catch (e) {
-        console.error("Error fetching translation audits:", e);
-        return res.status(500).json({ message: 'An error occurred while fetching audit records.' });
     }
 }
