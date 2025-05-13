@@ -23,6 +23,15 @@ export type FillBlankQuestion = {
     difficultyScore : number;
     completed : boolean;
 }
+
+export type TranslationQuestion = {
+    translationQuestionId : number;
+    promptWord : string;
+    answerWord : string;
+    distractors : string[];
+    difficultyScore : number;
+    completed : boolean;
+}
   
 export interface RouteDefinition {
     content: () => string | undefined;
