@@ -127,6 +127,51 @@
 
 </template>
 
+<template class="translation-template">
+    <nav class="login-header">
+        <section class="logo-section">
+            <h3 class="logo-text">
+            <span class="poly">
+                <span style="color: rgb(225, 193, 103);">P</span>
+                <span style="color: rgb(225, 193, 103);">O</span>
+                <span style="color: rgb(225, 193, 103);">L</span>
+                <span style="color: rgb(225, 193, 103);">Y</span>
+              </span>lingo
+            </h3>
+        </section>
+        <section class="language-select-section">
+            <label for="language-select">Language:</label>
+            <select id="language-select" class="language-select call-sans">
+                <option value="Afrikaans">
+                    Afrikaans
+                </option>
+                <option value="German">German</option>
+                <option value="Italian">Italian</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+            </select>
+        </section>
+    </nav>
+
+    <article class="exercise-container">
+        <header class="exercise-title">
+            <h1> Translate the following </h1>
+        </header>
+        <section class="placeholder-sentence-container">
+            <figure>
+                <img src="/img/springbok-speaker.png" class="speaker-image">
+            </figure>
+            <section class="placeholder-sentence speech-bubble"> </section>
+        </section>
+        <section class="fill-blank-options"> </section>
+    </article>
+    <footer class="fill-blank-footer">
+        <button id="fill-blank-skip" class="fill-blank-button call-sans"> Skip </button>
+        <button id="fill-blank-check" class="fill-blank-button call-sans"> Check </button>
+    </footer>
+
+</template>
+
 
 <template class="instructor-landing-page-template">
     <article class="login-container">

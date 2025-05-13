@@ -4,6 +4,7 @@ import { loadLandingPage } from "./pages/landing";
 import { loadUserLandingPage } from "./pages/user-landing";
 import { loadInstructorLandingPage } from "./pages/instructor-landing";
 import { loadFillBlankExercise } from "./pages/fill-blank";
+import { loadTranslationExercise } from "./pages/translation";
 import { RouteDefinition } from "./types";
 
 const routes: Record<string, RouteDefinition> = {
@@ -11,7 +12,8 @@ const routes: Record<string, RouteDefinition> = {
     '/landing/user': { content: () => document.querySelector(".landing-page-template")?.innerHTML, loadCallback: loadUserLandingPage },
     '/landing/instructor': { content: () => document.querySelector(".instructor-landing-page-template")?.innerHTML, loadCallback: loadInstructorLandingPage },
     '/': { content: () => document.querySelector(".loadingLandingPageTemplate")?.innerHTML, loadCallback: loadLandingPage },
-    '/exercise/fill-blank': { content: () => document.querySelector(".fill-blank-template")?.innerHTML, loadCallback: loadFillBlankExercise }
+    '/exercise/fill-blank': { content: () => document.querySelector(".fill-blank-template")?.innerHTML, loadCallback: loadFillBlankExercise },
+    '/exercise/translation': { content: () => document.querySelector(".fill-blank-template")?.innerHTML, loadCallback: loadTranslationExercise }
 }
 
 export function render(path: string) {
