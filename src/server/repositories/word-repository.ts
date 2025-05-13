@@ -7,12 +7,12 @@ export class WordRepository extends BaseRepository<Word> {
         let queryString = `
         SELECT * FROM words
         WHERE language_id = $1
-        AND word LIKE '$2%'
+        AND word LIKE $2
         ORDER BY LENGTH(word)
         LIMIT 50
         `;
 
-        const translationQuestions = await queryReturnAll(queryString, [languageId, searchText]) as unknown as Word | null; 
+        const translationQuestions = await queryReturnAll(queryString, [languageId, searchText+'%']) as unknown as Word | null; 
 
         return translationQuestions;
     }

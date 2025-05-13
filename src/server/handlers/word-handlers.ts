@@ -1,13 +1,12 @@
 import express, { Express, Request } from 'express';
 import {WordRepository} from "../repositories/word-repository";
-import { Word } from '../lib/types';
 import { authenticate, authorize, getGoogleId } from '../lib/authentication';
 import { UserRepository } from '../repositories/user-repository';
 
 const wordRepo = new WordRepository("words", "word_id");
 const userRepo = new UserRepository("users", "user_id")
 
-export function registerLanguageRoutes(app: Express) {
+export function registerWordRoutes(app: Express) {
     app.use(express.json());
     app.get("/api/word", authenticate, authorize(['USER', 'INSTRUCTOR']), getWords);
     app.get("/api/language/:id", authenticate, authorize(['USER', 'INSTRUCTOR']), getWordById);
