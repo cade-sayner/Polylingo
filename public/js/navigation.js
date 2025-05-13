@@ -2,6 +2,7 @@ import { applicationUri } from "./constants";
 import { FillBlankExercisePage } from "./pages/fill-blank";
 import { TranslationExercisePage } from "./pages/translation-page";
 import { LoginPage } from "./pages/login";
+import { UserLandingPage } from "./pages/user-landing";
 // const routes: Record<string, RouteDefinition> = {
 //     '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
 //     '/landing/user': { content: () => document.querySelector(".landing-page-template")?.innerHTML, loadCallback: loadUserLandingPage },
@@ -12,7 +13,8 @@ import { LoginPage } from "./pages/login";
 const routes = {
     '/exercise/fill-blank': new FillBlankExercisePage(),
     '/login': new LoginPage(),
-    '/exercise/translate': new TranslationExercisePage()
+    '/exercise/translate': new TranslationExercisePage(),
+    '/landing/user': new UserLandingPage()
 };
 export function render(path) {
     var _a, _b;
@@ -31,3 +33,4 @@ export function navigateTo(path) {
     history.pushState({}, '', `${applicationUri}${path}`);
     render(path);
 }
+window.navigateTo = navigateTo;

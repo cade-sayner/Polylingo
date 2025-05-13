@@ -18,7 +18,7 @@ export class Navbar {
         </nav>
         ` :
             ` 
-        <nav class="login-header">
+        <nav class="header">
         ${this.navbar.innerHTML}
         </nav>
         `;
