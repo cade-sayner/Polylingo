@@ -68,6 +68,16 @@ export type TranslationQuestionsAudit = {
     answerCorrect: boolean;
 };
 
+
+export type FillBlankQuestionsAudit = {
+    fillBlankQuestionsAuditId?: number;
+    userId: number;
+    fillBlankQuestionId: number;
+    timeAttempted: Date;
+    answerCorrect: boolean;
+};
+
+
 export type Languages = {
     language_id : number;
     language_name : string;
