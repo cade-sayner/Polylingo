@@ -16,7 +16,7 @@ export class Navbar implements BaseComponent{
     render(){
         let rendered = this.includeLanguageSelection ?
         `
-        <nav class="login-header">
+        <nav class="header">
         ${this.navbar.innerHTML}
         ${this.languageSelectionComponent?.render() ?? ""}
         </nav>

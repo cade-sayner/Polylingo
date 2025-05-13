@@ -12,7 +12,7 @@ export class Navbar {
         var _a, _b;
         let rendered = this.includeLanguageSelection ?
             `
-        <nav class="login-header">
+        <nav class="header">
         ${this.navbar.innerHTML}
         ${(_b = (_a = this.languageSelectionComponent) === null || _a === void 0 ? void 0 : _a.render()) !== null && _b !== void 0 ? _b : ""}
         </nav>
