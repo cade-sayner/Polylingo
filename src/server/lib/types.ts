@@ -46,7 +46,7 @@ export type FillBlankQuestion = {
 export type Word = {
     wordId : number | null;
     word : string;
-    languagId : number;
+    languageId : number;
 }
 
 export type FillBlankQuestionResponse = {
@@ -68,16 +68,33 @@ export type TranslationQuestionsAudit = {
     answerCorrect: boolean;
 };
 
-export type FillBlankQuestionsAudit = {
-    fillBlankQuestionsAuditId?: number;
-    userId: number;
-    fillBlankQuestionId: number;
-    timeAttempted: Date;
-    answerCorrect: boolean;
-};
-
 export type Languages = {
     language_id : number;
     language_name : string;
 }
+
+export type FillBlankQuestionsAudit = {
+    fillBlankQuestionsAuditId: number | null;
+    userId: number;
+    fillBlankQuestionId: number;
+    timeAttempted: string;
+    answerCorrect: boolean;
+};
+
+export type FillBlankQuestionsAuditResponse = {
+    fillBlankQuestionsAuditId: number | null;
+    fillBlankQuestionId: number;
+    timeAttempted: string;
+    answerCorrect: boolean;
+    userName?: string;
+    placeholderSentence?: string;
+    correctWord: string;
+};
+
+
+export type WordResponse = {
+    wordId: number;
+    word: string;
+    languageName?: string;
+};
 
