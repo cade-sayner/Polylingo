@@ -2,7 +2,7 @@ import { Express, Request, Response } from 'express';
 import { WordRepository } from '../repositories/word-repository';
 import {LanguageRepository} from "../repositories/language-repository";
 
-const wordRepo = new WordRepository();
+const wordRepo = new WordRepository("words", "word_id");
 const languageRepo = new LanguageRepository("languages", "language_id");
 import { Word, WordResponse } from '../lib/types';
 
@@ -12,7 +12,7 @@ export function registerWordRoutes(app: Express) {
     app.post('/api/words', createWord);
     app.delete('/api/words/:id', deleteWord);
     app.get('/api/words/language/:id', getAllWordsByLanguage);
-    app.put('/api/words/:id', updateWord);
+   // app.put('/api/words/:id', updateWord);
 }
 
 async function getAllWords(req: Request, res: Response) {
@@ -21,6 +21,7 @@ async function getAllWords(req: Request, res: Response) {
         const wordResponses = await Promise.all(words.map(word => transformWordToResponse(word)));
         res.status(200).json(wordResponses);
     } catch (e) {
+        console.log(e);
         res.status(500).json({ message: "Error fetching words." });
     }
 }
@@ -87,9 +88,9 @@ async function updateWord(req: Request, res: Response) {
         const updatedWord = { ...existingWord, ...updatedData, wordId: id };
 
         const result = await wordRepo.update(id, updatedWord);
-        const updatedResponse = await transformWordToResponse(result);
+        //const updatedResponse = await transformWordToResponse(result);
 
-        res.status(200).json(updatedResponse);
+        res.status(200).json(result);
     } catch (e: any) {
         if (e.message.includes("duplicate key")) {
             res.status(409).json({ message: "Word already exists for this language." });
@@ -105,6 +106,6 @@ async function transformWordToResponse(word: Word): Promise<WordResponse> {
   return {
     wordId: word.wordId ?? -1,
     word: word.word,
-    languageName: language?.name ?? "Unknown"
+    languageName: language?.languageName ?? "Unknown"
   }
 }

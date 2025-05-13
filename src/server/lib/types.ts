@@ -46,7 +46,7 @@ export type FillBlankQuestion = {
 export type Word = {
     wordId : number | null;
     word : string;
-    languagId : number;
+    languageId : number;
 }
 
 export type FillBlankQuestionResponse = {
@@ -88,6 +88,7 @@ export type FillBlankQuestionsAuditResponse = {
     answerCorrect: boolean;
     userName?: string;
     placeholderSentence?: string;
+    correctWord: string;
 };
 
 
