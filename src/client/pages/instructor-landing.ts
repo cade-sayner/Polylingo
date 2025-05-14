@@ -2,7 +2,7 @@ import { LandingCard } from "../components/landing-card";
 import { Navbar } from "../components/navbar";
 import { BasePage } from "../types";
 
-export class UserLandingPage implements BasePage {
+export class InstructorLandingPage implements BasePage {
     render() {
         const CardComponent = new LandingCard();
         return `

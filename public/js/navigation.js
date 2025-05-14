@@ -3,6 +3,7 @@ import { FillBlankExercisePage } from "./pages/fill-blank";
 import { TranslationExercisePage } from "./pages/translation-page";
 import { LoginPage } from "./pages/login";
 import { UserLandingPage } from "./pages/user-landing";
+import { InstructorLandingPage } from "./pages/instructor-landing";
 // const routes: Record<string, RouteDefinition> = {
 //     '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
 //     '/landing/user': { content: () => document.querySelector(".landing-page-template")?.innerHTML, loadCallback: loadUserLandingPage },
@@ -14,18 +15,16 @@ const routes = {
     '/exercise/fill-blank': new FillBlankExercisePage(),
     '/login': new LoginPage(),
     '/exercise/translate': new TranslationExercisePage(),
-    '/landing/user': new UserLandingPage()
+    '/landing/user': new UserLandingPage(),
+    '/landing/instructor': new InstructorLandingPage()
 };
 export function render(path) {
     var _a, _b;
-    console.log(path);
-    console.log(routes[path]);
     const pageContent = (_b = (_a = routes[path]) === null || _a === void 0 ? void 0 : _a.render()) !== null && _b !== void 0 ? _b : "<section> 404 not found </section>";
     console.log(pageContent);
     let pageContainer = document.querySelector(".page-container");
     if (pageContainer) {
         pageContainer.innerHTML = pageContent;
-        console.log("Finished navigating");
     }
     routes[path].load();
 }

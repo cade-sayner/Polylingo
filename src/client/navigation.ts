@@ -4,6 +4,7 @@ import { TranslationExercisePage } from "./pages/translation-page";
 import { BasePage } from "./types";
 import { LoginPage } from "./pages/login";
 import { UserLandingPage } from "./pages/user-landing";
+import { InstructorLandingPage } from "./pages/instructor-landing";
 
 // const routes: Record<string, RouteDefinition> = {
 //     '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
@@ -17,18 +18,16 @@ const routes : Record<string, BasePage> = {
     '/exercise/fill-blank' : new FillBlankExercisePage(),
     '/login' : new LoginPage(),
     '/exercise/translate' : new TranslationExercisePage(),
-    '/landing/user' : new UserLandingPage()
+    '/landing/user' : new UserLandingPage(),
+    '/landing/instructor' : new InstructorLandingPage()
 }
 
 export function render(path: string) {
-  console.log(path);
-  console.log(routes[path]);
     const pageContent = routes[path]?.render() ?? "<section> 404 not found </section>";
     console.log(pageContent);
     let pageContainer = document.querySelector(".page-container");
     if (pageContainer) {
       pageContainer.innerHTML = pageContent;
-      console.log("Finished navigating");
     }
     routes[path].load();
   }
