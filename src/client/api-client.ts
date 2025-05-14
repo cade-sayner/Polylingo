@@ -32,13 +32,12 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   return response.json();
 }
 
-export async function getFillBlankQuestion(language: Language): Promise<FillBlankQuestion>{
-        // no this needs to go through the api client
+export async function getFillBlankQuestionForUser(language: Language): Promise<FillBlankQuestion>{
         let response = await apiFetch(`/api/fill_blank/user?language=${language}`);
         return response as FillBlankQuestion;
 }
 
-export async function getTranslationQuestion(language: Language): Promise<TranslationQuestion> {
+export async function getTranslationQuestionForUser(language: Language): Promise<TranslationQuestion> {
     let response = await apiFetch(`/api/translationquestions/user?prompt_language=${language}&answer_language=English`);
     return await response as TranslationQuestion;
 }
@@ -66,4 +65,14 @@ export async function auditTranslation(translationQuestionId: number, correct: b
             answerCorrect: correct
         })
     })
+}
+
+export async function getExistingTranslationQuestions(promptWordId: number) {
+  let response = await apiFetch(`/api/translationquestions?promptWordId=${promptWordId}`);
+  return response as TranslationQuestion[];
+}
+
+export async function getExistingFillBlankQuestions(promptWordId: number) {
+  let response = await apiFetch(`/api/fill_blank?promptWordId=${promptWordId}`);
+  return response as FillBlankQuestion[];
 }

@@ -3,6 +3,7 @@ import { registerUserRoutes } from './handlers/user-handlers';
 import { registerAuthRoutes } from './handlers/auth-handlers';
 import { registerTranslationAuditRoutes } from './handlers/translations-audit-handlers';
 import { registerFillBlankAuditRoutes } from './handlers/fill-blank-audit-handlers';
+import { registerWordRoutes } from './handlers/word-handlers';
 import 'dotenv/config'
 import path from 'path';
 import { registerFillBlankRoutes } from './handlers/fill-blank-handlers';
@@ -30,6 +31,7 @@ registerFillBlankAuditRoutes(app)
 registerTranslationQuestionsRoutes(app);
 registerFillBlankRoutes(app);
 registerLanguageRoutes(app);
+registerWordRoutes(app);
 
 const publicDir = path.join(__dirname, '..', 'public');
 

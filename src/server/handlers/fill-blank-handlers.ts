@@ -1,6 +1,6 @@
 
 import { Express, Request } from 'express';
-import { authenticate } from '../lib/authentication';
+import { authenticate, authorize, getGoogleId} from '../lib/authentication';
 import { FillBlankRepository } from '../repositories/fill-blank-repository';
 import { FillBlankQuestion, Language } from '../lib/types';
 import { hasKeys } from '../lib/type-helpers';
@@ -12,15 +12,27 @@ let languages = ["German", "Afrikaans", "Spanish", "Italian", "French"]
 const userRepo = new UserRepository("users", "user_id");
 
 export function registerFillBlankRoutes(app: Express) {
-    app.get("/api/fill_blank/user", authenticate, getFillBlankUser);
-    app.get("/api/fill_blank", authenticate, getFillBlanks)
-    app.put("/api/fill_blank/:id", authenticate, putFillBlank);
-    app.post("/api/fill_blank", authenticate, postFillBlank);
+    app.get("/api/fill_blank", authenticate, authorize(['INSTRUCTOR']), getFillBlanks);
+    app.get("/api/fill_blank/user", authenticate, authorize(['User', 'INSTRUCTOR']), getFillBlankUser);
+    app.post("/api/fill_blank", authenticate, authorize(['INSTRUCTOR']), postFillBlank);
 }
 
 async function getFillBlanks(req:Request, res:any){
     try{
-        return res.status(200).json(await fillBlankRepo.getAll());
+        let fillBlankQuestions;
+        let promptWordId = req.query.promptWordId as string;
+        
+        if (promptWordId) {
+            if (Number.isNaN(parseInt(promptWordId))) {
+                return res.status(401).json("Prompt word id should be a valid number.")
+            }
+            fillBlankQuestions = await fillBlankRepo.getByPromptWordId(parseInt(promptWordId));
+        }
+        else {
+            fillBlankQuestions = await fillBlankRepo.getAll();
+        }
+
+        return res.status(200).json(fillBlankQuestions);
     }catch(e){
         console.error((e as Error).message);
         return res.status(500).json({message : "Something went wrong getting fill blank questions"});
@@ -34,7 +46,7 @@ async function getFillBlankUser(req: Request, res: any) {
         if (!languages.includes(language as string)) {
             return res.status(400).json({ message: "Language not supported" })
         }
-        const user = await userRepo.getByColumnName("googleId", (req.user as {googleId : string}).googleId);
+        const user = await userRepo.getByColumnName("googleId", getGoogleId(req));
         if(!user) return null;
         let easiestUnansweredQuestion = await fillBlankRepo.getEasiestUnanswered(language as Language, user.userId as number);
         // if there is an unanswered question then get it
@@ -72,37 +84,6 @@ async function postFillBlank(req: Request, res: any) {
     }catch(e){
         console.error((e as Error).message);
         return res.status(500).json({message : "Error creating fill blank question"});
-    }
-}
-
-async function putFillBlank(req: Request, res: any) {
-    try {
-        if (!req?.params?.id) {
-            return res.status(400).json({ message: "Required field 'id' not found" })
-        }
-        const id = parseInt(req.params.id as string);
-        if (Number.isNaN(id)) {
-            return res.status(400).json({ message: "Required field id not of the expected type 'number'" });
-        }
-        if (!hasKeys(req.body,
-            [
-                { name: "placeholderSentence", type: "string" },
-                { name: "missingWordId", type: "number" },
-                { name: "difficultyScore", type: "number" },
-                { name: "distractors", type: "object" }
-            ])) {
-            return res.status(400).json({ message: "Body of request malformed. " });
-        }
-
-        if (!Array.isArray(req.body?.distractors)) {
-            return res.status(400).json({ message: "Distractors must be an array of strings." });
-        }
-        if(! (await fillBlankRepo.getByID(id))){return res.status(404).json("The question does not exist")}
-        return res.status(200).json(await fillBlankRepo.update(id, req.body));
-    }
-    catch (e) {
-        console.error((e as Error).message);
-        return res.status(500).json({ message: "Something went wrong updating a fill blank question." })
     }
 }
 
