@@ -1,5 +1,6 @@
 import { applicationUri } from "./constants";
 import { FillBlankExercisePage} from "./pages/fill-blank";
+import { InstructorCreatePage } from "./pages/instructor-page";
 import { TranslationExercisePage } from "./pages/translation-page";
 import { BasePage } from "./types";
 import { LoginPage } from "./pages/login";
@@ -11,6 +12,7 @@ const routes : Record<string, BasePage> = {
     '/exercise/fill-blank' : new FillBlankExercisePage(),
     '/login' : new LoginPage(),
     '/exercise/translate' : new TranslationExercisePage(),
+    '/instructor/create' : new InstructorCreatePage(),
     '/landing' : new LandingPage(),
     '/landing/user' : new UserLandingPage(),
     '/landing/instructor' : new InstructorLandingPage()

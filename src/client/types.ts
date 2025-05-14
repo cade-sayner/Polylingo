@@ -44,4 +44,5 @@ export interface BasePage extends BaseComponent{
 
 export interface BaseComponent{
   render : (prop ?: any) => string;
+  mount?(): void;
 }
