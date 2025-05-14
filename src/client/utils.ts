@@ -15,7 +15,7 @@ export function shuffle(array : any[]) {
 
 export function flipAnimation(start: HTMLElement, end: HTMLElement) {
     // set the transform of end element to be that of the start element
-    end.innerHTML = start.innerHTML;
+    end.innerText = start.innerText;
     const { left: endCoordX, top: endCoordY } = end.getBoundingClientRect();
     const { left: startCoordX, top: startCoordY } = start.getBoundingClientRect();
     const deltaX = startCoordX - endCoordX;
