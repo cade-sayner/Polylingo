@@ -1,6 +1,6 @@
 import { BasePage, Language } from "../types"
 import { FillBlankQuestion } from "../types";
-import { auditFillBlank, getFillBlankQuestion } from "../api-client";
+import { auditFillBlank, getFillBlankQuestionForUser } from "../api-client";
 import { getSignedInUser, shuffle } from "../utils";
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
@@ -78,7 +78,7 @@ export class FillBlankExercisePage implements BasePage {
         const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
         const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
         characterImage.src = `/img/${character}`;
-        this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
+        this.currentQuestion = await getFillBlankQuestionForUser(this.currentLanguageSelection);
         this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
         this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
         this.options.registerOptions(this);
