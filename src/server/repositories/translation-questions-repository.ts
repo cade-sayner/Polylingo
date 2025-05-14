@@ -54,7 +54,6 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
         LIMIT 1
         `;
 
-        console.log(userId);
         const translationQuestion = await queryReturnOne(queryString, [promptLanguage, answerLanguage, userId]) as TranslationQuestion | null;
         let promptWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.promptWord]) as {word : string};
         let answerWord = await queryReturnOne("SELECT * FROM words WHERE word_id = $1", [translationQuestion?.answerWord]) as {word : string};

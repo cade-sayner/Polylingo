@@ -46,7 +46,6 @@ export async function getTranslationQuestion(language: Language): Promise<Transl
 
 export async function auditFillBlank(fillBlankId: number, correct: boolean, currentUserId : number) {
     if(!currentUserId){throw new Error("Failed to audit");}
-    console.log(fillBlankId);
     await apiFetch("/api/audit/fill-blank", {
         method:"Post",
         body: JSON.stringify({
@@ -59,7 +58,6 @@ export async function auditFillBlank(fillBlankId: number, correct: boolean, curr
 
 export async function auditTranslation(translationQuestionId: number, correct: boolean, currentUserId : number) {
     if(!currentUserId){throw new Error("Failed to audit");}
-    console.log(translationQuestionId);
     await apiFetch("/api/audit/translation", {
         method:"Post",
         body: JSON.stringify({

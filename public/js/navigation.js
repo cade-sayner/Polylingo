@@ -4,6 +4,7 @@ import { TranslationExercisePage } from "./pages/translation-page";
 import { LoginPage } from "./pages/login";
 import { UserLandingPage } from "./pages/user-landing";
 import { InstructorLandingPage } from "./pages/instructor-landing";
+import { LandingPage } from "./pages/landing";
 // const routes: Record<string, RouteDefinition> = {
 //     '/login': { content: () => document.querySelector(".login-screen-template")?.innerHTML, loadCallback: loadLoginPage },
 //     '/landing/user': { content: () => document.querySelector(".landing-page-template")?.innerHTML, loadCallback: loadUserLandingPage },
@@ -15,6 +16,7 @@ const routes = {
     '/exercise/fill-blank': new FillBlankExercisePage(),
     '/login': new LoginPage(),
     '/exercise/translate': new TranslationExercisePage(),
+    '/landing': new LandingPage(),
     '/landing/user': new UserLandingPage(),
     '/landing/instructor': new InstructorLandingPage()
 };
