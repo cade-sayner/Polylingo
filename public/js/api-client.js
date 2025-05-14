@@ -32,7 +32,6 @@ export async function auditFillBlank(fillBlankId, correct, currentUserId) {
     if (!currentUserId) {
         throw new Error("Failed to audit");
     }
-    console.log(fillBlankId);
     await apiFetch("/api/audit/fill-blank", {
         method: "Post",
         body: JSON.stringify({
@@ -46,7 +45,6 @@ export async function auditTranslation(translationQuestionId, correct, currentUs
     if (!currentUserId) {
         throw new Error("Failed to audit");
     }
-    console.log(translationQuestionId);
     await apiFetch("/api/audit/translation", {
         method: "Post",
         body: JSON.stringify({

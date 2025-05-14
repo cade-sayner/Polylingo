@@ -76,7 +76,7 @@ export class FillBlankExercisePage {
             throw new Error("Required elements not loaded in the component's state");
         }
         this.getQuestion();
-        this.resultImage.innerHTML = "";
+        this.resultImage.innerText = "";
         this.resultImage.style.display = "none";
         this.checkButton.innerText = "Check";
         this.checkButton.disabled = true;
