@@ -12,5 +12,4 @@ export class LandingCard implements BaseComponent{
         }
         `
     }
-
 }
