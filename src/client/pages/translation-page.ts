@@ -66,10 +66,10 @@ export class TranslationExercisePage implements BasePage {
     }
 
     render = () => {
-        return `
-        ${this.navbar.render()}
-        ${document.querySelector(".translation-template")?.innerHTML ?? ""}
-        `
+        return [
+            this.navbar.render() as HTMLElement,
+            (document.querySelector(".translation-template") as HTMLTemplateElement).content.cloneNode(true) as HTMLElement
+        ]
     }
 
     async getQuestion() {
@@ -80,8 +80,8 @@ export class TranslationExercisePage implements BasePage {
         const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getTranslationQuestion (this.currentLanguageSelection);
-        this.promptWordElement.innerText = `${this.currentQuestion.promptWord} . . .`;
-        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord]));
+        this.promptWordElement.innerText = this.currentQuestion.promptWord;
+        this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord])));
         this.options.registerOptions(this, false);
     }
 

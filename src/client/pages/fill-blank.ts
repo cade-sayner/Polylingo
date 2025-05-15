@@ -70,10 +70,10 @@ export class FillBlankExercisePage implements BasePage {
     }
 
     render = () => {
-        return `
-        ${this.navbar.render()}
-        ${document.querySelector(".fill-blank-template")?.innerHTML ?? ""}
-        `
+        return [
+            this.navbar.render() as HTMLElement,
+            (document.querySelector(".fill-blank-template") as HTMLTemplateElement).content.cloneNode(true) as HTMLElement
+        ]
     }
 
     async getQuestion() {
@@ -84,8 +84,8 @@ export class FillBlankExercisePage implements BasePage {
         const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
-        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
+        this.placeholderSentenceSectionElement.appendChild(this.fillBlankSentence.render(this.currentQuestion.placeholderSentence));
+        this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word])));
         this.options.registerOptions(this);
     }
 
