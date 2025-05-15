@@ -97,8 +97,9 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
 
     async getByAnswerWordId(answerWordId: number){
         let queryString = `
-        SELECT t.*, w.word FROM translation_questions t
+        SELECT t.*, ww.word AS quesWord, w.word AS ansWord FROM translation_questions t
         INNER JOIN words w ON w.word_id = t.answer_word
+        INNER JOIN words ww ON ww.word_id = t.prompt_word
         WHERE answer_word = $1
         `;
 

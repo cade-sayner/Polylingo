@@ -1,11 +1,11 @@
-import { apiFetch } from "../api-client";
+import { apiFetch, deleteFillBlankQuestion, getExistingFillBlankQuestions } from "../api-client";
 import { BaseComponent } from "../types";
 import { setupDistractorInput, AutocompleteService } from "../utils";
 
 export class FillInTheBlankComponent implements BaseComponent {
   private languages: {language_id: number, language_name: string}[] = [];
   public selectedLanguageId: number | null = null;
-
+  private currentAnswerWordId : number | null = 20;
 
   render() {
     return document.querySelector("#fill-blank-component")?.innerHTML ?? "";
@@ -18,6 +18,7 @@ export class FillInTheBlankComponent implements BaseComponent {
     this.setupFieldDependencies();
     setupDistractorInput();
     AutocompleteService.setupForComponent(this, "answerWord", "autocompleteDropdown");
+    this.loadExistingQuestions(20);
   }
 
   private setupFieldDependencies() {
@@ -40,6 +41,10 @@ export class FillInTheBlankComponent implements BaseComponent {
       const hasDistractors = distractorInput.value.trim().length > 0;
       createBtn.disabled = !hasDistractors;
     });
+
+    createBtn.addEventListener("click", () => {
+      this.createFillBlank();
+    })
   }
 
 
@@ -81,6 +86,111 @@ export class FillInTheBlankComponent implements BaseComponent {
         this.selectedLanguageId = select.value ? parseInt(select.value) : null;
         console.log('Selected language ID:', this.selectedLanguageId);
       });
+    }
+  }
+
+  deleteFillBlank(id : number, word: string, answerWordId: number) {
+    const confirmation = confirm(`Deleting question for word: ${word}. Are you sure you want to continue?`);
+    if (confirmation) 
+    {
+      deleteFillBlankQuestion(id);
+      this.loadExistingQuestions(answerWordId)
+    }
+  }
+
+  async loadExistingQuestions(answerWordId : number = 20) {
+    const existingQuestions = await getExistingFillBlankQuestions(answerWordId);
+    const tbody = document.getElementById('existing-fill-blank-body');
+    if (tbody == null || existingQuestions == null)
+        return
+    if (existingQuestions.length != 0)
+    {
+      tbody.innerHTML = '';
+      existingQuestions.forEach(q => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+        <td>${q.placeholderSentence}</td>
+        <td>${q.word}</td>
+        <td>${q.distractors.join(', ')}</td>
+        <td>${q.difficultyScore}</td>
+        <td>
+            <button class="delete-btn">Delete</button>
+        </td>
+        `;
+        tbody.appendChild(tr);
+        const deleteBtn = tr.querySelector('.delete-btn') as HTMLButtonElement;
+        deleteBtn.addEventListener('click', () => this.deleteFillBlank(q.fillBlankQuestionsId, q.word, answerWordId));
+      });
+    }
+    else
+    {
+      tbody.innerHTML = '';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+      <td>No questions found for answer word.</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  }
+
+  async createFillBlank() {
+    const answerWordId = this.currentAnswerWordId;
+
+    const distractorInput = document.getElementById("distractorsHidden") as HTMLInputElement;
+    const sentenceInput = document.getElementById("questionSentence") as HTMLInputElement;
+    const difficultyInput = document.getElementById("difficulty") as HTMLSelectElement;
+
+    const distractors = distractorInput?.value.split(",").map(d => d.trim()).filter(d => d !== "");
+    const sentence = sentenceInput?.value.trim();
+    const difficulty = difficultyInput?.value;
+
+    if (!answerWordId) {
+      alert("Please select an existing answer word.");
+      return;
+    }
+    if (!sentence) {
+      alert("Please enter a sentence for the question.");
+      return;
+    }
+    if (!sentence.includes('_'))
+    {
+      alert("Question sentence should include an '_' for the missing word.")
+      return;
+    }
+    if (!difficulty)
+    {
+      alert("A difficulty level must be selected.");
+      return;
+    }
+    if (!distractors || distractors.length === 0) {
+      alert("At least one distractor is required.");
+      return;
+    }
+
+    try {
+      const payload = {
+        missingWordId: answerWordId,
+        distractors,
+        placeholderSentence: sentence,
+        difficultyScore: parseInt(difficulty)
+      };
+
+      const result = await apiFetch("/api/fill_blank", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (result.status = 201) {
+        alert("Fill in the blank question created successfully.");
+        this.loadExistingQuestions(answerWordId);
+      }
+      else {
+        alert(`Failed to create question: ${result.message}`);
+      }
+    } 
+    catch (error) {
+      alert("Failed to create question. Please try again.");
     }
   }
 }

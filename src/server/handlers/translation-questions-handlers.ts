@@ -82,13 +82,11 @@ async function createTranslationQuestion(req: Request, res: any) {
         const answerWordId = req.body.answerWord;
         const distractors = req.body.distractors;
         const difficultyScore = req.body.difficultyScore;
-        
-        // Validate required fields
+
         if (!promptWordId || !answerWordId || !distractors || difficultyScore === undefined) {
             return res.status(400).json({message: "All fields are required: promptWordId, answerWordId, distractors, difficultyScore"});
         }
-        
-        // Validate promptWordId and answerWordId exist
+
         const promptWord = await wordRepo.getByID(promptWordId);
         const answerWord = await wordRepo.getByID(answerWordId);
         

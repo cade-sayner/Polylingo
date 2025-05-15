@@ -217,8 +217,8 @@
         </div>
 
         <div class="form-group">
-          <label for="promptWord">Question Sentence</label>
-          <input type="text" placeholder="Use ___ for blank" name="promptWord" id="promptWord" class="form-control" />
+          <label for="questionSentence">Question Sentence</label>
+          <input type="text" placeholder="Use ___ for blank" name="questionSentence" id="questionSentence" class="form-control" />
         </div>
 
         <div class="form-group">
@@ -250,6 +250,8 @@
             <div class="tags-container" id="distractorTags">
               <!-- tags will be dynamically added here -->
             </div>
+ 
+            <input type="hidden" id="distractorsHidden" name="distractors" />
         </div>
           
         </form>
@@ -298,7 +300,7 @@
             <option value="French">French</option>
           </select>
 
-          <select name="difficulty">
+          <select name="difficulty" id="difficulty">
             <option value="" disabled selected>Difficulty</option>
             <option value="1">1 - Very Easy</option>
             <option value="2">2 - Easy</option>
