@@ -232,7 +232,7 @@ export class FillInTheBlankComponent implements BaseComponent {
       alert("A difficulty level must be selected.");
       return;
     }
-    if (!distractors || distractors.length != 0) {
+    if (!distractors || distractors.length != 3) {
       alert("Three distractors are required.");
       return;
     }
