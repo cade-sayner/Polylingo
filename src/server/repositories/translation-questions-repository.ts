@@ -95,13 +95,14 @@ export class TranslationQuestionRepository extends BaseRepository<TranslationQue
         } 
     }
 
-    async getByPromptWordId(promptWordId: number){
+    async getByAnswerWordId(answerWordId: number){
         let queryString = `
-        SELECT * FROM translation_questions
-        WHERE prompt_word = $1
+        SELECT t.*, w.word FROM translation_questions t
+        INNER JOIN words w ON w.word_id = t.answer_word
+        WHERE answer_word = $1
         `;
 
-        const translationQuestions = await queryReturnAll(queryString, [promptWordId]) as unknown as TranslationQuestion | null; 
+        const translationQuestions = await queryReturnAll(queryString, [answerWordId]) as unknown as TranslationQuestion[] | null; 
 
         return translationQuestions;
     }

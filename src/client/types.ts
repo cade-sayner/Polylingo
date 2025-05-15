@@ -31,6 +31,7 @@ export type TranslationQuestion = {
     distractors : string[];
     difficultyScore : number;
     completed : boolean;
+    word? : string;
 }
 
 export interface JwtPayload {

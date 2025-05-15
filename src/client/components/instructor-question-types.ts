@@ -46,17 +46,17 @@ export class FillInTheBlankComponent implements BaseComponent {
         
         <h3 class="sub-heading">Existing questions for prompt word:</h3>
 
-        <table class="translation-table">
+        <table  class="translation-table">
           <thead>
             <tr>
-              <th>Prompt</th>
-              <th>Answer</th>
+              <th>Question sentence</th>
+              <th>Answer Word</th>
               <th>Distractors</th>
               <th>Difficulty</th>
-              <th>Actions</th>
+              <th></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="existing-fill-blank-body">
             <!-- Rows will go here -->
           </tbody>
         </table>
@@ -130,10 +130,10 @@ export class TranslationComponent implements BaseComponent {
               <th>Answer</th>
               <th>Distractors</th>
               <th>Difficulty</th>
-              <th>Actions</th>
+              <th></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="existing-translations-body">
             <!-- Rows will go here -->
           </tbody>
         </table>
