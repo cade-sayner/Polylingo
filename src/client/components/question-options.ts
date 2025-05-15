@@ -3,10 +3,15 @@ import { flipAnimation } from "../utils";
 
 export class QuestionOptions implements BaseComponent {
     render(options: string[]) {
-        let s = options.map((word) => `<button class="call-sans question-option-word"> ${word} </button>`).join("");
-        return s;
+        return options.map((word) => {
+            const button = document.createElement('button');
+            button.className = 'call-sans question-option-word';
+            button.textContent = word;
+            return button;
+        });
+
     }
-    registerOptions(optionState: { currentQuestion: { completed: any; } | undefined; selectedOption: string | undefined; checkButton: { disabled: boolean; } | undefined; }, animate : boolean = true) {
+    registerOptions(optionState: { currentQuestion: { completed: any; } | undefined; selectedOption: string | undefined; checkButton: { disabled: boolean; } | undefined; }, animate: boolean = true) {
         let options = document.querySelectorAll(".question-option-word");
         options.forEach(option => {
             option.addEventListener('click', (e) => {

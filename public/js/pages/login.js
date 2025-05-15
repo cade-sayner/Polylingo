@@ -2,11 +2,10 @@ import { Navbar } from "../components/navbar";
 import { googleAuthURI } from "../constants";
 export class LoginPage {
     render() {
-        var _a;
-        return `
-    ${(new Navbar(false)).render()}
-    ${(_a = document.querySelector("#login-template")) === null || _a === void 0 ? void 0 : _a.innerHTML}
-    `;
+        return [
+            new Navbar(false).render(),
+            document.querySelector("#login-template").content.cloneNode(true)
+        ];
     }
     load() {
         const loginButton = document.querySelector(".login-button");

@@ -17,14 +17,11 @@ const routes : Record<string, BasePage> = {
 }
 
 export function render(path: string) {
-    const pageContent = routes[path]?.render() ?? "<section> 404 not found </section>";
-    let pageContainer = document.querySelector(".page-container");
+    const pageContent = routes[path]?.render() ?? "404";
+    let pageContainer = document.querySelector(".page-container") as HTMLElement;
     if (pageContainer) {
-      const template = document.createElement("template");
-      template.innerHTML = pageContent.trim();
-      const content = template.content.cloneNode(true);
-      pageContainer.replaceChildren(content);
-      pageContainer.replaceChildren(template.content.cloneNode(true));
+      pageContainer.replaceChildren();
+      pageContainer.append(...pageContent as HTMLElement[]);
     }
     routes[path].load();
   }

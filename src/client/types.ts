@@ -43,5 +43,5 @@ export interface BasePage extends BaseComponent{
 }
 
 export interface BaseComponent{
-  render : (prop ?: any) => string;
+  render : (prop ?: any) => HTMLElement | HTMLElement[];
 }

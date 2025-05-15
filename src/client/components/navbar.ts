@@ -11,21 +11,15 @@ export class Navbar implements BaseComponent{
         this.includeLanguageSelection = includeLanguageSelection
         this.languageSelectionComponent = includeLanguageSelection ? new LanguageSelection() : null;
         if(!document.querySelector("#navbar")) throw new Error("Required template is missing from html");
-        this.navbar = document.querySelector("#navbar") as HTMLElement;
+        this.navbar = document.querySelector("#navbar") as HTMLTemplateElement;
     }
     render(){
-        let rendered = this.includeLanguageSelection ?
-        `
-        <nav class="header">
-        ${this.navbar.innerHTML}
-        ${this.languageSelectionComponent?.render() ?? ""}
-        </nav>
-        ` :
-        ` 
-        <nav class="header">
-        ${this.navbar.innerHTML}
-        </nav>
-        `
-        return rendered;
+            const navBar = document.createElement("nav");
+            navBar.classList.add("header");
+            navBar.appendChild((this.navbar as HTMLTemplateElement).content.cloneNode(true));
+            if(this.includeLanguageSelection){
+                navBar.appendChild(this.languageSelectionComponent?.render() as Node);
+            }
+            return navBar as HTMLElement;
+        }
     }
-}

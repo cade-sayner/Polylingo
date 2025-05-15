@@ -1,8 +1,26 @@
+import { navigateTo } from "../navigation";
 export class LandingCard {
     render(props) {
-        var _a;
-        return `
-        ${(_a = document.querySelector("#landing-card-template")) === null || _a === void 0 ? void 0 : _a.innerHTML.replace("REDIRECT_URI", `'${props.redirectUri}'`).replace("TEMPLATE:HEADER", props.title).replace("TEMPLATE:CAPTION", props.caption).replace("TEMPLATE:IMAGESRC", props.imageUrl)}
-        `;
+        return this.createLandingCard(props);
+    }
+    createLandingCard({ imageUrl, title, caption, redirectUri }) {
+        const template = document.getElementById("landing-card-template");
+        if (!template)
+            return;
+        const clone = template.content.cloneNode(true);
+        const headerEl = clone.querySelector("#landing-card-header");
+        if (headerEl)
+            headerEl.textContent = title;
+        const captionEl = clone.querySelector("#landing-card-caption");
+        if (captionEl)
+            captionEl.textContent = caption;
+        const imageEl = clone.querySelector("#landing-card-image");
+        if (imageEl)
+            imageEl.src = imageUrl;
+        const buttonEl = clone.querySelector("#landing-card-container");
+        if (buttonEl && redirectUri) {
+            buttonEl.onclick = () => navigateTo(redirectUri);
+        }
+        return clone.firstElementChild;
     }
 }

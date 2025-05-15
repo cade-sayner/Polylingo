@@ -1,8 +1,12 @@
 import { flipAnimation } from "../utils";
 export class QuestionOptions {
     render(options) {
-        let s = options.map((word) => `<button class="call-sans question-option-word"> ${word} </button>`).join("");
-        return s;
+        return options.map((word) => {
+            const button = document.createElement('button');
+            button.className = 'call-sans question-option-word';
+            button.textContent = word;
+            return button;
+        });
     }
     registerOptions(optionState, animate = true) {
         let options = document.querySelectorAll(".question-option-word");

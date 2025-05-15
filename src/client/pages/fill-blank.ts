@@ -70,10 +70,10 @@ export class FillBlankExercisePage implements BasePage {
     }
 
     render = () => {
-        return `
-        ${this.navbar.render()}
-        ${document.querySelector(".fill-blank-template")?.innerHTML ?? ""}
-        `
+        return [
+            this.navbar.render() as HTMLElement,
+            (document.querySelector(".fill-blank-template") as HTMLTemplateElement).content.cloneNode(true) as HTMLElement
+        ]
     }
 
     async getQuestion() {
@@ -84,8 +84,10 @@ export class FillBlankExercisePage implements BasePage {
         const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
-        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
+        this.placeholderSentenceSectionElement.replaceChildren();
+        this.placeholderSentenceSectionElement.append(...this.fillBlankSentence.render(this.currentQuestion.placeholderSentence));
+        this.optionsSectionElement.replaceChildren();
+        this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word])));
         this.options.registerOptions(this);
     }
 
@@ -111,13 +113,15 @@ export class FillBlankExercisePage implements BasePage {
         this.skipButton.style.visibility = "hidden";
         if (this.selectedOption === this.currentQuestion?.word) {
             this.fillBlankFooter.style.backgroundColor = seaSponge;
-            this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "correct.png", message: "Well done"});
+            this.resultImage.replaceChildren();
+            this.resultImage.append(...this.resultImageComponent.render({imageUrl : "correct.png", message: "Well done"}));
             this.resultImage.style.display = "block";
             this.setStreak(this.currentStreak + 1);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId as number);
         } else {
             this.fillBlankFooter.style.backgroundColor = colorCrab;
-            this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "incorrect.png", message: `Answer: '${this.currentQuestion.word}'`});
+            this.resultImage.replaceChildren();
+            this.resultImage.append(...this.resultImageComponent.render({imageUrl : "incorrect.png", message: `Answer: '${this.currentQuestion.word}'`}));
             this.resultImage.style.display = "block";
             this.setStreak(0);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId as number);
