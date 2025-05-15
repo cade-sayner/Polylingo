@@ -1,7 +1,22 @@
 export class FillBlankSentence {
     render(sentence) {
-        return `
-        ${sentence.split(" ").map((word) => `<span class=${word === "____" ? "placeholder-word" : "fade-in sentence-word"}> ${word === "____" ? `<p id="missing-word-placeholder" class="missing-word flip-animate">A Word </p>` : word} </span>`).join("")}
-        `;
+        const containerArray = [];
+        sentence.split(" ").forEach((word) => {
+            const span = document.createElement("span");
+            if (word === "____") {
+                span.className = "placeholder-word";
+                const p = document.createElement("p");
+                p.id = "missing-word-placeholder";
+                p.className = "missing-word flip-animate";
+                p.textContent = "A Word";
+                span.appendChild(p);
+            }
+            else {
+                span.className = "fade-in sentence-word";
+                span.textContent = word;
+            }
+            containerArray.push(span);
+        });
+        return containerArray;
     }
 }

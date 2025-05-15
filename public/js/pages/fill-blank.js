@@ -53,11 +53,10 @@ export class FillBlankExercisePage {
             });
         };
         this.render = () => {
-            var _a, _b;
-            return `
-        ${this.navbar.render()}
-        ${(_b = (_a = document.querySelector(".fill-blank-template")) === null || _a === void 0 ? void 0 : _a.innerHTML) !== null && _b !== void 0 ? _b : ""}
-        `;
+            return [
+                this.navbar.render(),
+                document.querySelector(".fill-blank-template").content.cloneNode(true)
+            ];
         };
         this.setStreak = (val) => {
             this.currentStreak = val;
@@ -73,8 +72,10 @@ export class FillBlankExercisePage {
         const characterImage = document.querySelector(".speaker-image");
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
-        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
+        this.placeholderSentenceSectionElement.replaceChildren();
+        this.placeholderSentenceSectionElement.append(...this.fillBlankSentence.render(this.currentQuestion.placeholderSentence));
+        this.optionsSectionElement.replaceChildren();
+        this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word])));
         this.options.registerOptions(this);
     }
     handleNext() {
@@ -99,14 +100,16 @@ export class FillBlankExercisePage {
         this.skipButton.style.visibility = "hidden";
         if (this.selectedOption === ((_a = this.currentQuestion) === null || _a === void 0 ? void 0 : _a.word)) {
             this.fillBlankFooter.style.backgroundColor = seaSponge;
-            this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "correct.png", message: "Well done" });
+            this.resultImage.replaceChildren();
+            this.resultImage.append(...this.resultImageComponent.render({ imageUrl: "correct.png", message: "Well done" }));
             this.resultImage.style.display = "block";
             this.setStreak(this.currentStreak + 1);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId);
         }
         else {
             this.fillBlankFooter.style.backgroundColor = colorCrab;
-            this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "incorrect.png", message: `Answer: '${this.currentQuestion.word}'` });
+            this.resultImage.replaceChildren();
+            this.resultImage.append(...this.resultImageComponent.render({ imageUrl: "incorrect.png", message: `Answer: '${this.currentQuestion.word}'` }));
             this.resultImage.style.display = "block";
             this.setStreak(0);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId);

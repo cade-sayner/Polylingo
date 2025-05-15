@@ -52,11 +52,10 @@ export class TranslationExercisePage {
             });
         };
         this.render = () => {
-            var _a, _b;
-            return `
-        ${this.navbar.render()}
-        ${(_b = (_a = document.querySelector(".translation-template")) === null || _a === void 0 ? void 0 : _a.innerHTML) !== null && _b !== void 0 ? _b : ""}
-        `;
+            return [
+                this.navbar.render(),
+                document.querySelector(".translation-template").content.cloneNode(true)
+            ];
         };
         this.setStreak = (val) => {
             this.currentStreak = val;
@@ -72,8 +71,9 @@ export class TranslationExercisePage {
         const characterImage = document.querySelector(".speaker-image");
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getTranslationQuestion(this.currentLanguageSelection);
-        this.promptWordElement.innerText = `${this.currentQuestion.promptWord} . . .`;
-        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord]));
+        this.promptWordElement.innerText = this.currentQuestion.promptWord;
+        this.optionsSectionElement.replaceChildren();
+        this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord])));
         this.options.registerOptions(this, false);
     }
     handleNext() {
@@ -98,7 +98,8 @@ export class TranslationExercisePage {
         this.skipButton.style.visibility = "hidden";
         if (this.selectedOption === ((_a = this.currentQuestion) === null || _a === void 0 ? void 0 : _a.answerWord)) {
             this.fillBlankFooter.style.backgroundColor = seaSponge;
-            this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "correct.png", message: "Well done" });
+            this.resultImage.replaceChildren();
+            this.resultImage.append(...this.resultImageComponent.render({ imageUrl: "correct.png", message: "Well done" }));
             this.resultImage.style.display = "block";
             this.setStreak(this.currentStreak + 1);
             (_b = document.querySelector(".selected-option")) === null || _b === void 0 ? void 0 : _b.classList.add("correct-option");
@@ -106,7 +107,8 @@ export class TranslationExercisePage {
         }
         else {
             this.fillBlankFooter.style.backgroundColor = colorCrab;
-            this.resultImage.innerHTML = this.resultImageComponent.render({ imageUrl: "incorrect.png", message: `Answer: '${this.currentQuestion.answerWord}'` });
+            this.resultImage.replaceChildren();
+            this.resultImage.append(...this.resultImageComponent.render({ imageUrl: "incorrect.png", message: `Answer: '${this.currentQuestion.answerWord}'` }));
             this.resultImage.style.display = "block";
             this.setStreak(0);
             (_c = document.querySelector(".selected-option")) === null || _c === void 0 ? void 0 : _c.classList.add("wrong-option");

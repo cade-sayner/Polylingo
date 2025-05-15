@@ -2,7 +2,7 @@ import { navigateTo } from "../navigation";
 import { apiFetch } from "../api-client";
 export class LandingPage {
     render() {
-        return `Loading ...`;
+        return [document.createElement("section")];
     }
     async load() {
         let role = await apiFetch("/api/users/role");

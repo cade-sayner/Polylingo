@@ -9,19 +9,13 @@ export class Navbar {
         this.navbar = document.querySelector("#navbar");
     }
     render() {
-        var _a, _b;
-        let rendered = this.includeLanguageSelection ?
-            `
-        <nav class="header">
-        ${this.navbar.innerHTML}
-        ${(_b = (_a = this.languageSelectionComponent) === null || _a === void 0 ? void 0 : _a.render()) !== null && _b !== void 0 ? _b : ""}
-        </nav>
-        ` :
-            ` 
-        <nav class="header">
-        ${this.navbar.innerHTML}
-        </nav>
-        `;
-        return rendered;
+        var _a;
+        const navBar = document.createElement("nav");
+        navBar.classList.add("header");
+        navBar.appendChild(this.navbar.content.cloneNode(true));
+        if (this.includeLanguageSelection) {
+            navBar.appendChild((_a = this.languageSelectionComponent) === null || _a === void 0 ? void 0 : _a.render());
+        }
+        return navBar;
     }
 }

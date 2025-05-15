@@ -7,7 +7,7 @@ export class LandingCard implements BaseComponent{
         return this.createLandingCard(props) as HTMLElement;
     }
 
-    createLandingCard({imageUrl, title, caption, redirectUri}) {
+    createLandingCard({imageUrl, title, caption, redirectUri} : {imageUrl : string, title : string, caption: string, redirectUri:string}) {
     const template = document.getElementById("landing-card-template") as HTMLTemplateElement;
     if (!template) return;
 

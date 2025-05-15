@@ -15,14 +15,11 @@ const routes = {
 };
 export function render(path) {
     var _a, _b;
-    const pageContent = (_b = (_a = routes[path]) === null || _a === void 0 ? void 0 : _a.render()) !== null && _b !== void 0 ? _b : "<section> 404 not found </section>";
+    const pageContent = (_b = (_a = routes[path]) === null || _a === void 0 ? void 0 : _a.render()) !== null && _b !== void 0 ? _b : "404";
     let pageContainer = document.querySelector(".page-container");
     if (pageContainer) {
-        const template = document.createElement("template");
-        template.innerHTML = pageContent.trim();
-        const content = template.content.cloneNode(true);
-        pageContainer.replaceChildren(content);
-        pageContainer.replaceChildren(template.content.cloneNode(true));
+        pageContainer.replaceChildren();
+        pageContainer.append(...pageContent);
     }
     routes[path].load();
 }

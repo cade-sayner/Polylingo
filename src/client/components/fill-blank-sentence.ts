@@ -2,7 +2,7 @@ import { BaseComponent } from "../types";
 
 export class FillBlankSentence implements BaseComponent {
     render(sentence: string) {
-        const container = document.createElement("div");
+        const containerArray : HTMLElement[] = [];
         sentence.split(" ").forEach((word) => {
             const span = document.createElement("span");
 
@@ -13,16 +13,14 @@ export class FillBlankSentence implements BaseComponent {
                 p.id = "missing-word-placeholder";
                 p.className = "missing-word flip-animate";
                 p.textContent = "A Word";
-
                 span.appendChild(p);
             } else {
                 span.className = "fade-in sentence-word";
                 span.textContent = word;
             }
-            container.appendChild(span);
-            container.appendChild(document.createTextNode(" ")); 
+            containerArray.push(span);
         });
 
-        return container;
+        return containerArray;
     }
 }
