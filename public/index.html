@@ -27,29 +27,33 @@
 </template>
 
 <template id="navbar">
-        <section class="logo-section" >
-                <img class="nav-icon" src="/img/springbok-icon.png">
-                <h3 class="logo-text">PolyLingo</h3>
-        </section>
+    <section class="logo-section">
+        <img class="nav-icon" src="/img/springbok-icon.png">
+        <h3 class="logo-text">PolyLingo</h3>
+    </section>
 </template>
 
 <template id="language-select">
     <section class="streak-select-container">
-            <figure class="streak-container">
-                <img src="/img/campfire.png" alt="" class="flame-image">
-                <div class="streak"></div>
-            </figure>
-            <section class="language-select-section">
-                <label class="language-select-label" for="language-select">Language:</label>
-                <select id="language-select" class="language-select call-sans">
-                    <option value="Afrikaans">🇿🇦 Afrikaans</option>
-                    <option value="German">🇩🇪 German</option>
-                    <option value="Italian">🇮🇹 Italian</option>
-                    <option value="Spanish">🇪🇸 Spanish</option>
-                    <option value="French">🇫🇷 French</option>
-                </select>
-            </section>
+        <figure class="streak-container">
+            <img src="/img/campfire.png" alt="" class="flame-image">
+            <div class="streak"></div>
+        </figure>
+        <button id="swap-language-button">
+            <img src="/img/swap.png" id="swap-image"></img>
+        </button>
+
+        <section class="language-select-section">
+            <label class="language-select-label" for="language-select">Language:</label>
+            <select id="language-select" class="language-select call-sans">
+                <option value="Afrikaans">🇿🇦 Afrikaans</option>
+                <option value="German">🇩🇪 German</option>
+                <option value="Italian">🇮🇹 Italian</option>
+                <option value="Spanish">🇪🇸 Spanish</option>
+                <option value="French">🇫🇷 French</option>
+            </select>
         </section>
+    </section>
 </template>
 
 <template id="user-landing-template">
@@ -57,29 +61,28 @@
         <header class="landing-title">
             <h3> Welcome to Polylingo</h3>
         </header>
-        TEMPLATE:CARDS 
+        <div class="landing-cards landing-container"> </div>
     </section>
-
 </template>
 
 <template id="login-template" class="login-screen-template">
     <main class="login-container">
-    <article class="login-card">
-        <section class="mascot-section">
-            <img src="/img/mascot.png" alt="" class="mascot-image">
-        </section>
-        <section class="login-section">
-            <header class="login-title call-sans">
-                <h1>Keep your streak alive! Log in now and learn something new.</h1>
-            </header>
-            <button class="login-button call-sans" type="submit">
-                <img src="/img/google_icon.png" alt="" class="icon">
-                <section>
-                    Login with Google
-                </section>
-            </button>
-        </section>
-    </article>
+        <article class="login-card">
+            <section class="mascot-section">
+                <img src="/img/mascot.png" alt="" class="mascot-image">
+            </section>
+            <section class="login-section">
+                <header class="login-title call-sans">
+                    <h1>Keep your streak alive! Log in now and learn something new.</h1>
+                </header>
+                <button class="login-button call-sans" type="submit">
+                    <img src="/img/google_icon.png" alt="" class="icon">
+                    <section>
+                        Login with Google
+                    </section>
+                </button>
+            </section>
+        </article>
     </main>
 
     <footer class="login-footer">
@@ -114,13 +117,14 @@
 </template>
 
 <template id="landing-card-template" class="landing-card-template">
-    <button onclick="navigateTo(REDIRECT_URI)" id="landing-card-container">
+    <button id="landing-card-container">
         <section id="landing-card-text">
-            <header id="landing-card-header""> TEMPLATE:HEADER </header>
-            <aside id="landing-card-caption"> TEMPLATE:CAPTION </aside>
+            <header id="landing-card-header""> </header>
+            <aside id=" landing-card-caption">
+                </aside>
         </section>
         <figure id="landing-card-figure">
-            <img src="TEMPLATE:IMAGESRC" id="landing-card-image" >
+            <img src="TEMPLATE:IMAGESRC" id="landing-card-image">
         </figure>
     </button>
 </template>
@@ -152,7 +156,7 @@
         <header class="exercise-title">
             <h1> Fill in the blank </h1>
         </header>
-        
+
         <section class="placeholder-sentence-container">
             <figure class="speaker-figure">
                 <img class="speaker-image">

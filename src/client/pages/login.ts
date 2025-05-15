@@ -5,10 +5,10 @@ import { BasePage } from "../types";
 
 export class LoginPage implements BasePage{
   render(){
-    return `
-    ${(new Navbar(false)).render()}
-    ${document.querySelector("#login-template")?.innerHTML}
-    `
+    return [
+      new Navbar(false).render() as HTMLElement,
+      (document.querySelector("#login-template") as HTMLTemplateElement).content.cloneNode(true) as HTMLElement
+    ]
   }
   load() {
       const loginButton = document.querySelector(".login-button");

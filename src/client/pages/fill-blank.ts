@@ -17,10 +17,11 @@ export class FillBlankExercisePage implements BasePage {
     optionsSectionElement: HTMLSelectElement | undefined;
     selectedOption: string | undefined;
     checkButton: HTMLButtonElement | undefined;
+    swapButton:HTMLButtonElement | undefined;
     skipButton: HTMLButtonElement | undefined;
     fillBlankFooter: HTMLElement | undefined;
     resultImage: HTMLElement | undefined;
-
+    toEnglish : boolean = true;
     options = new QuestionOptions();
     navbar = new Navbar(true);
     fillBlankSentence = new FillBlankSentence();
@@ -42,7 +43,13 @@ export class FillBlankExercisePage implements BasePage {
         if (languageSelect) {
             languageSelect.addEventListener("change", () => {
                 this.currentLanguageSelection = languageSelect.value as Language;
+                this.getQuestion();
             });
+        }
+
+        if(this.swapButton){
+            this.swapButton.style;
+            this.swapButton.style.display = "none";
         }
 
         this.checkButton.disabled = true;
@@ -60,15 +67,20 @@ export class FillBlankExercisePage implements BasePage {
         })
 
         this.skipButton?.addEventListener('click', async (e) => {
-            await this.getQuestion();
+            if(this.currentQuestion && this.currentUserId){
+                await auditFillBlank(this.currentQuestion.fillBlankQuestionsId as number, false, this.currentUserId);
+                await this.getQuestion();
+            }else{
+                throw new Error("Missing state");
+            }
         })
     }
 
     render = () => {
-        return `
-        ${this.navbar.render()}
-        ${document.querySelector(".fill-blank-template")?.innerHTML ?? ""}
-        `
+        return [
+            this.navbar.render() as HTMLElement,
+            (document.querySelector(".fill-blank-template") as HTMLTemplateElement).content.cloneNode(true) as HTMLElement
+        ]
     }
 
     async getQuestion() {
@@ -79,8 +91,10 @@ export class FillBlankExercisePage implements BasePage {
         const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
         characterImage.src = `/img/${character}`;
         this.currentQuestion = await getFillBlankQuestionForUser(this.currentLanguageSelection);
-        this.placeholderSentenceSectionElement.innerHTML = this.fillBlankSentence.render(this.currentQuestion.placeholderSentence);
-        this.optionsSectionElement.innerHTML = this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word]));
+        this.placeholderSentenceSectionElement.replaceChildren();
+        this.placeholderSentenceSectionElement.append(...this.fillBlankSentence.render(this.currentQuestion.placeholderSentence));
+        this.optionsSectionElement.replaceChildren();
+        this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.word])));
         this.options.registerOptions(this);
     }
 
@@ -106,13 +120,15 @@ export class FillBlankExercisePage implements BasePage {
         this.skipButton.style.visibility = "hidden";
         if (this.selectedOption === this.currentQuestion?.word) {
             this.fillBlankFooter.style.backgroundColor = seaSponge;
-            this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "correct.png", message: "Well done"});
+            this.resultImage.replaceChildren();
+            this.resultImage.append(...this.resultImageComponent.render({imageUrl : "correct.png", message: "Well done"}));
             this.resultImage.style.display = "block";
             this.setStreak(this.currentStreak + 1);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId as number);
         } else {
             this.fillBlankFooter.style.backgroundColor = colorCrab;
-            this.resultImage.innerHTML = this.resultImageComponent.render({imageUrl : "incorrect.png", message: `Answer: '${this.currentQuestion.word}'`});
+            this.resultImage.replaceChildren();
+            this.resultImage.append(...this.resultImageComponent.render({imageUrl : "incorrect.png", message: `Answer: '${this.currentQuestion.word}'`}));
             this.resultImage.style.display = "block";
             this.setStreak(0);
             await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, true, this.currentUserId as number);
@@ -127,6 +143,7 @@ export class FillBlankExercisePage implements BasePage {
 
     loadDomElements() {
         this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence") as HTMLSelectElement;
+        this.swapButton = document.querySelector("#swap-language-button") as HTMLButtonElement;
         this.optionsSectionElement = document.querySelector(".question-options") as HTMLSelectElement;;
         this.checkButton = document.querySelector("#question-check") as HTMLButtonElement;;
         this.skipButton = document.querySelector("#question-skip") as HTMLButtonElement;

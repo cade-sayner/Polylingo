@@ -5,7 +5,7 @@ import { BasePage } from "../types";
 
 export class LandingPage implements BasePage{
   render(){
-    return `Loading ...`
+    return [document.createElement("section")];
   }
   async load() {
       let role = await apiFetch("/api/users/role");

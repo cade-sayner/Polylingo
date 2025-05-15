@@ -37,9 +37,14 @@ export async function getFillBlankQuestionForUser(language: Language): Promise<F
         return response as FillBlankQuestion;
 }
 
-export async function getTranslationQuestionForUser(language: Language): Promise<TranslationQuestion> {
-    let response = await apiFetch(`/api/translationquestions/user?prompt_language=${language}&answer_language=English`);
-    return await response as TranslationQuestion;
+export async function getTranslationQuestionForUser(language: Language, toEnglish : boolean): Promise<TranslationQuestion> {
+    if(toEnglish){
+      let response = await apiFetch(`/api/translationquestions/user?prompt_language=${language}&answer_language=English`);
+      return response;
+    }else{
+      let response = await apiFetch(`/api/translationquestions/user?prompt_language=English&answer_language=${language}`);
+      return response;
+    }
 }
 
 
