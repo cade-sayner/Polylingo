@@ -4,6 +4,7 @@ import { QuestionOptions } from "../components/question-options";
 import { Navbar } from "../components/navbar";
 import { ResultImageComponent } from "../components/result-image";
 import { FillInTheBlankComponent, TranslationComponent } from "../components/instructor-question-types";
+import { getExistingFillBlankQuestions, getExistingTranslationQuestions, deleteFillBlankQuestion, deleteTranslationQuestion } from "../api-client";
 
 export class InstructorCreatePage implements BasePage {
     currentUserId: number | null = null;
@@ -40,6 +41,107 @@ export class InstructorCreatePage implements BasePage {
         } else if (this.currentComponent === 'translation') {
             contentContainer.innerHTML = this.translationComponent.render();
             this.translationComponent.mount?.()
+        }
+    }
+
+    deleteTranslation(id : number, word: string, answerWordId: number) {
+        const confirmation = confirm(`Deleting question for word: ${word}. Are you sure you want to continue?`);
+        if (confirmation) 
+        {
+            deleteTranslationQuestion(id);
+            this.loadExistingQuestions(answerWordId)
+        }
+    }
+
+    deleteFillBlank(id : number, word: string, answerWordId: number) {
+        const confirmation = confirm(`Deleting question for word: ${word}. Are you sure you want to continue?`);
+        if (confirmation) 
+        {
+            deleteFillBlankQuestion(id);
+            this.loadExistingQuestions(answerWordId)
+        }
+    }
+
+    async loadExistingQuestions(answerWordId : number = 20) {
+        // const languageElement = document.querySelector('answerLanguage') as HTMLSelectElement;
+        // const language = languageElement?.value;
+        // const wordElement = (document.querySelector('answerWord') as HTMLInputElement);
+        // const word = wordElement?.value;
+
+        if (this.currentComponent === 'fill-in-the-blank')
+        {
+            const existingQuestions = await getExistingFillBlankQuestions(answerWordId);
+            const tbody = document.getElementById('existing-fill-blank-body');
+            if (tbody == null || existingQuestions == null)
+                return
+            if (existingQuestions.length != 0)
+            {
+                tbody.innerHTML = '';
+                existingQuestions.forEach(q => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td>${q.placeholderSentence}</td>
+                    <td>${q.word}</td>
+                    <td>${q.distractors.join(', ')}</td>
+                    <td>${q.difficultyScore}</td>
+                    <td>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                    `;
+                    tbody.appendChild(tr);
+                    const deleteBtn = tr.querySelector('.delete-btn') as HTMLButtonElement;
+                    deleteBtn.addEventListener('click', () => this.deleteFillBlank(q.fillBlankQuestionsId, q.word, answerWordId));
+                });
+            }
+            else
+            {
+                tbody.innerHTML = '';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td>No questions found for answer word.</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+        else if (this.currentComponent === 'translation')
+        {
+            const existingQuestions = await getExistingTranslationQuestions(answerWordId);
+            const tbody = document.getElementById('existing-translations-body');
+            if (tbody == null || existingQuestions == null)
+                return
+            if (existingQuestions.length != 0)
+            {
+                tbody.innerHTML = '';
+                existingQuestions.forEach(q => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                    <td>${q.promptWord}</td>
+                    <td>${q.word}</td>
+                    <td>${q.distractors.join(', ')}</td>
+                    <td>${q.difficultyScore}</td>
+                    <td>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                    `;
+                    tbody.appendChild(tr);
+                    const deleteBtn = tr.querySelector('.delete-btn') as HTMLButtonElement;
+                    deleteBtn.addEventListener('click', () => this.deleteTranslation(q.translationQuestionId, q.answerWord, answerWordId));
+                });
+            }
+            else
+            {
+                tbody.innerHTML = '';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td>No questions found for answer word.</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                `;
+                tbody.appendChild(tr);
+            }
+            
         }
     }
 

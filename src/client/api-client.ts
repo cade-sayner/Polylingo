@@ -67,12 +67,24 @@ export async function auditTranslation(translationQuestionId: number, correct: b
     })
 }
 
-export async function getExistingTranslationQuestions(promptWordId: number) {
-  let response = await apiFetch(`/api/translationquestions?promptWordId=${promptWordId}`);
+export async function getExistingTranslationQuestions(answerWordId: number) {
+  let response = await apiFetch(`/api/translationquestions?answerWordId=${answerWordId}`);
   return response as TranslationQuestion[];
 }
 
-export async function getExistingFillBlankQuestions(promptWordId: number) {
-  let response = await apiFetch(`/api/fill_blank?promptWordId=${promptWordId}`);
+export async function getExistingFillBlankQuestions(answerWordId: number) {
+  let response = await apiFetch(`/api/fill_blank?answerWordId=${answerWordId}`);
   return response as FillBlankQuestion[];
+}
+
+export async function deleteFillBlankQuestion(questionId: number) {
+  await apiFetch(`/api/fill_blank/${questionId}`, {
+    method:"Delete"
+  })
+}
+
+export async function deleteTranslationQuestion(questionId: number) {
+  await apiFetch(`/api/translationquestions/${questionId}`, {
+    method:"Delete"
+  })
 }

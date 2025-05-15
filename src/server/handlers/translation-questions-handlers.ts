@@ -13,23 +13,23 @@ export function registerTranslationQuestionsRoutes(app: Express) {
     app.get("/api/translationquestions", authenticate, authorize(['INSTRUCTOR']), getTranslationQuestions);
     app.get("/api/translationquestions/user", authenticate, authorize(['USER']), getQuestionForUser);
     app.post("/api/translationquestions", authenticate, authorize(['INSTRUCTOR']), createTranslationQuestion);
+    app.delete("/api/translationquestions/:id", authenticate, authorize(['INSTRUCTOR']), deleteTranslationQuestion);
+
 }
 
 async function getTranslationQuestions(req: Request, res: any) {
     try {
         let translationQuestions;
-        let promptWordId = req.query.promptWordId as string;
-
-        if (promptWordId) {
-            if (Number.isNaN(parseInt(promptWordId))) {
-                return res.status(401).json("Prompt word id should be a valid number.")
+        let answerWordId = req.query.answerWordId as string;
+        if (answerWordId) {
+            if (Number.isNaN(parseInt(answerWordId))) {
+                return res.status(401).json("Answer word id should be a valid number.")
             }
-            translationQuestions = await translationQuestionsRepo.getByPromptWordId(parseInt(promptWordId));
+            translationQuestions = await translationQuestionsRepo.getByAnswerWordId(parseInt(answerWordId));
         }
         else {
             translationQuestions = await translationQuestionsRepo.getAll();
         }
-
         return res.status(200).json(translationQuestions);
     }
     catch(e){
@@ -135,5 +135,27 @@ async function createTranslationQuestion(req: Request, res: any) {
         // return res.status(500).json({message: "An error occurred while creating the translation question."});
         return res.status(500).json(e);
         // TODO : log the error here
+    }
+}
+
+async function deleteTranslationQuestion(req: Request, res: any) {
+    try {
+        if(!req.params.id)
+        {
+            return res.status(400).json({message: "Missing path parameter: question id"});
+        }
+        const questionId = parseInt(req.params.id as string);
+
+        if(await translationQuestionsRepo.getByID(questionId)){
+            await translationQuestionsRepo.deleteByID(questionId);
+            return res.status(201).json(`Translation question with id ${questionId} deleted successfully.`);
+        }
+        else {
+            return res.status(404).json("The provided question id does not exist.");
+        }
+
+    }catch(e){
+        console.error((e as Error).message);
+        return res.status(500).json({message : "Error deleting translation question"});
     }
 }
