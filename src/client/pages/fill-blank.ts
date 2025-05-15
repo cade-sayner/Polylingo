@@ -60,7 +60,12 @@ export class FillBlankExercisePage implements BasePage {
         })
 
         this.skipButton?.addEventListener('click', async (e) => {
-            await this.getQuestion();
+            if(this.currentQuestion && this.currentUserId){
+                await auditFillBlank(this.currentQuestion.fillBlankQuestionsId as number, false, this.currentUserId);
+                await this.getQuestion();
+            }else{
+                throw new Error("Missing state");
+            }
         })
     }
 

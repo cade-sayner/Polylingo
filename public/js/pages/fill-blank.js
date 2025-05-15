@@ -43,7 +43,13 @@ export class FillBlankExercisePage {
                 }
             });
             (_a = this.skipButton) === null || _a === void 0 ? void 0 : _a.addEventListener('click', async (e) => {
-                await this.getQuestion();
+                if (this.currentQuestion && this.currentUserId) {
+                    await auditFillBlank(this.currentQuestion.fillBlankQuestionsId, false, this.currentUserId);
+                    await this.getQuestion();
+                }
+                else {
+                    throw new Error("Missing state");
+                }
             });
         };
         this.render = () => {
