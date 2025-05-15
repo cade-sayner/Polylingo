@@ -32,6 +32,88 @@ export function flipAnimation(start: HTMLElement, end: HTMLElement) {
     }, 400);
 }
 
+export function setupDistractorInput() {
+  const input = document.getElementById("distractorInput") as HTMLInputElement;
+  const tagContainer = document.getElementById("distractorTags")!;
+  const hiddenInput = document.getElementById("distractorsHidden") as HTMLInputElement;
+  let distractors: string[] = [];
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const word = input.value.trim();
+      if (!word || distractors.length >= 3 || distractors.includes(word)) return;
+
+      distractors.push(word);
+      input.value = "";
+
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = word;
+
+      const removeBtn = document.createElement("button");
+      removeBtn.textContent = "×";
+      removeBtn.className = "remove-tag";
+      removeBtn.onclick = () => {
+        distractors = distractors.filter(w => w !== word);
+        tag.remove();
+        hiddenInput.value = distractors.join(",");
+      };
+
+      tag.appendChild(removeBtn);
+      tagContainer.appendChild(tag);
+      hiddenInput.value = distractors.join(",");
+    }
+  });
+}
+
+export class AutocompleteService {
+  static async setupForComponent(
+    component: { selectedLanguageId: number | null },
+    inputId: string,
+    dropdownId: string
+  ) {
+    const input = document.getElementById(inputId) as HTMLInputElement;
+    const dropdown = document.getElementById(dropdownId) as HTMLDivElement;
+
+    if (!input || !dropdown) return;
+
+    input.addEventListener("input", async () => {
+      const searchText = input.value.trim();
+      dropdown.innerHTML = '';
+      
+      if (searchText.length < 2 || !component.selectedLanguageId) return;
+      console.log(component.selectedLanguageId)
+      try {
+        const res = await apiFetch(
+          `/api/word?languageId=${component.selectedLanguageId}&wordSearchText=${encodeURIComponent(searchText)}`
+        );
+        const words = await res;
+        console.log(words)
+
+        if (Array.isArray(words)) {
+          words.forEach(word => {
+            const item = document.createElement('div');
+            item.textContent = word.word;
+            item.addEventListener('click', () => {
+              input.value = word.word;
+              dropdown.innerHTML = '';
+            });
+            dropdown.appendChild(item);
+          });
+        }
+      } catch (err) {
+        console.error("Autocomplete fetch failed", err);
+      }
+    });
+
+    input.addEventListener("blur", () => {
+      setTimeout(() => dropdown.innerHTML = '', 100);
+    });
+  }
+}
+
+
 
 
 

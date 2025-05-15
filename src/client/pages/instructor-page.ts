@@ -3,7 +3,8 @@ import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
 import { Navbar } from "../components/navbar";
 import { ResultImageComponent } from "../components/result-image";
-import { FillInTheBlankComponent, TranslationComponent } from "../components/instructor-question-types";
+import { TranslationComponent } from "../components/translate-component";
+import { FillInTheBlankComponent } from "../components/fill-blank-component";
 import { getExistingFillBlankQuestions, getExistingTranslationQuestions, deleteFillBlankQuestion, deleteTranslationQuestion } from "../api-client";
 
 export class InstructorCreatePage implements BasePage {

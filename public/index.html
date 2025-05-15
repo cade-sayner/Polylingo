@@ -204,4 +204,144 @@
     </article>
 </template>
 
+<template id="fill-blank-component">
+    <div class="translation-container">
+        <h2 class="section-title">Fill in the blank questions</h2>
+
+        <form class="translation-form" autocomplete="off">
+          <div class="form-group">
+          <label for="answerLanguage">Language</label>
+          <select name="answer-language" id="answerLanguage" class="form-control">
+            <option value="" disabled selected>Language</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="promptWord">Question Sentence</label>
+          <input type="text" placeholder="Use ___ for blank" name="promptWord" id="promptWord" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="difficulty">Difficulty</label>
+          <select name="difficulty" id="difficulty" class="form-control">
+            <option value="" disabled selected>Difficulty</option>
+            <option value="1">1 - Very Easy</option>
+            <option value="2">2 - Easy</option>
+            <option value="3">3 - Medium</option>
+            <option value="4">4 - Hard</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="answerWord">Answer Word</label>
+          <div class="autocomplete">
+            <input type="text" id="answerWord" placeholder="Missing word" name="answerWord">
+            <div id="autocompleteDropdown" class="autocomplete-items"></div>
+          </div>
+        </div>
+        
+        <div id="distractorInputWrapperFillBlank">
+            <input
+              type="text"
+              id="distractorInput"
+              class="distractor-input"
+              placeholder="Enter three distractors"
+            />
+            <div class="tags-container" id="distractorTags">
+              <!-- tags will be dynamically added here -->
+            </div>
+        </div>
+          
+        </form>
+
+        <button type="submit" class="create-question-btn">Create question</button>
+        
+        <h3 class="sub-heading">Existing questions for prompt word:</h3>
+
+        <table  class="translation-table">
+          <thead>
+            <tr>
+              <th>Question sentence</th>
+              <th>Answer Word</th>
+              <th>Distractors</th>
+              <th>Difficulty</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="existing-fill-blank-body">
+            <!-- Rows will go here -->
+          </tbody>
+        </table>
+      </div>
+</template>
+
+<template id="translate-component">
+    <div class="translation-container">
+        <h2 class="section-title">Translation Questions</h2>
+
+        <form class="translation-form">
+          <select name="prompt-language" id="promptLanguage">
+            <option value="" disabled selected>Prompt language</option>
+            <option value="Afrikaans">Afrikaans</option>
+            <option value="German">German</option>
+            <option value="Italian">Italian</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+          </select>
+
+          <select name="answer-language" id="answerLanguage">
+            <option value="" disabled selected>Answer language</option>
+            <option value="Afrikaans">Afrikaans</option>
+            <option value="German">German</option>
+            <option value="Italian">Italian</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+          </select>
+
+          <select name="difficulty">
+            <option value="" disabled selected>Difficulty</option>
+            <option value="1">1 - Very Easy</option>
+            <option value="2">2 - Easy</option>
+            <option value="3">3 - Medium</option>
+            <option value="4">4 - Hard</option>
+          </select>
+
+          <input type="text" placeholder="Prompt word" name="promptWord" />
+          <input type="text" placeholder="Answer word" name="answerWord" />
+          <div id="distractorInputWrapper">
+            <input
+              type="text"
+              id="distractorInput"
+              class="distractor-input"
+              placeholder="Enter three distractors"
+            />
+            <div class="tags-container" id="distractorTags">
+              <!-- tags will be dynamically added here -->
+            </div>
+          </div>
+
+
+        </form>
+
+        <button type="submit" class="create-question-btn">Create question</button>
+        
+        <h3 class="sub-heading">Existing questions for prompt word:</h3>
+
+        <table class="translation-table">
+          <thead>
+            <tr>
+              <th>Prompt</th>
+              <th>Answer</th>
+              <th>Distractors</th>
+              <th>Difficulty</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="existing-translations-body">
+            <!-- Rows will go here -->
+          </tbody>
+        </table>
+      </div>
+</template>
+
 </html>
