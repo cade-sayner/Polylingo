@@ -15,7 +15,7 @@ const wordRepo = new WordRepository("words", "word_id");
 
 export function registerFillBlankRoutes(app: Express) {
     app.get("/api/fill_blank", authenticate, authorize(['INSTRUCTOR']), getFillBlanks);
-    app.get("/api/fill_blank/user", authenticate, authorize(['User', 'INSTRUCTOR']), getFillBlankUser);
+    app.get("/api/fill_blank/user", authenticate, authorize(['USER', 'INSTRUCTOR']), getFillBlankUser);
     app.post("/api/fill_blank", authenticate, authorize(['INSTRUCTOR']), postFillBlank);
     app.delete("/api/fill_blank/:id", authenticate, authorize(['INSTRUCTOR']), deleteFillBlank);
 }
