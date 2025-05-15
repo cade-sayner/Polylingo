@@ -40,24 +40,24 @@ INSERT INTO translation_questions (prompt_word, answer_word, distractors, diffic
   (
     (SELECT word_id FROM afrikaans WHERE word = 'hond'),
     (SELECT word_id FROM english WHERE word = 'dog'),
-    ARRAY['cat', 'car', 'house'],
+    ARRAY['cow', 'car', 'house'],
     1
   ),
   (
     (SELECT word_id FROM afrikaans WHERE word = 'kat'),
     (SELECT word_id FROM english WHERE word = 'cat'),
-    ARRAY['dog', 'car', 'house'],
+    ARRAY['dog', 'car', 'pig'],
     1
   ),
   (
     (SELECT word_id FROM afrikaans WHERE word = 'huis'),
     (SELECT word_id FROM english WHERE word = 'house'),
-    ARRAY['car', 'dog', 'cat'],
+    ARRAY['flat', 'dog', 'mansion'],
     2
   ),
   (
     (SELECT word_id FROM afrikaans WHERE word = 'motor'),
     (SELECT word_id FROM english WHERE word = 'car'),
-    ARRAY['house', 'cat', 'dog'],
+    ARRAY['boat', 'yacht', 'dog'],
     2
   );

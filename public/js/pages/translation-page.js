@@ -41,7 +41,14 @@ export class TranslationExercisePage {
                 }
             });
             (_a = this.skipButton) === null || _a === void 0 ? void 0 : _a.addEventListener('click', async (e) => {
-                await this.getQuestion();
+                var _a;
+                if (this.currentQuestion && this.currentUserId) {
+                    await auditTranslation((_a = this.currentQuestion) === null || _a === void 0 ? void 0 : _a.translationQuestionId, false, this.currentUserId);
+                    await this.getQuestion();
+                }
+                else {
+                    throw new Error("Missing state");
+                }
             });
         };
         this.render = () => {
@@ -74,7 +81,7 @@ export class TranslationExercisePage {
             throw new Error("Required elements not loaded in the component's state");
         }
         this.getQuestion();
-        this.resultImage.innerHTML = "";
+        this.resultImage.innerText = "";
         this.resultImage.style.display = "none";
         this.checkButton.innerText = "Check";
         this.checkButton.disabled = true;

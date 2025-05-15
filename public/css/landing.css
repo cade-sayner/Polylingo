@@ -15,10 +15,13 @@
     box-shadow: 0 2px 4px rgba(148, 146, 146, 0.273);
     border: 2px solid rgb(212, 209, 215);
     justify-content: space-between;
+    transition: transform 0.2s ease;
+    transform: scale(1);
 }
 
 #landing-card-container:hover{
     box-shadow: 0 2px 4px rgba(44, 43, 43, 0.273);
+    transform: scale(1.0075);
 }
 
 .landing-title{

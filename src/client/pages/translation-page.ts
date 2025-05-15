@@ -56,7 +56,12 @@ export class TranslationExercisePage implements BasePage {
         })
 
         this.skipButton?.addEventListener('click', async (e) => {
-            await this.getQuestion();
+            if(this.currentQuestion && this.currentUserId){
+                await auditTranslation(this.currentQuestion?.translationQuestionId as number, false, this.currentUserId);
+                await this.getQuestion();
+            }else{
+                throw new Error("Missing state");
+            }
         })
     }
 
@@ -85,7 +90,7 @@ export class TranslationExercisePage implements BasePage {
             throw new Error("Required elements not loaded in the component's state");
         }
         this.getQuestion();
-        this.resultImage.innerHTML = "";
+        this.resultImage.innerText = "";
         this.resultImage.style.display = "none";
         this.checkButton.innerText = "Check";
         this.checkButton.disabled = true;

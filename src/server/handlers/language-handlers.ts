@@ -107,7 +107,6 @@ async function createLanguage(req: Request, res: any) {
         if (user == null || user.userId == null) {
             return res.status(500).json({ message: "Logged in user could not be found" });
         }
-        console.log(req.body);
         let languageName = req.body?.language_name;
 
         if( !languageName){
