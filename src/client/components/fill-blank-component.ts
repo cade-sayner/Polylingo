@@ -195,7 +195,7 @@ export class FillInTheBlankComponent implements BaseComponent {
     const difficultyInput = document.getElementById("difficulty") as HTMLSelectElement;
 
     const distractors = distractorInput?.value.split(",").map(d => d.trim()).filter(d => d !== "");
-    const sentence = sentenceInput?.value.trim();
+    let sentence = sentenceInput?.value.trim();
     const difficulty = difficultyInput?.value;
 
     if (!answerWordId) {
@@ -211,13 +211,16 @@ export class FillInTheBlankComponent implements BaseComponent {
       alert("Question sentence should include an '_' for the missing word.")
       return;
     }
+    else{
+      sentence.replace('_', '____');
+    }
     if (!difficulty)
     {
       alert("A difficulty level must be selected.");
       return;
     }
-    if (!distractors || distractors.length === 0) {
-      alert("At least one distractor is required.");
+    if (!distractors || distractors.length != 0) {
+      alert("Three distractors are required.");
       return;
     }
 
@@ -244,7 +247,7 @@ export class FillInTheBlankComponent implements BaseComponent {
       }
     } 
     catch (error) {
-      alert("Failed to create question. Please try again.");
+      alert(`Failed to create question: ${error}`);
     }
   }
 }

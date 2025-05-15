@@ -15,7 +15,7 @@ export class InstructorCreatePage implements BasePage {
     currentComponent: 'fill-in-the-blank' | 'translation' = 'fill-in-the-blank';
 
     options = new QuestionOptions();
-    navbar = new Navbar(true);
+    navbar = new Navbar(false);
     resultImageComponent = new ResultImageComponent();
 
     load = async () => {
