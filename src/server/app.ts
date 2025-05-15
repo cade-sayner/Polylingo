@@ -17,9 +17,9 @@ const port = 3000;
 
 
 if(!hasKeys(process.env, [
-  {name: "GOOGLE_CLIENT_ID", type:"string" },
-  {name: "GOOGLE_CLIENT_SECRET", type:"string"}, 
-  {name: "REDIRECT_URI", type:"string" }
+  {name: "GOOGLE_CLIENT_ID_SHAY", type:"string" },
+  {name: "GOOGLE_CLIENT_SECRET_SHAY", type:"string"}, 
+  {name: "REDIRECT_URI_SHAY", type:"string" }
 ]))
 throw new Error("Environment variables have not been set correctly");
 

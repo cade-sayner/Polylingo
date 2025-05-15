@@ -545,11 +545,11 @@ body {
 .distractorInput:focus {
   border-color: #666;
 }
-
 /* Autocomplete container */
 .autocomplete {
+  display: flex;
+  flex-direction: row;
   position: relative;
-  display: inline-block;
   width: 100%; /* Full width of form */
 }
 

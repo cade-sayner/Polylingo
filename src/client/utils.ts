@@ -71,7 +71,8 @@ export class AutocompleteService {
   static async setupForComponent(
     component: { selectedLanguageId: number | null },
     inputId: string,
-    dropdownId: string
+    dropdownId: string,
+    onSelect?: (selected: { id: number; word: string }) => void
   ) {
     const input = document.getElementById(inputId) as HTMLInputElement;
     const dropdown = document.getElementById(dropdownId) as HTMLDivElement;
@@ -81,9 +82,9 @@ export class AutocompleteService {
     input.addEventListener("input", async () => {
       const searchText = input.value.trim();
       dropdown.innerHTML = '';
-      
+
       if (searchText.length < 2 || !component.selectedLanguageId) return;
-      console.log(component.selectedLanguageId)
+
       try {
         const res = await apiFetch(
           `/api/word?languageId=${component.selectedLanguageId}&wordSearchText=${encodeURIComponent(searchText)}`
@@ -92,13 +93,20 @@ export class AutocompleteService {
         console.log(words)
 
         if (Array.isArray(words)) {
-          words.forEach(word => {
+          words.forEach((word: { wordId: number; word: string }) => {
             const item = document.createElement('div');
             item.textContent = word.word;
+            item.classList.add("autocomplete-item");
+
             item.addEventListener('click', () => {
               input.value = word.word;
               dropdown.innerHTML = '';
+
+              if (onSelect) {
+                onSelect({ id: word.wordId, word: word.word });
+              }
             });
+
             dropdown.appendChild(item);
           });
         }
@@ -112,6 +120,7 @@ export class AutocompleteService {
     });
   }
 }
+
 
 
 

@@ -16,21 +16,62 @@ export class FillInTheBlankComponent implements BaseComponent {
     this.populateLanguageDropdown();
     this.setupLanguageSelection();
     this.setupFieldDependencies();
+    this.setupClearAnswerButton();
     setupDistractorInput();
-    AutocompleteService.setupForComponent(this, "answerWord", "autocompleteDropdown");
-    this.loadExistingQuestions(20);
-  }
+
+    AutocompleteService.setupForComponent(
+        this,
+        "answerWord",
+        "autocompleteDropdown",
+        (selectedItem) => {
+        this.currentAnswerWordId = selectedItem.id;
+        this.loadExistingQuestions(selectedItem.id);
+        const input      = document.getElementById("answerWord")    as HTMLInputElement;
+        const hiddenInput= document.getElementById("answerWordId")  as HTMLInputElement;
+        const clearBtn   = document.getElementById("clearAnswerBtn") as HTMLButtonElement;
+
+        input.value    = selectedItem.word;
+        hiddenInput.value = selectedItem.id.toString();
+
+        input.readOnly = true;
+        clearBtn.style.display = "inline-block";
+        }
+    );
+
+    console.log(this.currentAnswerWordId)
+
+    const input    = document.getElementById("answerWord") as HTMLInputElement;
+    const dropdown = document.getElementById("autocompleteDropdown") as HTMLDivElement;
+
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+        const firstItem = dropdown.querySelector<HTMLDivElement>(".autocomplete-item");
+        if (firstItem) {
+            e.preventDefault();   
+            firstItem.click();    
+            input.blur();        
+        }
+        }
+    });
+    }
+
 
   private setupFieldDependencies() {
     const languageSelect = document.getElementById("answerLanguage") as HTMLSelectElement;
     const answerInput = document.getElementById("answerWord") as HTMLInputElement;
     const distractorInput = document.getElementById("distractorInput") as HTMLInputElement;
     const createBtn = document.querySelector(".create-question-btn") as HTMLButtonElement;
+    createBtn.addEventListener("click", (e) => {
+    const hiddenInput = document.getElementById("answerWordId") as HTMLInputElement;
+    if (!hiddenInput.value) {
+        e.preventDefault();
+        alert("You must select an answer word from suggestions.");
+    }
+    });
  
     answerInput.disabled = true;
     createBtn.disabled = true;
 
-    // Chain dependencies
     languageSelect.addEventListener("change", () => {
       if (languageSelect.value) {
         answerInput.disabled = false;
@@ -46,6 +87,19 @@ export class FillInTheBlankComponent implements BaseComponent {
       this.createFillBlank();
     })
   }
+
+  private setupClearAnswerButton() {
+    const clearBtn = document.getElementById("clearAnswerBtn") as HTMLButtonElement;
+    const input = document.getElementById("answerWord") as HTMLInputElement;
+    const hiddenInput = document.getElementById("answerWordId") as HTMLInputElement;
+
+    clearBtn.addEventListener("click", () => {
+        input.value = "";
+        hiddenInput.value = "";
+        input.readOnly = false;
+        clearBtn.style.display = "none";
+    });
+    }
 
 
   private populateLanguageDropdown() {

@@ -233,11 +233,13 @@
         </div>
 
         <div class="form-group">
-          <label for="answerWord">Answer Word</label>
-          <div class="autocomplete">
-            <input type="text" id="answerWord" placeholder="Missing word" name="answerWord">
-            <div id="autocompleteDropdown" class="autocomplete-items"></div>
-          </div>
+            <label for="answerWord">Answer Word</label>
+            <div class="autocomplete">
+                <input type="text" id="answerWord" placeholder="Missing word" name="answerWord">
+                <input type="hidden" id="answerWordId" name="answerWordId" />
+                <div id="autocompleteDropdown" class="autocomplete-items"></div>
+                <button type="button" id="clearAnswerBtn" style="display: none;">Clear</button>
+            </div>
         </div>
         
         <div id="distractorInputWrapperFillBlank">
