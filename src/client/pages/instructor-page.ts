@@ -1,6 +1,4 @@
 import { BaseComponent, BasePage, Language, TranslationQuestion } from "../types"
-import { auditTranslation, getTranslationQuestion} from "../api-client";
-import { getSignedInUser, shuffle } from "../utils";
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
 import { Navbar } from "../components/navbar";

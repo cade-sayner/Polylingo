@@ -12,7 +12,7 @@ export class WordRepository extends BaseRepository<Word> {
         LIMIT 50
         `;
 
-        const translationQuestions = await queryReturnAll(queryString, [languageId, searchText+'%']) as unknown as Word | null; 
+        const translationQuestions = await queryReturnAll(queryString, [languageId, searchText+'%']) as unknown as Word[] | null; 
 
         return translationQuestions;
     }
