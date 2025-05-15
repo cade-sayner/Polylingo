@@ -24,9 +24,15 @@ export async function getFillBlankQuestion(language) {
     let response = await apiFetch(`/api/fill_blank/user?language=${language}`);
     return response;
 }
-export async function getTranslationQuestion(language) {
-    let response = await apiFetch(`/api/translationquestions/user?prompt_language=${language}&answer_language=English`);
-    return await response;
+export async function getTranslationQuestion(language, toEnglish) {
+    if (toEnglish) {
+        let response = await apiFetch(`/api/translationquestions/user?prompt_language=${language}&answer_language=English`);
+        return response;
+    }
+    else {
+        let response = await apiFetch(`/api/translationquestions/user?prompt_language=English&answer_language=${language}`);
+        return response;
+    }
 }
 export async function auditFillBlank(fillBlankId, correct, currentUserId) {
     if (!currentUserId) {

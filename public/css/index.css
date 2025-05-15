@@ -390,6 +390,25 @@ body {
     background-color: #ffdada;
 }
 
+#swap-language-button{
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    outline:none;
+    border-radius:0.2rem;
+    display:none;
+}
+#swap-language-button:hover{
+    background-color:#d4d4d4;
+}
+
+#swap-image{
+    width: 1.2rem;
+}
+
 @media (max-width: 600px) {
     .speaker-figure {
         display: none;

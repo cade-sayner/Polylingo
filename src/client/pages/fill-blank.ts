@@ -17,10 +17,11 @@ export class FillBlankExercisePage implements BasePage {
     optionsSectionElement: HTMLSelectElement | undefined;
     selectedOption: string | undefined;
     checkButton: HTMLButtonElement | undefined;
+    swapButton:HTMLButtonElement | undefined;
     skipButton: HTMLButtonElement | undefined;
     fillBlankFooter: HTMLElement | undefined;
     resultImage: HTMLElement | undefined;
-
+    toEnglish : boolean = true;
     options = new QuestionOptions();
     navbar = new Navbar(true);
     fillBlankSentence = new FillBlankSentence();
@@ -42,7 +43,13 @@ export class FillBlankExercisePage implements BasePage {
         if (languageSelect) {
             languageSelect.addEventListener("change", () => {
                 this.currentLanguageSelection = languageSelect.value as Language;
+                this.getQuestion();
             });
+        }
+
+        if(this.swapButton){
+            this.swapButton.style;
+            this.swapButton.style.display = "none";
         }
 
         this.checkButton.disabled = true;
@@ -136,6 +143,7 @@ export class FillBlankExercisePage implements BasePage {
 
     loadDomElements() {
         this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence") as HTMLSelectElement;
+        this.swapButton = document.querySelector("#swap-language-button") as HTMLButtonElement;
         this.optionsSectionElement = document.querySelector(".question-options") as HTMLSelectElement;;
         this.checkButton = document.querySelector("#question-check") as HTMLButtonElement;;
         this.skipButton = document.querySelector("#question-skip") as HTMLButtonElement;

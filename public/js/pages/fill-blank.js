@@ -10,6 +10,7 @@ export class FillBlankExercisePage {
         this.currentStreak = 0;
         this.currentLanguageSelection = "Afrikaans";
         this.currentUserId = null;
+        this.toEnglish = true;
         this.options = new QuestionOptions();
         this.navbar = new Navbar(true);
         this.fillBlankSentence = new FillBlankSentence();
@@ -28,7 +29,12 @@ export class FillBlankExercisePage {
             if (languageSelect) {
                 languageSelect.addEventListener("change", () => {
                     this.currentLanguageSelection = languageSelect.value;
+                    this.getQuestion();
                 });
+            }
+            if (this.swapButton) {
+                this.swapButton.style;
+                this.swapButton.style.display = "none";
             }
             this.checkButton.disabled = true;
             this.checkButton.addEventListener('click', async (e) => {
@@ -117,6 +123,7 @@ export class FillBlankExercisePage {
     }
     loadDomElements() {
         this.placeholderSentenceSectionElement = document.querySelector(".placeholder-sentence");
+        this.swapButton = document.querySelector("#swap-language-button");
         this.optionsSectionElement = document.querySelector(".question-options");
         ;
         this.checkButton = document.querySelector("#question-check");

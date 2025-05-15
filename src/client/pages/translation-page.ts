@@ -18,7 +18,8 @@ export class TranslationExercisePage implements BasePage {
     promptWordElement : HTMLElement | undefined;
     fillBlankFooter: HTMLElement | undefined;
     resultImage: HTMLElement | undefined;
-
+    swapButton:HTMLButtonElement | undefined;
+    toEnglish:boolean = true;
     options = new QuestionOptions();
     navbar = new Navbar(true);
     resultImageComponent = new ResultImageComponent();
@@ -30,6 +31,8 @@ export class TranslationExercisePage implements BasePage {
             throw new Error("Required element not found in the dom");
         }
 
+        (this.swapButton as HTMLElement).style.display = "block";
+        
         await this.getQuestion();
         this.setStreak(0);
         this.currentUserId = (await getSignedInUser()).userId;
@@ -39,10 +42,19 @@ export class TranslationExercisePage implements BasePage {
         if (languageSelect) {
             languageSelect.addEventListener("change", () => {
                 this.currentLanguageSelection = languageSelect.value as Language;
+                this.getQuestion();
             });
         }
 
         this.checkButton.disabled = true;
+
+
+        if(this.swapButton){
+            this.swapButton.addEventListener('click', (e)=>{
+                this.toEnglish = !this.toEnglish;
+                this.getQuestion();
+            })
+        }
 
         this.checkButton.addEventListener('click', async (e) => {
             if (this.currentQuestion?.completed) {
@@ -79,7 +91,7 @@ export class TranslationExercisePage implements BasePage {
         const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
         const characterImage = document.querySelector(".speaker-image") as HTMLImageElement;
         characterImage.src = `/img/${character}`;
-        this.currentQuestion = await getTranslationQuestion (this.currentLanguageSelection);
+        this.currentQuestion = await getTranslationQuestion (this.currentLanguageSelection, this.toEnglish);
         this.promptWordElement.innerText = this.currentQuestion.promptWord;
         this.optionsSectionElement.replaceChildren();
         this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord])));
@@ -133,6 +145,7 @@ export class TranslationExercisePage implements BasePage {
 
     loadDomElements() {
         this.promptWordElement = document.querySelector(".placeholder-sentence") as HTMLSelectElement;
+        this.swapButton = document.querySelector("#swap-language-button") as HTMLButtonElement;
         this.optionsSectionElement = document.querySelector(".question-options") as HTMLSelectElement;;
         this.checkButton = document.querySelector("#question-check") as HTMLButtonElement;;
         this.skipButton = document.querySelector("#question-skip") as HTMLButtonElement;

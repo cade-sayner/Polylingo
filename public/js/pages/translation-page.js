@@ -9,6 +9,7 @@ export class TranslationExercisePage {
         this.currentStreak = 0;
         this.currentLanguageSelection = "Afrikaans";
         this.currentUserId = null;
+        this.toEnglish = true;
         this.options = new QuestionOptions();
         this.navbar = new Navbar(true);
         this.resultImageComponent = new ResultImageComponent();
@@ -18,6 +19,7 @@ export class TranslationExercisePage {
             if (!this.checkButton) {
                 throw new Error("Required element not found in the dom");
             }
+            this.swapButton.style.display = "block";
             await this.getQuestion();
             this.setStreak(0);
             this.currentUserId = (await getSignedInUser()).userId;
@@ -26,9 +28,16 @@ export class TranslationExercisePage {
             if (languageSelect) {
                 languageSelect.addEventListener("change", () => {
                     this.currentLanguageSelection = languageSelect.value;
+                    this.getQuestion();
                 });
             }
             this.checkButton.disabled = true;
+            if (this.swapButton) {
+                this.swapButton.addEventListener('click', (e) => {
+                    this.toEnglish = !this.toEnglish;
+                    this.getQuestion();
+                });
+            }
             this.checkButton.addEventListener('click', async (e) => {
                 var _a, _b;
                 if ((_a = this.currentQuestion) === null || _a === void 0 ? void 0 : _a.completed) {
@@ -70,7 +79,7 @@ export class TranslationExercisePage {
         const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
         const characterImage = document.querySelector(".speaker-image");
         characterImage.src = `/img/${character}`;
-        this.currentQuestion = await getTranslationQuestion(this.currentLanguageSelection);
+        this.currentQuestion = await getTranslationQuestion(this.currentLanguageSelection, this.toEnglish);
         this.promptWordElement.innerText = this.currentQuestion.promptWord;
         this.optionsSectionElement.replaceChildren();
         this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord])));
@@ -117,6 +126,7 @@ export class TranslationExercisePage {
     }
     loadDomElements() {
         this.promptWordElement = document.querySelector(".placeholder-sentence");
+        this.swapButton = document.querySelector("#swap-language-button");
         this.optionsSectionElement = document.querySelector(".question-options");
         ;
         this.checkButton = document.querySelector("#question-check");
