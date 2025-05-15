@@ -9,6 +9,11 @@ const roleRepo = new RoleRepository("roles", "id");
 export function registerUserRoutes(app: Express) {
     app.get("/api/users", authenticate, getUser);
     app.get("/api/users/role", authenticate, getUserRole);
+    app.get("/health", getHealth);
+}
+
+async function getHealth(req:Request, res:any){
+    return res.status(200);
 }
 
 async function getUserRole(req: Request, res: any) {
