@@ -23,10 +23,20 @@ INSERT INTO words (word, language_id) VALUES
   ('hond', (SELECT language_id FROM afrikaans_lang)),
   ('kat', (SELECT language_id FROM afrikaans_lang)),
   ('huis', (SELECT language_id FROM afrikaans_lang)),
-  ('motor', (SELECT language_id FROM afrikaans_lang))
+  ('motor', (SELECT language_id FROM afrikaans_lang)),
+  ('vark', (SELECT language_id FROM afrikaans_lang)),
+  ('perd', (SELECT language_id FROM afrikaans_lang)),
+  ('muis', (SELECT language_id FROM afrikaans_lang)),
+  ('koei', (SELECT language_id FROM afrikaans_lang)),
+  ('woonstel', (SELECT language_id FROM afrikaans_lang)),
+  ('hut', (SELECT language_id FROM afrikaans_lang)),
+  ('kasteel', (SELECT language_id FROM afrikaans_lang)),
+  ('fiets', (SELECT language_id FROM afrikaans_lang)),
+  ('vliegtuig', (SELECT language_id FROM afrikaans_lang)),
+  ('boot', (SELECT language_id FROM afrikaans_lang))
 ON CONFLICT DO NOTHING;
 
--- 4. Insert Afrikaans → English Translation Questions
+-- 4. Insert English → Afrikaans Translation Questions
 WITH
   afrikaans AS (
     SELECT word, word_id FROM words
@@ -38,26 +48,27 @@ WITH
   )
 INSERT INTO translation_questions (prompt_word, answer_word, distractors, difficulty_score) VALUES
   (
-    (SELECT word_id FROM afrikaans WHERE word = 'hond'),
     (SELECT word_id FROM english WHERE word = 'dog'),
-    ARRAY['cow', 'pig', 'cat'],
+    (SELECT word_id FROM afrikaans WHERE word = 'hond'),
+    ARRAY['kat', 'vark', 'perd'],
     1
   ),
   (
-    (SELECT word_id FROM afrikaans WHERE word = 'kat'),
     (SELECT word_id FROM english WHERE word = 'cat'),
-    ARRAY['dog', 'dog', 'pig'],
+    (SELECT word_id FROM afrikaans WHERE word = 'kat'),
+    ARRAY['hond', 'muis', 'koei'],
     1
   ),
   (
-    (SELECT word_id FROM afrikaans WHERE word = 'huis'),
     (SELECT word_id FROM english WHERE word = 'house'),
-    ARRAY['cottage', 'flat', 'mansion'],
+    (SELECT word_id FROM afrikaans WHERE word = 'huis'),
+    ARRAY['woonstel', 'hut', 'kasteel'],
     2
   ),
   (
-    (SELECT word_id FROM afrikaans WHERE word = 'motor'),
     (SELECT word_id FROM english WHERE word = 'car'),
-    ARRAY['bicycle', 'train', 'ship'],
+    (SELECT word_id FROM afrikaans WHERE word = 'motor'),
+    ARRAY['fiets', 'vliegtuig', 'boot'],
     2
   );
+

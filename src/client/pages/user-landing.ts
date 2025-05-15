@@ -6,7 +6,7 @@ export class UserLandingPage implements BasePage {
     render() {
         const CardComponent = new LandingCard();
 
-        const landingTemplate = (document.querySelector("#user-landing-template") as HTMLTemplateElement).content.cloneNode(true) as DocumentFragment
+        const landingTemplate = (document.querySelector("#user-landing-template") as HTMLTemplateElement).content.cloneNode(true) as HTMLElement
         
         const cardContainer : any = landingTemplate.querySelector(".landing-cards");
 
@@ -17,7 +17,7 @@ export class UserLandingPage implements BasePage {
 
         return [
             new Navbar(false).render(),
-            cardContainer as HTMLElement
+            landingTemplate as HTMLElement
         ]
     }
 

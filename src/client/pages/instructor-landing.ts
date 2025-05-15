@@ -6,10 +6,9 @@ export class InstructorLandingPage implements BasePage {
     render() {
         const CardComponent = new LandingCard();
 
-        const landingTemplate = (document.querySelector("#user-landing-template") as HTMLTemplateElement).content.cloneNode(true) as DocumentFragment;
+        const landingTemplate = (document.querySelector("#user-landing-template") as HTMLTemplateElement).content.cloneNode(true) as HTMLElement;
         landingTemplate.querySelector(".landing-container")
         const cardContainer : any = landingTemplate.querySelector(".landing-cards");
-
 
         cardContainer.append(...[
                     CardComponent.render({imageUrl: "/img/stack-of-books.png", caption:"Create a fill in the blank question", redirectUri:"/exercise/fill-blank", title:"Create Fill in the Blank Question"}),
@@ -18,7 +17,7 @@ export class InstructorLandingPage implements BasePage {
 
         return [
             new Navbar(false).render(),
-            cardContainer as HTMLElement
+            landingTemplate as HTMLElement
         ]
     }
 

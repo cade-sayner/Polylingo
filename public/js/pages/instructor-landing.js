@@ -12,7 +12,7 @@ export class InstructorLandingPage {
         ]);
         return [
             new Navbar(false).render(),
-            cardContainer
+            landingTemplate
         ];
     }
     load() {
