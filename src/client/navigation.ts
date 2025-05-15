@@ -2,17 +2,17 @@ import { applicationUri } from "./constants";
 import { FillBlankExercisePage} from "./pages/fill-blank";
 import { InstructorCreatePage } from "./pages/instructor-page";
 import { TranslationExercisePage } from "./pages/translation-page";
-import { BasePage } from "./types";
+import { BaseInstructorPage, BasePage } from "./types";
 import { LoginPage } from "./pages/login";
 import { UserLandingPage } from "./pages/user-landing";
 import { InstructorLandingPage } from "./pages/instructor-landing";
 import { LandingPage } from "./pages/landing";
 
-const routes : Record<string, BasePage> = {
+const routes : Record<string, BasePage | BaseInstructorPage> = {
     '/exercise/fill-blank' : new FillBlankExercisePage(),
     '/login' : new LoginPage(),
     '/exercise/translate' : new TranslationExercisePage(),
-    '/instructor/create' : new InstructorCreatePage(),
+    '/instructor/dashboard' : new InstructorCreatePage(),
     '/landing' : new LandingPage(),
     '/landing/user' : new UserLandingPage(),
     '/landing/instructor' : new InstructorLandingPage()
@@ -22,8 +22,14 @@ export function render(path: string) {
     const pageContent = routes[path]?.render() ?? "404";
     let pageContainer = document.querySelector(".page-container") as HTMLElement;
     if (pageContainer) {
-      pageContainer.replaceChildren();
-      pageContainer.append(...pageContent as HTMLElement[]);
+      if (path === '/instructor/dashboard'){
+        pageContainer.innerHTML = (routes[path] as BaseInstructorPage).render();
+      }
+      else{
+        pageContainer.replaceChildren();
+        pageContainer.append(...pageContent as HTMLElement[]);
+      }
+      
     }
     routes[path].load();
   }

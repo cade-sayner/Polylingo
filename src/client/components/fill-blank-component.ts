@@ -1,8 +1,8 @@
 import { apiFetch, deleteFillBlankQuestion, getExistingFillBlankQuestions } from "../api-client";
-import { BaseComponent } from "../types";
+import { BaseInstructorComponent } from "../types";
 import { setupDistractorInput, AutocompleteService } from "../utils";
 
-export class FillInTheBlankComponent implements BaseComponent {
+export class FillInTheBlankComponent implements BaseInstructorComponent {
   private languages: {language_id: number, language_name: string}[] = [];
   public selectedLanguageId: number | null = null;
   private currentAnswerWordId : number | null = 20;

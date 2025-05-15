@@ -1,4 +1,4 @@
-import { BaseComponent, BasePage, Language, TranslationQuestion } from "../types"
+import { BaseComponent, BaseInstructorComponent, BaseInstructorPage, BasePage, Language, TranslationQuestion } from "../types"
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
 import { Navbar } from "../components/navbar";
@@ -7,10 +7,10 @@ import { TranslationComponent } from "../components/translate-component";
 import { FillInTheBlankComponent } from "../components/fill-blank-component";
 import { getExistingFillBlankQuestions, getExistingTranslationQuestions, deleteFillBlankQuestion, deleteTranslationQuestion } from "../api-client";
 
-export class InstructorCreatePage implements BasePage {
+export class InstructorCreatePage implements BaseInstructorPage {
     currentUserId: number | null = null;
-    fillInTheBlankComponent: BaseComponent = new FillInTheBlankComponent();
-    translationComponent: BaseComponent = new TranslationComponent();
+    fillInTheBlankComponent: BaseInstructorComponent = new FillInTheBlankComponent();
+    translationComponent: BaseInstructorComponent = new TranslationComponent();
 
     currentComponent: 'fill-in-the-blank' | 'translation' = 'fill-in-the-blank';
 
@@ -47,7 +47,6 @@ export class InstructorCreatePage implements BasePage {
 
     render = () => {
         return `
-        ${this.navbar.render()}
         ${document.querySelector(".instructor-template")?.innerHTML ?? ""}
         `
     }

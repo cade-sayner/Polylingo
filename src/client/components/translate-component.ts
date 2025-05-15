@@ -1,8 +1,8 @@
 import { apiFetch, deleteTranslationQuestion, getExistingTranslationQuestions } from "../api-client";
-import { BaseComponent } from "../types";
+import { BaseInstructorComponent } from "../types";
 import { setupDistractorInput, AutocompleteService } from "../utils";
 
-export class TranslationComponent implements BaseComponent {
+export class TranslationComponent implements BaseInstructorComponent {
   private currentAnswerWordId : number | null = 20;
   private promptWordId : number | null = 20;
 

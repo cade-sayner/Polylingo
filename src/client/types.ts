@@ -44,7 +44,16 @@ export interface BasePage extends BaseComponent{
   load : () => void;
 }
 
+export interface BaseInstructorPage extends BaseInstructorComponent{
+  load : () => void;
+}
+
 export interface BaseComponent{
   render : (prop ?: any) => HTMLElement | HTMLElement[];
+  mount?(): void;
+}
+
+export interface BaseInstructorComponent{
+  render : (prop ?: any) => string;
   mount?(): void;
 }
