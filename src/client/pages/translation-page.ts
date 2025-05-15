@@ -56,7 +56,12 @@ export class TranslationExercisePage implements BasePage {
         })
 
         this.skipButton?.addEventListener('click', async (e) => {
-            await this.getQuestion();
+            if(this.currentQuestion && this.currentUserId){
+                await auditTranslation(this.currentQuestion?.translationQuestionId as number, false, this.currentUserId);
+                await this.getQuestion();
+            }else{
+                throw new Error("Missing state");
+            }
         })
     }
 
