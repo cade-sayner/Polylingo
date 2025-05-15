@@ -1,265 +1,231 @@
-import { apiFetch, deleteFillBlankQuestion, getExistingFillBlankQuestions } from "../api-client";
-import { BaseInstructorComponent } from "../types";
-import { setupDistractorInput, AutocompleteService } from "../utils";
+// fillInTheBlankComponent.ts
+import {
+  apiFetch,
+  deleteFillBlankQuestion,
+  fetchLanguages,
+  getExistingFillBlankQuestions,
+} from "../api-client";
+import {
+  BaseComponent,
+  BaseInstructorComponent,
+  FillBlankQuestion,
+  Language,
+} from "../types";
+import {
+  setupDistractorInput,
+  AutocompleteService,
+  populateLanguageDropdown,
+  getElement,
+  populateAnswerWord
+} from "../utils";
 
 export class FillInTheBlankComponent implements BaseInstructorComponent {
-  private languages: {language_id: number, language_name: string}[] = [];
+  private languages: {language_id: number, language_name: string}[] = [];;
   public selectedLanguageId: number | null = null;
-  private currentAnswerWordId : number | null = 20;
+  private currentAnswerWordId: number | null = null;
 
   render() {
     return document.querySelector("#fill-blank-component")?.innerHTML ?? "";
   }
 
   async mount() {
-    await this.loadLanguages();
-    this.populateLanguageDropdown();
-    this.setupLanguageSelection();
-    this.setupFieldDependencies();
-    this.setupClearAnswerButton();
+    this.languages = await fetchLanguages();
+    populateLanguageDropdown("answerLanguage", this.languages);
+    this.setupInitialUIState();
+    this.setupEventListeners();
     setupDistractorInput();
+    this.setupAutocomplete("answerWord", "autocompleteDropdown", "answerWordId", "clearAnswerBtn", () => this.selectedLanguageId);
+  }
 
+  private setupInitialUIState() {
+    const answerInput = getElement<HTMLInputElement>("answerWord");
+    const createBtn = getElement<HTMLButtonElement>(".create-question-btn");
+
+    answerInput.disabled = true;
+    createBtn.disabled = true;
+  }
+
+  private setupEventListeners() {
+    this.setupLanguageSelectListener();
+    this.setupClearAnswerListener();
+    this.setupCreateButtonListener();
+    this.setupDistractorInputListener();
+    this.setupEnterKeyForAutocomplete();
+  }
+
+  private setupAutocomplete(wordElementID: string, dropdownId: string, elementId: string, buttonElement: string, getLanguageId: () => number | null) {
     AutocompleteService.setupForComponent(
-        this,
-        "answerWord",
-        "autocompleteDropdown",
-        (selectedItem) => {
+      getLanguageId,
+      wordElementID,
+      dropdownId,
+      (selectedItem) => {
         this.currentAnswerWordId = selectedItem.id;
+        populateAnswerWord(selectedItem.word, selectedItem.id, wordElementID, elementId, buttonElement);
         this.loadExistingQuestions();
-        const input      = document.getElementById("answerWord")    as HTMLInputElement;
-        const hiddenInput= document.getElementById("answerWordId")  as HTMLInputElement;
-        const clearBtn   = document.getElementById("clearAnswerBtn") as HTMLButtonElement;
-
-        input.value    = selectedItem.word;
-        hiddenInput.value = selectedItem.id.toString();
-
-        input.readOnly = true;
-        clearBtn.style.display = "inline-block";
-        }
+      }
     );
+  }
 
-    console.log(this.currentAnswerWordId)
+  private setupLanguageSelectListener() {
+    const languageSelect = getElement<HTMLSelectElement>("answerLanguage");
 
-    const input    = document.getElementById("answerWord") as HTMLInputElement;
-    const dropdown = document.getElementById("autocompleteDropdown") as HTMLDivElement;
+    if (this.selectedLanguageId) {
+      languageSelect.value = this.selectedLanguageId.toString();
+    }
 
-    input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-        const firstItem = dropdown.querySelector<HTMLDivElement>(".autocomplete-item");
-        if (firstItem) {
-            e.preventDefault();   
-            firstItem.click();    
-            input.blur();        
-        }
-        }
+    languageSelect.addEventListener("change", () => {
+      this.selectedLanguageId = parseInt(languageSelect.value) || null;
+      this.resetFormOnLanguageChange();
     });
-    }
+  }
 
+  private resetFormOnLanguageChange() {
+    const answerInput = getElement<HTMLInputElement>("answerWord");
+    const hiddenInput = getElement<HTMLInputElement>("answerWordId");
+    const clearBtn = getElement<HTMLButtonElement>("clearAnswerBtn");
+    const distractorInput = getElement<HTMLInputElement>("distractorInput");
+    const createBtn = getElement<HTMLButtonElement>(".create-question-btn");
+    const tbody = getElement<HTMLTableSectionElement>("existing-fill-blank-body");
 
-  private setupFieldDependencies() {
-  const languageSelect   = document.getElementById("answerLanguage")      as HTMLSelectElement;
-  const answerInput      = document.getElementById("answerWord")         as HTMLInputElement;
-  const hiddenAnswerId   = document.getElementById("answerWordId")       as HTMLInputElement;
-  const clearBtn         = document.getElementById("clearAnswerBtn")     as HTMLButtonElement;
-  const distractorInput  = document.getElementById("distractorInput")    as HTMLInputElement;
-  const createBtn        = document.querySelector(".create-question-btn") as HTMLButtonElement;
-  const tbody            = document.getElementById("existing-fill-blank-body")!;
+    answerInput.value = "";
+    hiddenInput.value = "";
+    clearBtn.style.display = "none";
+    answerInput.disabled = false;
+    answerInput.readOnly = false;
+    distractorInput.value = "";
+    createBtn.disabled = true;
+    tbody.innerHTML = "";
+  }
 
-  // initial
-  answerInput.disabled = true;
-  createBtn.disabled   = true;
-
-  createBtn.addEventListener("click", (e) => {
-    if (!hiddenAnswerId.value) {
-      e.preventDefault();
-      alert("You must select an answer word from suggestions.");
-    }
-  });
-
-  languageSelect.addEventListener("change", () => {
-    answerInput.value       = "";
-    hiddenAnswerId.value    = "";
-    answerInput.readOnly    = false;
-    clearBtn.style.display  = "none";
-
-    answerInput.disabled    = false;  
-    distractorInput.value   = "";  
-    createBtn.disabled      = true; 
-    
-    tbody.innerHTML         = "";
-  });
-
-  distractorInput.addEventListener("input", () => {
-    createBtn.disabled = distractorInput.value.trim().length === 0;
-  });
-
-  // once they click “Create” you call createFillBlank in your other handler
-  createBtn.addEventListener("click", () => this.createFillBlank());
-}
-
-
-  private setupClearAnswerButton() {
-    const clearBtn = document.getElementById("clearAnswerBtn") as HTMLButtonElement;
-    const input = document.getElementById("answerWord") as HTMLInputElement;
-    const hiddenInput = document.getElementById("answerWordId") as HTMLInputElement;
-    const tbody            = document.getElementById("existing-fill-blank-body")!;
+  private setupClearAnswerListener() {
+    const clearBtn = getElement<HTMLButtonElement>("clearAnswerBtn");
 
     clearBtn.addEventListener("click", () => {
-        input.value = "";
-        hiddenInput.value = "";
-        input.readOnly = false;
-        clearBtn.style.display = "none";
-        tbody.innerHTML         = "";
+      this.clearAnswerWord();
+      clearBtn.style.display = "none";
     });
-    }
-
-
-  private populateLanguageDropdown() {
-    const select = document.getElementById("answerLanguage") as HTMLSelectElement;
-    if (select) {
-      select.innerHTML = `
-        <option value="" disabled selected>Language</option>
-        ${this.languages.map(lang => 
-          `<option value="${lang.language_id}">${lang.language_name}</option>`
-        ).join('')}
-      `;
-    }
   }
 
-  private async loadLanguages() {
-    try {
-      const response = await apiFetch("/api/languages");
-      this.languages = (await response).map((lang: any) => ({
-        language_id: lang.languageId,
-        language_name: lang.languageName
-      }));
-    } catch (error) {
-      console.error("Failed to load languages:", error);
-      this.languages = [];
-    }
+  private clearAnswerWord() {
+    const input = getElement<HTMLInputElement>("answerWord");
+    const hiddenInput = getElement<HTMLInputElement>("answerWordId");
+    const tbody = getElement<HTMLTableSectionElement>("existing-fill-blank-body");
+
+    input.value = "";
+    hiddenInput.value = "";
+    input.readOnly = false;
+    this.currentAnswerWordId = null;
+    tbody.innerHTML = "";
   }
 
-  private setupLanguageSelection() {
-    const select = document.getElementById("answerLanguage") as HTMLSelectElement;
-    if (select) {
-      if (this.selectedLanguageId) {
-        select.value = this.selectedLanguageId.toString();
+  private setupCreateButtonListener() {
+    const createBtn = getElement<HTMLButtonElement>(".create-question-btn");
+
+    createBtn.addEventListener("click", (e) => {
+      const hiddenInput = getElement<HTMLInputElement>("answerWordId");
+      if (!hiddenInput.value) {
+        e.preventDefault();
+        alert("You must select an answer word from suggestions.");
+      } else {
+        this.createFillBlank();
       }
-
-      console.log(this.selectedLanguageId)
-      
-      select.addEventListener('change', () => {
-        this.selectedLanguageId = select.value ? parseInt(select.value) : null;
-        console.log('Selected language ID:', this.selectedLanguageId);
-      });
-    }
+    });
   }
 
-  async deleteFillBlank(id : number, word: string) {
-    const confirmation = confirm(`Deleting question for word: ${word}. Are you sure you want to continue?`);
-    if (confirmation) 
-    {
-      await deleteFillBlankQuestion(id);
-      this.loadExistingQuestions()
-    }
+  private setupDistractorInputListener() {
+    const distractorInput = getElement<HTMLInputElement>("distractorInput");
+    const createBtn = getElement<HTMLButtonElement>(".create-question-btn");
+
+    distractorInput.addEventListener("input", () => {
+      createBtn.disabled = distractorInput.value.trim().length === 0;
+    });
+  }
+
+  private setupEnterKeyForAutocomplete() {
+    const input = getElement<HTMLInputElement>("answerWord");
+    const dropdown = getElement<HTMLDivElement>("autocompleteDropdown");
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const firstItem = dropdown.querySelector<HTMLDivElement>(".autocomplete-item");
+        if (firstItem) {
+          e.preventDefault();
+          firstItem.click();
+          input.blur();
+        }
+      }
+    });
   }
 
   async loadExistingQuestions() {
-    const answerWordId = this.currentAnswerWordId
-    const existingQuestions = await getExistingFillBlankQuestions(answerWordId!);
-    const tbody = document.getElementById('existing-fill-blank-body');
-    if (tbody == null || existingQuestions == null)
-        return
-    if (existingQuestions && existingQuestions.length != 0)
-    {
-      tbody.innerHTML = '';
-      existingQuestions.forEach(q => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+    if (!this.currentAnswerWordId) return;
+
+    const existingQuestions = await getExistingFillBlankQuestions(this.currentAnswerWordId);
+    const tbody = getElement<HTMLTableSectionElement>("existing-fill-blank-body");
+
+    tbody.innerHTML = "";
+    if (!existingQuestions || existingQuestions.length === 0) {
+      tbody.innerHTML = `<tr><td>No questions found for answer word.</td></tr>`;
+      return;
+    }
+
+    existingQuestions.forEach((q) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
         <td>${q.placeholderSentence}</td>
         <td>${q.word}</td>
-        <td>${q.distractors.join(', ')}</td>
+        <td>${q.distractors.join(", ")}</td>
         <td>${q.difficultyScore}</td>
-        <td>
-            <button class="delete-btn">Delete</button>
-        </td>
-        `;
-        tbody.appendChild(tr);
-        const deleteBtn = tr.querySelector('.delete-btn') as HTMLButtonElement;
-        deleteBtn.addEventListener('click', () => this.deleteFillBlank(q.fillBlankQuestionsId, q.word));
-      });
-    }
-    else
-    {
-      tbody.innerHTML = '';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-      <td>No questions found for answer word.</td>
+        <td><button class="delete-btn">Delete</button></td>
       `;
       tbody.appendChild(tr);
+
+      tr.querySelector(".delete-btn")?.addEventListener("click", () =>
+        this.deleteFillBlank(q.fillBlankQuestionsId, q.word)
+      );
+    });
+  }
+
+  async deleteFillBlank(id: number, word: string) {
+    if (confirm(`Deleting question for word: ${word}. Are you sure?`)) {
+      await deleteFillBlankQuestion(id);
+      this.loadExistingQuestions();
     }
   }
 
   async createFillBlank() {
     const answerWordId = this.currentAnswerWordId;
+    const distractors = getElement<HTMLInputElement>("distractorsHidden")
+      .value.split(",")
+      .map((d) => d.trim())
+      .filter((d) => d);
 
-    const distractorInput = document.getElementById("distractorsHidden") as HTMLInputElement;
-    const sentenceInput = document.getElementById("questionSentence") as HTMLInputElement;
-    const difficultyInput = document.getElementById("difficulty") as HTMLSelectElement;
+    const sentence = getElement<HTMLInputElement>("questionSentence").value.trim();
+    const difficulty = getElement<HTMLSelectElement>("difficulty").value;
 
-    const distractors = distractorInput?.value.split(",").map(d => d.trim()).filter(d => d !== "");
-    let sentence = sentenceInput?.value.trim();
-    const difficulty = difficultyInput?.value;
+    if (!answerWordId || !sentence || !sentence.includes("_") || !difficulty || distractors.length !== 3) {
+      alert("Ensure all fields are valid and exactly 3 distractors are provided. Sentence must contain '_'.");
+      return;
+    }
 
-    if (!answerWordId) {
-      alert("Please select an existing answer word.");
-      return;
-    }
-    if (!sentence) {
-      alert("Please enter a sentence for the question.");
-      return;
-    }
-    if (!sentence.includes('_'))
-    {
-      alert("Question sentence should include an '_' for the missing word.")
-      return;
-    }
-    else{
-      sentence.replace('_', '____');
-    }
-    if (!difficulty)
-    {
-      alert("A difficulty level must be selected.");
-      return;
-    }
-    if (!distractors || distractors.length != 3) {
-      alert("Three distractors are required.");
-      return;
-    }
+    const payload = {
+      missingWordId: answerWordId,
+      distractors,
+      placeholderSentence: sentence.replace("_", "____"),
+      difficultyScore: parseInt(difficulty),
+    };
 
     try {
-      const payload = {
-        missingWordId: answerWordId,
-        distractors,
-        placeholderSentence: sentence,
-        difficultyScore: parseInt(difficulty)
-      };
-
-      const result = await apiFetch("/api/fill_blank", {
+      console.log(JSON.stringify(payload))
+      await apiFetch("/api/fill_blank", {
         method: "POST",
         body: JSON.stringify(payload),
         headers: { "Content-Type": "application/json" },
       });
 
-      if (result.status = 201) {
-        alert("Fill in the blank question created successfully.");
+        alert("Question created successfully.");
         this.loadExistingQuestions();
-      }
-      else {
-        alert(`Failed to create question: ${result.message}`);
-      }
-    } 
-    catch (error) {
+    } catch (error) {
       alert(`Failed to create question: ${error}`);
     }
   }

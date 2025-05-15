@@ -120,7 +120,7 @@
     <button id="landing-card-container">
         <section id="landing-card-text">
             <header id="landing-card-header""> </header>
-            <aside id=" landing-card-caption">
+            <aside id="landing-card-caption">
                 </aside>
         </section>
         <figure id="landing-card-figure">
@@ -278,56 +278,77 @@
 </template>
 
 <template id="translate-component">
-    <div class="translation-container">
+    <section class="translation-container">
         <h2 class="section-title">Translation Questions</h2>
 
         <form class="translation-form">
-          <select name="prompt-language" id="promptLanguage">
-            <option value="" disabled selected>Prompt language</option>
-            <option value="Afrikaans">Afrikaans</option>
-            <option value="German">German</option>
-            <option value="Italian">Italian</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-          </select>
+            <section class="form-group">
+                <label for="promptLanguage">Prompt Language</label>
+                <select name="prompt-language" id="promptLanguage" class="form-control">
+                    <option value="" disabled selected>Prompt Language</option>
+                </select>
+            </section>
 
-          <select name="answer-language" id="answerLanguage">
-            <option value="" disabled selected>Answer language</option>
-            <option value="Afrikaans">Afrikaans</option>
-            <option value="German">German</option>
-            <option value="Italian">Italian</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-          </select>
+            <section class="form-group">
+                <label for="answerLanguage">Answer Language</label>
+                <select name="answer-language" id="answerLanguage" class="form-control">
+                    <option value="" disabled selected>Answer Language</option>
+                </select>
+            </section>
 
-          <select name="difficulty" id="difficulty">
-            <option value="" disabled selected>Difficulty</option>
-            <option value="1">1 - Very Easy</option>
-            <option value="2">2 - Easy</option>
-            <option value="3">3 - Medium</option>
-            <option value="4">4 - Hard</option>
-          </select>
+            <section class="form-group">
+                <label for="difficulty">Difficulty</label>
+                <select name="difficulty" id="difficulty" class="form-control">
+                    <option value="" disabled selected>Difficulty</option>
+                    <option value="1">1 - Very Easy</option>
+                    <option value="2">2 - Easy</option>
+                    <option value="3">3 - Medium</option>
+                    <option value="4">4 - Hard</option>
+                </select>
+            </section>
 
-          <input type="text" placeholder="Prompt word" name="promptWord" />
-          <input type="text" placeholder="Answer word" name="answerWord" />
-          <div id="distractorInputWrapper">
-            <label for="distractorInput">Add Distractors (3 required)</label>
-            <input
-              type="text"
-              id="distractorInput"
-              class="distractor-input"
-              placeholder="Click enter to add a distractor"
-            />
-            <div class="tags-container" id="distractorTags">
-              <!-- tags will be dynamically added here -->
-            </div>
-          </div>
+            <section class="form-group">
+                <label for="promptWord">Prompt Word</label>
+                <section class="autocomplete">
+                    <input type="text" id="promptWord" placeholder="Missing word" name="promptWord">
+                    <input type="hidden" id="promptWordId" name="promptWordId" />
+                    <section id="promptDropdown" class="autocomplete-items"></section>
+                    <button type="button" id="clearPromptBtn" style="display: none;">Clear</button>
+                </section>
+            </section>
+
+            <section class="form-group">
+                <label for="answerWord">Answer Word</label>
+                <section class="autocomplete">
+                    <input type="text" id="answerWord" placeholder="Missing word" name="answerWord">
+                    <input type="hidden" id="answerWordId" name="answerWordId" />
+                    <section id="answerDropdown" class="autocomplete-items"></section>
+                    <button type="button" id="clearAnswerBtn" style="display: none;">Clear</button>
+                </section>
+            </section>
+
+          <section class="form-group-2">
+            <label for="distractorInput">Add distractors (3 required)</label>
+            <section id="distractorInputWrapperFillBlank">
+                <input
+                type="text"
+                id="distractorInput"
+                class="distractor-input"
+                placeholder="Click enter to add distractor"
+                />
+                <section class="tags-container" id="distractorTags">
+                <!-- tags will be dynamically added here -->
+                </section>
+
+                <input type="hidden" id="distractorsHidden" name="distractors" />
+            </section>
+        </section>
 
 
         </form>
 
         <button type="submit" class="create-question-btn">Create question</button>
-        
+
         <h3 class="sub-heading">Existing questions for answer word:</h3>
 
         <table class="translation-table">
@@ -344,7 +365,7 @@
             <!-- Rows will go here -->
           </tbody>
         </table>
-      </div>
+      </section>
 </template>
 
 </html>

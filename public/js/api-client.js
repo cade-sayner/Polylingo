@@ -33,6 +33,19 @@ export async function getTranslationQuestionForUser(language, toEnglish) {
         return response;
     }
 }
+export async function fetchLanguages() {
+    try {
+        const response = await apiFetch("/api/languages");
+        const languages = (await response).map((lang) => ({
+            language_id: lang.languageId,
+            language_name: lang.languageName
+        }));
+        return languages;
+    }
+    catch (error) {
+        console.error("Failed to load languages:", error);
+    }
+}
 export async function auditFillBlank(fillBlankId, correct, currentUserId) {
     if (!currentUserId) {
         throw new Error("Failed to audit");

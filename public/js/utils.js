@@ -57,7 +57,9 @@ export function setupDistractorInput() {
     });
 }
 export class AutocompleteService {
-    static async setupForComponent(component, inputId, dropdownId, onSelect) {
+    static async setupForComponent(
+    // Accept a function that returns the current languageId, or null if none selected
+    getSelectedLanguageId, inputId, dropdownId, onSelect) {
         const input = document.getElementById(inputId);
         const dropdown = document.getElementById(dropdownId);
         if (!input || !dropdown)
@@ -65,10 +67,11 @@ export class AutocompleteService {
         input.addEventListener("input", async () => {
             const searchText = input.value.trim();
             dropdown.innerHTML = '';
-            if (searchText.length < 2 || !component.selectedLanguageId)
+            const selectedLanguageId = getSelectedLanguageId();
+            if (searchText.length < 2 || !selectedLanguageId)
                 return;
             try {
-                const res = await apiFetch(`/api/word?languageId=${component.selectedLanguageId}&wordSearchText=${encodeURIComponent(searchText)}`);
+                const res = await apiFetch(`/api/word?languageId=${selectedLanguageId}&wordSearchText=${encodeURIComponent(searchText)}`);
                 const words = await res;
                 console.log(words);
                 if (Array.isArray(words)) {
@@ -94,5 +97,49 @@ export class AutocompleteService {
         input.addEventListener("blur", () => {
             setTimeout(() => dropdown.innerHTML = '', 100);
         });
+    }
+}
+export async function getExistingTranslationQuestions(answerWordId) {
+    let response = await apiFetch(`/api/translationquestions?answerWordId=${answerWordId}`);
+    return response;
+}
+export async function getExistingFillBlankQuestions(answerWordId) {
+    let response = await apiFetch(`/api/fill_blank?answerWordId=${answerWordId}`);
+    return response;
+}
+export async function deleteFillBlankQuestion(questionId) {
+    await apiFetch(`/api/fill_blank/${questionId}`, {
+        method: "Delete"
+    });
+}
+export function getElement(selector) {
+    const el = document.querySelector(selector.startsWith("#") || selector.startsWith(".") ? selector : `#${selector}`);
+    if (!el)
+        throw new Error(`Element not found: ${selector}`);
+    return el;
+}
+export function populateAnswerWord(word, id, element, elementId, buttonElement) {
+    const input = getElement(element);
+    const hiddenInput = getElement(elementId);
+    const clearBtn = getElement(buttonElement);
+    input.value = word;
+    hiddenInput.value = id.toString();
+    input.readOnly = true;
+    clearBtn.style.display = "inline-block";
+}
+export async function deleteTranslationQuestion(questionId) {
+    await apiFetch(`/api/translationquestions/${questionId}`, {
+        method: "Delete"
+    });
+}
+export function populateLanguageDropdown(selectId, languages) {
+    const select = document.getElementById(selectId);
+    if (select) {
+        select.innerHTML = `
+      <option value="" disabled selected>Language</option>
+      ${languages
+            .map((lang) => `<option value="${lang.language_id}">${lang.language_name}</option>`)
+            .join("")}
+    `;
     }
 }

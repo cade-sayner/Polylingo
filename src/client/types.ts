@@ -39,6 +39,11 @@ export interface JwtPayload {
   exp?: number;
   [key: string]: any;
 }
+
+export interface LanguageOption {
+  language_id: number;
+  language_name: string;
+}
   
 export interface BasePage extends BaseComponent{
   load : () => void;
