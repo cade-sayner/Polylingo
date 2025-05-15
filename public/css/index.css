@@ -522,7 +522,7 @@ body {
 
 #distractorInputWrapperFillBlank {
   display: flex;
-  align-items: center;
+  flex: 1;              /* grow to fill its parent’s width */
   gap: 0.5rem;
 }
 
@@ -596,6 +596,43 @@ body {
 }
 
 .form-group:has(.form-control:disabled) label {
+  color: #999;
+}
+
+.form-group-2 {
+  margin-bottom: 16px;
+  grid-column: 2 / -1; 
+  flex-direction: column;
+}
+
+.form-group-2 label {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.form-control-2 {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.form-control-2:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.form-control-2:disabled {
+  background-color: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.form-group-2:has(.form-control:disabled) label {
   color: #999;
 }
 

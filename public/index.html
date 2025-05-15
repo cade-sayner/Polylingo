@@ -243,21 +243,23 @@
             </div>
         </div>
         
-        <div id="distractorInputWrapperFillBlank">
-            <label for="distractorInput">Add Distractors (3 required)</label>
-            <input
-              type="text"
-              id="distractorInput"
-              class="distractor-input"
-              placeholder="Click enter to add a distractor"
-            />
-            <div class="tags-container" id="distractorTags">
-              <!-- tags will be dynamically added here -->
+        <div class="form-group-2">
+            <label for="distractorInput">Add distractors (3 required)</label>
+            <div id="distractorInputWrapperFillBlank">
+                <input
+                type="text"
+                id="distractorInput"
+                class="distractor-input"
+                placeholder="Click enter to add distractor"
+                />
+                <div class="tags-container" id="distractorTags">
+                <!-- tags will be dynamically added here -->
+                </div>
+    
+                <input type="hidden" id="distractorsHidden" name="distractors" />
             </div>
- 
-            <input type="hidden" id="distractorsHidden" name="distractors" />
         </div>
-          
+            
         </form>
 
         <button type="submit" class="create-question-btn">Create question</button>

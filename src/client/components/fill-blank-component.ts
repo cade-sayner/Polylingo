@@ -25,7 +25,7 @@ export class FillInTheBlankComponent implements BaseComponent {
         "autocompleteDropdown",
         (selectedItem) => {
         this.currentAnswerWordId = selectedItem.id;
-        this.loadExistingQuestions(selectedItem.id);
+        this.loadExistingQuestions();
         const input      = document.getElementById("answerWord")    as HTMLInputElement;
         const hiddenInput= document.getElementById("answerWordId")  as HTMLInputElement;
         const clearBtn   = document.getElementById("clearAnswerBtn") as HTMLButtonElement;
@@ -57,47 +57,59 @@ export class FillInTheBlankComponent implements BaseComponent {
 
 
   private setupFieldDependencies() {
-    const languageSelect = document.getElementById("answerLanguage") as HTMLSelectElement;
-    const answerInput = document.getElementById("answerWord") as HTMLInputElement;
-    const distractorInput = document.getElementById("distractorInput") as HTMLInputElement;
-    const createBtn = document.querySelector(".create-question-btn") as HTMLButtonElement;
-    createBtn.addEventListener("click", (e) => {
-    const hiddenInput = document.getElementById("answerWordId") as HTMLInputElement;
-    if (!hiddenInput.value) {
-        e.preventDefault();
-        alert("You must select an answer word from suggestions.");
+  const languageSelect   = document.getElementById("answerLanguage")      as HTMLSelectElement;
+  const answerInput      = document.getElementById("answerWord")         as HTMLInputElement;
+  const hiddenAnswerId   = document.getElementById("answerWordId")       as HTMLInputElement;
+  const clearBtn         = document.getElementById("clearAnswerBtn")     as HTMLButtonElement;
+  const distractorInput  = document.getElementById("distractorInput")    as HTMLInputElement;
+  const createBtn        = document.querySelector(".create-question-btn") as HTMLButtonElement;
+  const tbody            = document.getElementById("existing-fill-blank-body")!;
+
+  // initial
+  answerInput.disabled = true;
+  createBtn.disabled   = true;
+
+  createBtn.addEventListener("click", (e) => {
+    if (!hiddenAnswerId.value) {
+      e.preventDefault();
+      alert("You must select an answer word from suggestions.");
     }
-    });
- 
-    answerInput.disabled = true;
-    createBtn.disabled = true;
+  });
 
-    languageSelect.addEventListener("change", () => {
-      if (languageSelect.value) {
-        answerInput.disabled = false;
-      }
-    });
+  languageSelect.addEventListener("change", () => {
+    answerInput.value       = "";
+    hiddenAnswerId.value    = "";
+    answerInput.readOnly    = false;
+    clearBtn.style.display  = "none";
 
-    distractorInput.addEventListener("input", () => {
-      const hasDistractors = distractorInput.value.trim().length > 0;
-      createBtn.disabled = !hasDistractors;
-    });
+    answerInput.disabled    = false;  
+    distractorInput.value   = "";  
+    createBtn.disabled      = true; 
+    
+    tbody.innerHTML         = "";
+  });
 
-    createBtn.addEventListener("click", () => {
-      this.createFillBlank();
-    })
-  }
+  distractorInput.addEventListener("input", () => {
+    createBtn.disabled = distractorInput.value.trim().length === 0;
+  });
+
+  // once they click “Create” you call createFillBlank in your other handler
+  createBtn.addEventListener("click", () => this.createFillBlank());
+}
+
 
   private setupClearAnswerButton() {
     const clearBtn = document.getElementById("clearAnswerBtn") as HTMLButtonElement;
     const input = document.getElementById("answerWord") as HTMLInputElement;
     const hiddenInput = document.getElementById("answerWordId") as HTMLInputElement;
+    const tbody            = document.getElementById("existing-fill-blank-body")!;
 
     clearBtn.addEventListener("click", () => {
         input.value = "";
         hiddenInput.value = "";
         input.readOnly = false;
         clearBtn.style.display = "none";
+        tbody.innerHTML         = "";
     });
     }
 
@@ -143,21 +155,22 @@ export class FillInTheBlankComponent implements BaseComponent {
     }
   }
 
-  deleteFillBlank(id : number, word: string, answerWordId: number) {
+  async deleteFillBlank(id : number, word: string) {
     const confirmation = confirm(`Deleting question for word: ${word}. Are you sure you want to continue?`);
     if (confirmation) 
     {
-      deleteFillBlankQuestion(id);
-      this.loadExistingQuestions(answerWordId)
+      await deleteFillBlankQuestion(id);
+      this.loadExistingQuestions()
     }
   }
 
-  async loadExistingQuestions(answerWordId : number = 20) {
-    const existingQuestions = await getExistingFillBlankQuestions(answerWordId);
+  async loadExistingQuestions() {
+    const answerWordId = this.currentAnswerWordId
+    const existingQuestions = await getExistingFillBlankQuestions(answerWordId!);
     const tbody = document.getElementById('existing-fill-blank-body');
     if (tbody == null || existingQuestions == null)
         return
-    if (existingQuestions.length != 0)
+    if (existingQuestions && existingQuestions.length != 0)
     {
       tbody.innerHTML = '';
       existingQuestions.forEach(q => {
@@ -173,7 +186,7 @@ export class FillInTheBlankComponent implements BaseComponent {
         `;
         tbody.appendChild(tr);
         const deleteBtn = tr.querySelector('.delete-btn') as HTMLButtonElement;
-        deleteBtn.addEventListener('click', () => this.deleteFillBlank(q.fillBlankQuestionsId, q.word, answerWordId));
+        deleteBtn.addEventListener('click', () => this.deleteFillBlank(q.fillBlankQuestionsId, q.word));
       });
     }
     else
@@ -240,7 +253,7 @@ export class FillInTheBlankComponent implements BaseComponent {
 
       if (result.status = 201) {
         alert("Fill in the blank question created successfully.");
-        this.loadExistingQuestions(answerWordId);
+        this.loadExistingQuestions();
       }
       else {
         alert(`Failed to create question: ${result.message}`);
