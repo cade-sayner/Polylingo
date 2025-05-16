@@ -227,7 +227,7 @@ export class TranslationComponent implements BaseInstructorComponent {
         tbody.appendChild(tr);
   
         tr.querySelector(".delete-btn")?.addEventListener("click", () =>
-          this.deleteTranslation(q.translationQuestionId, q.answerWord)
+          this.deleteTranslation(q.translationQuestionId, q.answord!)
         );
       });
     }
