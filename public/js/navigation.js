@@ -4,7 +4,6 @@ import { InstructorCreatePage } from "./pages/instructor-page";
 import { TranslationExercisePage } from "./pages/translation-page";
 import { LoginPage } from "./pages/login";
 import { UserLandingPage } from "./pages/user-landing";
-import { InstructorLandingPage } from "./pages/instructor-landing";
 import { LandingPage } from "./pages/landing";
 const routes = {
     '/exercise/fill-blank': new FillBlankExercisePage(),
@@ -12,8 +11,7 @@ const routes = {
     '/exercise/translate': new TranslationExercisePage(),
     '/instructor/dashboard': new InstructorCreatePage(),
     '/landing': new LandingPage(),
-    '/landing/user': new UserLandingPage(),
-    '/landing/instructor': new InstructorLandingPage()
+    '/landing/user': new UserLandingPage()
 };
 export function render(path) {
     var _a, _b;
@@ -35,3 +33,6 @@ export function navigateTo(path) {
     render(path);
 }
 window.navigateTo = navigateTo;
+window.addEventListener('popstate', () => {
+    render(window.location.pathname.replace(applicationUri, ''));
+});

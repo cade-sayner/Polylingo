@@ -169,7 +169,7 @@ export class TranslationComponent {
           <td><button class="delete-btn">Delete</button></td>
         `;
             tbody.appendChild(tr);
-            (_a = tr.querySelector(".delete-btn")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => this.deleteTranslation(q.translationQuestionId, q.answerWord));
+            (_a = tr.querySelector(".delete-btn")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", () => this.deleteTranslation(q.translationQuestionId, q.answord));
         });
     }
     setupEnterKeyForAutocomplete(element, dropdownid) {

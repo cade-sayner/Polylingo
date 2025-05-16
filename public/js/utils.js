@@ -64,6 +64,13 @@ export class AutocompleteService {
         const dropdown = document.getElementById(dropdownId);
         if (!input || !dropdown)
             return;
+        function selectItem(word) {
+            input.value = word.word;
+            dropdown.innerHTML = '';
+            if (onSelect) {
+                onSelect({ id: word.wordId, word: word.word });
+            }
+        }
         input.addEventListener("input", async () => {
             const searchText = input.value.trim();
             dropdown.innerHTML = '';
@@ -79,12 +86,13 @@ export class AutocompleteService {
                         const item = document.createElement('div');
                         item.textContent = word.word;
                         item.classList.add("autocomplete-item");
-                        item.addEventListener('click', () => {
-                            input.value = word.word;
-                            dropdown.innerHTML = '';
-                            if (onSelect) {
-                                onSelect({ id: word.wordId, word: word.word });
-                            }
+                        item.addEventListener('mousedown', (e) => {
+                            e.preventDefault(); // Prevent input blur before click
+                            selectItem(word);
+                        });
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault(); // Prevent any default action
+                            selectItem(word);
                         });
                         dropdown.appendChild(item);
                     });

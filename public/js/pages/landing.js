@@ -13,7 +13,7 @@ export class LandingPage {
                 return;
             }
             if (role.role === "INSTRUCTOR") {
-                navigateTo("/landing/instructor");
+                navigateTo("/instructor/dashboard");
             }
         }
     }
