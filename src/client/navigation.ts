@@ -39,3 +39,6 @@ export function navigateTo(path: string) {
 
 (window as any).navigateTo = navigateTo;
 
+window.addEventListener('popstate', () => {
+  render(window.location.pathname.replace(applicationUri, ''));
+});
