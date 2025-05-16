@@ -78,8 +78,8 @@ async function getQuestionForUser(req: Request, res: any) {
 
 async function createTranslationQuestion(req: Request, res: any) {
     try {
-        const promptWordId = req.body.promptWord;
-        const answerWordId = req.body.answerWord;
+        const promptWordId = req.body.promptWordId;
+        const answerWordId = req.body.answerWordId;
         const distractors = req.body.distractors;
         const difficultyScore = req.body.difficultyScore;
 

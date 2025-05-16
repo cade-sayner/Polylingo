@@ -208,7 +208,7 @@
 </template>
 
 <template id="fill-blank-component">
-  <section class="translation-container">
+  <section class="translation-container fill-blank">
     <h2 class="section-title">Fill in the blank questions</h2>
 
     <form class="translation-form" autocomplete="off">
@@ -278,7 +278,7 @@
 </template>
 
 <template id="translate-component">
-    <section class="translation-container">
+    <section class="translation-container translate">
         <h2 class="section-title">Translation Questions</h2>
 
         <form class="translation-form">
@@ -310,7 +310,7 @@
             <section class="form-group">
                 <label for="promptWord">Prompt Word</label>
                 <section class="autocomplete">
-                    <input type="text" id="promptWord" placeholder="Missing word" name="promptWord">
+                    <input type="text" id="promptWord" placeholder="Prompt word" name="promptWord">
                     <input type="hidden" id="promptWordId" name="promptWordId" />
                     <section id="promptDropdown" class="autocomplete-items"></section>
                     <button type="button" id="clearPromptBtn" style="display: none;">Clear</button>
@@ -320,7 +320,7 @@
             <section class="form-group">
                 <label for="answerWord">Answer Word</label>
                 <section class="autocomplete">
-                    <input type="text" id="answerWord" placeholder="Missing word" name="answerWord">
+                    <input type="text" id="answerWord" placeholder="Answer word" name="answerWord">
                     <input type="hidden" id="answerWordId" name="answerWordId" />
                     <section id="answerDropdown" class="autocomplete-items"></section>
                     <button type="button" id="clearAnswerBtn" style="display: none;">Clear</button>
