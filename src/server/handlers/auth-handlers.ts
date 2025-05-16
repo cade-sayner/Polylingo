@@ -28,9 +28,9 @@ async function login(req: Request, res: any) {
     const body = new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: process.env.REDIRECT_URI_SHAY as string,
-        client_id: process.env.GOOGLE_CLIENT_ID_SHAY as string,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET_SHAY as string,
+        redirect_uri: process.env.REDIRECT_URI as string,
+        client_id: process.env.GOOGLE_CLIENT_ID as string,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET as string,
     });
 
     const response = await fetch("https://oauth2.googleapis.com/token", {

@@ -3,7 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { UserRepository } from '../repositories/user-repository';
 import { RoleRepository } from '../repositories/role-repository';
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID_SHAY);
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const userRepo = new UserRepository("users", "user_id");
 const roleRepo = new RoleRepository("roles", "id");
 
@@ -15,7 +15,7 @@ export const authenticate = async (req: Request, res:any, next:any) => {
   try {
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID_SHAY
+      audience: process.env.GOOGLE_CLIENT_ID
     });
 
     const payload = ticket.getPayload();
