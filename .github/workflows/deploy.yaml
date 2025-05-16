@@ -68,6 +68,7 @@ jobs:
             DB_HOST=${{ vars.DB_HOST }}
             DB_PORT=${{ vars.DB_PORT }}
             DB_USER=${{ vars.DB_USER }}
+            DB_NAME=${{ vars.DB_NAME }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
             GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
