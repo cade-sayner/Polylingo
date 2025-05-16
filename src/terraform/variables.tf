@@ -46,11 +46,11 @@ variable "api_port" {
 variable "db_name" {
   type      = string
   sensitive = true
-  default = "polylingo_db"
+  default   = "polylingo_db"
 }
 
 variable "db_username" {
-  type = string
+  type    = string
   default = "polylingo_admin"
 }
 
@@ -67,4 +67,10 @@ variable "db_port" {
 variable "instance_key_pair_name" {
   type    = string
   default = "polylingo-instance-key-pair"
+}
+
+variable "acm_certificate_arn" {
+  type        = string
+  default     = "value"
+  description = "The ARN of the ACM certificate"
 }
