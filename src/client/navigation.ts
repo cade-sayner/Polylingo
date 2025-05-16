@@ -5,7 +5,6 @@ import { TranslationExercisePage } from "./pages/translation-page";
 import { BaseInstructorPage, BasePage } from "./types";
 import { LoginPage } from "./pages/login";
 import { UserLandingPage } from "./pages/user-landing";
-import { InstructorLandingPage } from "./pages/instructor-landing";
 import { LandingPage } from "./pages/landing";
 
 const routes : Record<string, BasePage | BaseInstructorPage> = {
@@ -14,8 +13,7 @@ const routes : Record<string, BasePage | BaseInstructorPage> = {
     '/exercise/translate' : new TranslationExercisePage(),
     '/instructor/dashboard' : new InstructorCreatePage(),
     '/landing' : new LandingPage(),
-    '/landing/user' : new UserLandingPage(),
-    '/landing/instructor' : new InstructorLandingPage()
+    '/landing/user' : new UserLandingPage()
 }
 
 export function render(path: string) {
