@@ -17,6 +17,8 @@ export type TranslationQuestion = {
     answerWord : number;
     distractors : string[];
     difficultyScore : number;
+    quesWord? : string;
+    ansWord? : string;
 }
 
 export type TranslationQuestionResponse = {

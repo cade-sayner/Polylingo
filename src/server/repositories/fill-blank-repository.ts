@@ -56,4 +56,15 @@ export class FillBlankRepository extends BaseRepository<FillBlankQuestion> {
             word: chosenQuestion.word
          }
       }
+
+   async getByAnswerWordId(answerWordId: number){
+      let queryString = `
+      SELECT * FROM fill_blank_questions
+      WHERE missing_word_id = $1
+      `;
+
+      const fillBlankQuestions = await queryReturnAll(queryString, [answerWordId]) as unknown as FillBlankQuestion[] | null; 
+
+      return fillBlankQuestions;
+   }
 }

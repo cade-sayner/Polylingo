@@ -11,7 +11,7 @@ export class UserLandingPage {
         ]);
         return [
             new Navbar(false).render(),
-            cardContainer
+            landingTemplate
         ];
     }
     load() {

@@ -1,4 +1,4 @@
-import { auditFillBlank, getFillBlankQuestion } from "../api-client";
+import { auditFillBlank, getFillBlankQuestionForUser } from "../api-client";
 import { getSignedInUser, shuffle } from "../utils";
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
@@ -77,7 +77,7 @@ export class FillBlankExercisePage {
         const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
         const characterImage = document.querySelector(".speaker-image");
         characterImage.src = `/img/${character}`;
-        this.currentQuestion = await getFillBlankQuestion(this.currentLanguageSelection);
+        this.currentQuestion = await getFillBlankQuestionForUser(this.currentLanguageSelection);
         this.placeholderSentenceSectionElement.replaceChildren();
         this.placeholderSentenceSectionElement.append(...this.fillBlankSentence.render(this.currentQuestion.placeholderSentence));
         this.optionsSectionElement.replaceChildren();

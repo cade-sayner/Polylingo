@@ -1,4 +1,4 @@
-import { auditTranslation, getTranslationQuestion } from "../api-client";
+import { auditTranslation, getTranslationQuestionForUser } from "../api-client";
 import { getSignedInUser, shuffle } from "../utils";
 import { colorCrab, seaSponge, imageSrcs, languageOptions } from "../constants";
 import { QuestionOptions } from "../components/question-options";
@@ -79,7 +79,7 @@ export class TranslationExercisePage {
         const character = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
         const characterImage = document.querySelector(".speaker-image");
         characterImage.src = `/img/${character}`;
-        this.currentQuestion = await getTranslationQuestion(this.currentLanguageSelection, this.toEnglish);
+        this.currentQuestion = await getTranslationQuestionForUser(this.currentLanguageSelection, this.toEnglish);
         this.promptWordElement.innerText = this.currentQuestion.promptWord;
         this.optionsSectionElement.replaceChildren();
         this.optionsSectionElement.append(...this.options.render(shuffle([...this.currentQuestion.distractors, this.currentQuestion.answerWord])));

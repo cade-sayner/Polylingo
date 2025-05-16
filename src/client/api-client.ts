@@ -32,13 +32,12 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   return response.json();
 }
 
-export async function getFillBlankQuestion(language: Language): Promise<FillBlankQuestion>{
-        // no this needs to go through the api client
+export async function getFillBlankQuestionForUser(language: Language): Promise<FillBlankQuestion>{
         let response = await apiFetch(`/api/fill_blank/user?language=${language}`);
         return response as FillBlankQuestion;
 }
 
-export async function getTranslationQuestion(language: Language, toEnglish : boolean): Promise<TranslationQuestion> {
+export async function getTranslationQuestionForUser(language: Language, toEnglish : boolean): Promise<TranslationQuestion> {
     if(toEnglish){
       let response = await apiFetch(`/api/translationquestions/user?prompt_language=${language}&answer_language=English`);
       return response;
@@ -47,6 +46,19 @@ export async function getTranslationQuestion(language: Language, toEnglish : boo
       return response;
     }
 }
+
+export async function fetchLanguages() {
+    try {
+      const response = await apiFetch("/api/languages");
+      const languages = (await response).map((lang: any) => ({
+        language_id: lang.languageId,
+        language_name: lang.languageName
+      }));
+      return languages
+    } catch (error) {
+      console.error("Failed to load languages:", error);
+    }
+  }
 
 
 export async function auditFillBlank(fillBlankId: number, correct: boolean, currentUserId : number) {
@@ -71,4 +83,26 @@ export async function auditTranslation(translationQuestionId: number, correct: b
             answerCorrect: correct
         })
     })
+}
+
+export async function getExistingTranslationQuestions(answerWordId: number) {
+  let response = await apiFetch(`/api/translationquestions?answerWordId=${answerWordId}`);
+  return response as TranslationQuestion[];
+}
+
+export async function getExistingFillBlankQuestions(answerWordId: number) {
+  let response = await apiFetch(`/api/fill_blank?answerWordId=${answerWordId}`);
+  return response as FillBlankQuestion[];
+}
+
+export async function deleteFillBlankQuestion(questionId: number) {
+  await apiFetch(`/api/fill_blank/${questionId}`, {
+    method:"Delete"
+  })
+}
+
+export async function deleteTranslationQuestion(questionId: number) {
+  await apiFetch(`/api/translationquestions/${questionId}`, {
+    method:"Delete"
+  })
 }

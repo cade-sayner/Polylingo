@@ -120,7 +120,7 @@
     <button id="landing-card-container">
         <section id="landing-card-text">
             <header id="landing-card-header""> </header>
-            <aside id=" landing-card-caption">
+            <aside id="landing-card-caption">
                 </aside>
         </section>
         <figure id="landing-card-figure">
@@ -173,6 +173,199 @@
         <button id="question-check" class="question-button call-sans"> Check </button>
     </footer>
 
+</template>
+
+<template class="instructor-template">
+    <section class="instructor-container">
+        <section class="sidebar-container fade-in">
+            <h1>Instructor Dashboard</h1>
+            <button id="fill-in-the-blank-btn">Fill in the blank</button>
+            <button id="translation-btn">Translation</button>
+        </section>
+        <article class="create-question-container fade-in">
+            <header class="exercise-title">
+                <h1> Create Fill In The Blank Questions </h1> <!-- Default header title -->
+            </header>
+        </article>
+    </section>
+</template>
+
+<template class="instructor-landing-page-template">
+    <article class="login-container">
+        <section>
+            This is the admin landing page
+        </section>
+    </article>
+</template>
+
+
+<template class="landing-page-template">
+    <article class="login-container">
+        <section>
+            This is the landing page, you will see cool stuff here soon
+        </section>
+    </article>
+</template>
+
+<template id="fill-blank-component">
+  <section class="translation-container fill-blank">
+    <h2 class="section-title">Fill in the blank questions</h2>
+
+    <form class="translation-form" autocomplete="off">
+      <fieldset class="form-group">
+        <label for="answerLanguage">Language</label>
+        <select name="answer-language" id="answerLanguage" class="form-control">
+          <option value="" disabled selected>Language</option>
+        </select>
+      </fieldset>
+
+      <fieldset class="form-group">
+        <label for="questionSentence">Question Sentence</label>
+        <input type="text" placeholder="Use ___ for blank" name="questionSentence" id="questionSentence" class="form-control" />
+      </fieldset>
+
+      <fieldset class="form-group">
+        <label for="difficulty">Difficulty</label>
+        <select name="difficulty" id="difficulty" class="form-control">
+          <option value="" disabled selected>Difficulty</option>
+          <option value="1">1 - Very Easy</option>
+          <option value="2">2 - Easy</option>
+          <option value="3">3 - Medium</option>
+          <option value="4">4 - Hard</option>
+        </select>
+      </fieldset>
+
+      <fieldset class="form-group">
+        <label for="answerWord">Answer Word</label>
+        <section class="autocomplete">
+          <input type="text" id="answerWord" placeholder="Missing word" name="answerWord" />
+          <input type="hidden" id="answerWordId" name="answerWordId" />
+          <ul id="autocompleteDropdown" class="autocomplete-items"></ul>
+          <button type="button" id="clearAnswerBtn" style="display: none;">Clear</button>
+        </section>
+    </fieldset>
+
+      <fieldset class="form-group-2">
+        <label for="distractorInput">Add distractors (3 required)</label>
+        <section id="distractorInputWrapperFillBlank">
+          <input type="text" id="distractorInput" class="distractor-input" placeholder="Click enter to add distractor" />
+          <ul class="tags-container" id="distractorTags">
+            <!-- tags will be dynamically added here -->
+          </ul>
+          <input type="hidden" id="distractorsHidden" name="distractors" />
+        </section>
+      </fieldset>
+    </form>
+
+    <button type="submit" class="create-question-btn">Create question</button>
+
+    <h3 class="sub-heading">Existing questions for answer word:</h3>
+    <table class="translation-table">
+      <thead>
+        <tr>
+          <th>Question sentence</th>
+          <th>Answer Word</th>
+          <th>Distractors</th>
+          <th>Difficulty</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="existing-fill-blank-body">
+        <!-- Rows will go here -->
+      </tbody>
+    </table>
+  </section>
+</template>
+
+<template id="translate-component">
+    <section class="translation-container translate">
+        <h2 class="section-title">Translation Questions</h2>
+
+        <form class="translation-form">
+            <section class="form-group">
+                <label for="promptLanguage">Prompt Language</label>
+                <select name="prompt-language" id="promptLanguage" class="form-control">
+                    <option value="" disabled selected>Prompt Language</option>
+                </select>
+            </section>
+
+            <section class="form-group">
+                <label for="answerLanguage">Answer Language</label>
+                <select name="answer-language" id="answerLanguage" class="form-control">
+                    <option value="" disabled selected>Answer Language</option>
+                </select>
+            </section>
+
+            <section class="form-group">
+                <label for="difficulty">Difficulty</label>
+                <select name="difficulty" id="difficulty" class="form-control">
+                    <option value="" disabled selected>Difficulty</option>
+                    <option value="1">1 - Very Easy</option>
+                    <option value="2">2 - Easy</option>
+                    <option value="3">3 - Medium</option>
+                    <option value="4">4 - Hard</option>
+                </select>
+            </section>
+
+            <section class="form-group">
+                <label for="promptWord">Prompt Word</label>
+                <section class="autocomplete">
+                    <input type="text" id="promptWord" placeholder="Prompt word" name="promptWord">
+                    <input type="hidden" id="promptWordId" name="promptWordId" />
+                    <section id="promptDropdown" class="autocomplete-items"></section>
+                    <button type="button" id="clearPromptBtn" style="display: none;">Clear</button>
+                </section>
+            </section>
+
+            <section class="form-group">
+                <label for="answerWord">Answer Word</label>
+                <section class="autocomplete">
+                    <input type="text" id="answerWord" placeholder="Answer word" name="answerWord">
+                    <input type="hidden" id="answerWordId" name="answerWordId" />
+                    <section id="answerDropdown" class="autocomplete-items"></section>
+                    <button type="button" id="clearAnswerBtn" style="display: none;">Clear</button>
+                </section>
+            </section>
+
+          <section class="form-group-2">
+            <label for="distractorInput">Add distractors (3 required)</label>
+            <section id="distractorInputWrapperFillBlank">
+                <input
+                type="text"
+                id="distractorInput"
+                class="distractor-input"
+                placeholder="Click enter to add distractor"
+                />
+                <section class="tags-container" id="distractorTags">
+                <!-- tags will be dynamically added here -->
+                </section>
+
+                <input type="hidden" id="distractorsHidden" name="distractors" />
+            </section>
+        </section>
+
+
+        </form>
+
+        <button type="submit" class="create-question-btn">Create question</button>
+
+        <h3 class="sub-heading">Existing questions for answer word:</h3>
+
+        <table class="translation-table">
+          <thead>
+            <tr>
+              <th>Prompt</th>
+              <th>Answer</th>
+              <th>Distractors</th>
+              <th>Difficulty</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="existing-translations-body">
+            <!-- Rows will go here -->
+          </tbody>
+        </table>
+      </section>
 </template>
 
 </html>
