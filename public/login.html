@@ -9,9 +9,9 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         const code = params.get("code");
-        fetch (`https://pastpaperportal/api/auth/login?code=${code}`).then((resp) => resp.json().then((data => {
+        fetch (`https://pastpaperportal.co.za/api/auth/login?code=${code}`).then((resp) => resp.json().then((data => {
             localStorage.setItem("polylingo_jwt", data.jwt);
-            window.location.href = "https://pastpaperportal/landing";
+            window.location.href = "https://pastpaperportal.co.za/landing";
         })));
     </script>
 </body>
